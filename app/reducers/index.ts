@@ -1,0 +1,1 @@
+export default (state: State.IState = {count: 0}, action) => state 

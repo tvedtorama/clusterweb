@@ -1,0 +1,50 @@
+{
+	"name": "clusterweb",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"test": "mocha --require source-map-support/register $(find build/tests -name '*.js') --watch --reporter landing"
+	},
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"cookie-parser": "^1.4.3",
+		"dotenv": "^6.0.0",
+		"express": "^4.16.3",
+		"express-graphql": "^0.6.12",
+		"express-handlebars": "^3.0.0",
+		"express-jwt": "^5.3.1",
+		"multer": "^1.3.1",
+		"mz": "^2.7.0",
+		"react": "^16.4.1",
+		"react-dom": "^16.4.1",
+		"react-redux": "^5.0.7",
+		"react-router": "^4.3.1",
+		"redux": "^4.0.0",
+		"redux-observable": "^1.0.0",
+		"redux-saga": "^0.16.0",
+		"rxjs": "^6.2.1",
+		"serve-favicon": "^2.5.0"
+	},
+	"devDependencies": {
+		"@types/chai": "^4.1.3",
+		"@types/express": "^4.16.0",
+		"@types/express-graphql": "^0.6.1",
+		"@types/jsonwebtoken": "^7.2.8",
+		"@types/lodash": "^4.14.110",
+		"@types/mz": "0.0.32",
+		"@types/node": "^10.5.2",
+		"@types/react": "^16.4.6",
+		"@types/react-redux": "^6.0.3",
+		"@types/react-router": "^4.0.28",
+		"@types/webpack-env": "^1.13.1",
+		"awesome-typescript-loader": "^5.2.0",
+		"mocha": "^5.2.0",
+		"sass-loader": "^7.0.3",
+		"typescript": "^2.9.2",
+		"webpack": "^4.15.1",
+		"webpack-dev-middleware": "^3.0.1",
+		"webpack-hot-middleware": "^2.21.2"
+	}
+}

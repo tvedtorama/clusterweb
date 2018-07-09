@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "jsx": "react", // this line causes problems with the exports of the State class, but only when placed out of order!!!!! Seems this crap needs to be in order....
+        "module": "CommonJS",
+        "moduleResolution": "node",
+        "target": "es6",
+        "sourceMap": true,  // required for webpack ts-loader
+        "skipLibCheck": true,
+        "experimentalDecorators": true,
+        "rootDir": ".",
+        "outDir": "build"
+    },
+    "filesGlob": [
+        "!./node_modules/**"
+    ],
+    "exclude": [ 
+        "node_modules"
+    ]
+}

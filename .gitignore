@@ -1,0 +1,7 @@
+build
+typings
+node_modules
+testBuild
+.idea
+dist
+.env

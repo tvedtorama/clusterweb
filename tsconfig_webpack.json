@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+        "jsx": "react",
+        "module": "esnext",
+        "moduleResolution": "node",
+        "target": "es6",
+        "sourceMap": true,
+        "skipLibCheck": true,
+        "experimentalDecorators": true
+    },
+    "filesGlob": [
+    ],
+    "exclude": [
+        "coreApi",
+        "adminGuiServer",
+        "tests",
+        "node_modules"
+    ]
+
+}

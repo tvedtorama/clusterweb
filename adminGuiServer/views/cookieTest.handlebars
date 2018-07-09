@@ -1,0 +1,25 @@
+<!-- TEMP test code for cookies, get away with this file when done testing -->
+
+<div class="content">
+	<div id="top">
+		{{{html}}}
+	</div>
+	<ul class="cookie-list">
+		{{#each cookieList}}
+			<li>{{key}} - {{value}}</li>
+		{{/each}}
+	</ul>
+	<ul class="header-list">
+		{{#each headers}}
+			<li>{{key}} - {{value}}</li>
+		{{/each}}
+	</ul>
+
+	<div>
+		<span>JWT: </span><span>{{jwt}}</span>
+	</div>
+	<script type="text/javascript">
+		console.log(document.cookie)
+	</script>
+</div>
+
