@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Link, BrowserRouter as Router, Route, match } from 'react-router-dom';
+require('../../sass/index.scss')
 
 const HeiComp: React.StatelessComponent<{match: match<any>}> = ({match}) =>
 	<span>We got hit {match.isExact ? "exactly" : "approximately"}</span>
