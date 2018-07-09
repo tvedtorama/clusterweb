@@ -17,18 +17,18 @@ class WebMainRaw extends React.Component<{store: any}> {
 			
 			<Router>
 				<div>
-					<p style={{display: "flex", flexDirection: "column" }}>
+					<div className={"paragraph"} style={{display: "flex", flexDirection: "column" }}>
 						<span>This is the <Link to="/hei">Hei Link</Link></span>
 						<span>This is the <Link to="/hei/paaDeg">HeiPaaDeg Link</Link></span>
 						<span>This is the <Link to="/countTest">Count Test</Link></span>
-					</p>
-					<p style={{display: "flex", flexDirection: "column" }}>
+					</div>
+					<div className={"paragraph"} style={{display: "flex", flexDirection: "column" }}>
 						<span>The Route outputs:</span>
 						<Route exact path="/" component={(p) => <span>Rootish!</span>} />
 						<Route path="/hei" component={HeiComp} />
 						<Route path="/hallo" component={HalloComp} />
 						<Route path="/countTest" component={CountTest} />
-					</p>
+					</div>
 				</div>
 			</Router>
 		</div>
