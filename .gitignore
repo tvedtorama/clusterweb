@@ -5,3 +5,4 @@ testBuild
 .idea
 dist
 .env
+.DS_Store
