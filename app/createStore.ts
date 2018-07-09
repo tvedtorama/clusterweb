@@ -1,10 +1,15 @@
 import {createStore as reduxCreateStore, applyMiddleware, Store, compose, Action} from 'redux'
 import {default as reducer} from './reducers'
 import {default as createSagaMiddleware} from 'redux-saga'
-import {createEpicMiddleware} from 'redux-observable'
+import {createEpicMiddleware, combineEpics} from 'redux-observable'
 import {actionCreators} from './utils/devToolsActionCreators'
 
 import {mainLoop} from './sagas/mainLoop'
+import { countEpic } from './components/CountTest';
+
+export const rootEpic = combineEpics(
+	countEpic
+  );
 
 export function createStore(loginFlow: boolean): Store<State.IState> {
 	const windowMod = window as any
@@ -14,6 +19,7 @@ export function createStore(loginFlow: boolean): Store<State.IState> {
 			compose(applyMiddleware(epicMiddleware, sagaMiddleware), windowMod.devToolsExtension ? windowMod.devToolsExtension({actionCreators}) : f => f) as any)
 
 	sagaMiddleware.run(mainLoop, loginFlow, {})
+	epicMiddleware.run(rootEpic)
 
 	if (module.hot) {
 		// Enable Webpack hot module replacement for reducers

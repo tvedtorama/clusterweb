@@ -1,1 +1,4 @@
-export default (state: State.IState = {count: 0}, action) => state 
+import { combineReducers } from "../../node_modules/redux";
+import { count } from "./countTest";
+
+export default combineReducers({count})
