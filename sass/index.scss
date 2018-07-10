@@ -30,6 +30,7 @@ body {
 			top: 0em;
 			.sliding-content {
 				display: flex;
+				flex-direction: column;
 				padding: 0.4vmax;
 				margin: 1em;
 				width: calc(100% - 2em);
