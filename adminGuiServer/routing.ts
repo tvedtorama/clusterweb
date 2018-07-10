@@ -1,23 +1,15 @@
-import * as _ from 'lodash'
 import * as express from 'express'
-import * as graphQLHTTP from 'express-graphql'
-// import {jwtCheck, signJwt} from '../utils/security/jwt'
 import { generateCryptoRandomNumber } from '../utils/keys/cryptoKeys';
 import { signJwt } from '../utils/security/jwt';
 import { setupAdminGui } from '../utils/expressHandlers/loginGui';
 
-const multer = require('multer')
-const graphQlUploads = multer()
-
 export const router = express.Router()
-
-type IGraphQlReqType = express.Request & {files: any[], logs: {logs: any[]}}
 
 const getLang = (req) => (req.headers['accept-language'] || '').indexOf('nb') === 0 ? 'no' : 'en'
 
 const renderMain = (req: express.Request, res: express.Response, initialState = {}) =>
 	res.render('home', {
-		title: "Admin GUI",
+		title: "Clusters",
 		html: '<div class="loading-root" ></div>',
 		initialState: JSON.stringify({
 				lang: getLang(req),
