@@ -5,3 +5,42 @@
 .button {
 	margin: 1em;
 }
+.paragraph {
+	margin: 0.5em;
+}
+
+.button {
+	margin: 1em;
+}
+
+.scroll-test {
+	.scrolling-container {
+		margin: 0em -0.5em;
+		width: calc(100vw - 1em); // No idea why these adjustments are needed, but they amounts to the negative margin of the paragaph we are in - and should be removed
+		background: lightseagreen;
+		display: flex;
+		height: 200vh;
+		
+		.sliding-container {
+			display: flex;
+			height: 70vh;
+			width: 90%;
+			margin: 0 auto;
+			position: sticky;
+			top: 0em;
+			.sliding-content {
+				display: flex;
+				padding: 0.4vmax;
+				margin: 1em;
+				width: calc(100% - 2em);
+				height: calc(100% - 2em);
+				background: whitesmoke;
+				border: 0.2em solid seagreen;
+				border-radius: 0.5em;
+			}
+		}
+	}
+	.non-scrolling-footer {
+		height: 50vh;
+	}
+}
