@@ -1,5 +1,5 @@
 namespace State {
-	export interface IState {
+	export interface IState extends StoryAnimState.IState {
 		count: int
 	}
 }

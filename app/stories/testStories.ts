@@ -1,30 +1,48 @@
-export const SET_STORY_DATA = "SET_STORY_DATA"
-export const NOP = "NOP"
+import { STORE_STORY_ITEM } from "../../storyAnim/actions/storyItem";
+import { NOP } from "../../storyAnim/actions/nop";
 
 export const rootStory = function*() {
-	const id = "abc123"
+	const id = "ROOT"
 	const startLoop = function*() {
 		yield {
-			type: SET_STORY_DATA,
-			position: {x: 10, y: 20, z: 40, scale: 0.5},
-			id,
+			type: STORE_STORY_ITEM,
+			payload: <StoryAnimDataSchema.IStoryItem>{
+				position: {x: 10, y: 20, z: 40, scale: 0.5},
+				id,
+				visual: {
+					component: "GOAT",
+					props: {}
+				}
+			}
 		}
 	}
 	const finalLoop = function*() {
 		yield {
-			type: SET_STORY_DATA,
-			position: {x: 15, y: 5, z: 40, scale: 0.8},
-			id,
+			type: STORE_STORY_ITEM,
+			payload: <StoryAnimDataSchema.IStoryItem>{
+				position: {x: 15, y: 22, z: 40, scale: 0.5},
+				id,
+				visual: {
+					component: "HORSE",
+					props: {}
+				}
+			}
 		}
 	}
 	const findNextGenerator = (pos: number) => pos < 20 ? startLoop : pos < 50 ? finalLoop : null
 	const conditionallyFindNextIterator = (eventData: StoryAnim.IEventData, defaultIterator) => eventData.type === "SCROLL_POS" && findNextGenerator(eventData.pos) || defaultIterator
 	const init = function*() {
 		yield {
-			type: SET_STORY_DATA,
-			id,
-			itemDef: "BALL",
-			itemProps: {}}
+			type: STORE_STORY_ITEM,
+			payload: <StoryAnimDataSchema.IStoryItem>{
+				position: {x: 10, y: 20, z: 40, scale: 0.5},
+				id,
+				visual: {
+					component: "BALL",
+					props: {}
+				}
+			}
+		}
 	}
 
 	yield* storyMainLoop(init, conditionallyFindNextIterator)
@@ -36,14 +54,11 @@ export const rootStory = function*() {
 // We need to test story runners
 // We need to figure out when to start new stories.
 //    We need a list of story concepts, then start them when entering their frame.  When they exit - mark them.
+// We need to clean up the stories' acts
 // We need a reducer for the storyItems to create and delete
-
-
 
 type ISubStory = () => IterableIterator<any>
 type IConditionallyFindNextIterator = (ed: StoryAnim.IEventData, iterator: ISubStory) => ISubStory
-
-
 
 export const storyMainLoop = function*(init: ISubStory, conditionallyFindNextIterator: IConditionallyFindNextIterator = (_, iterator) => iterator) {
 	let iterator = init
@@ -59,7 +74,10 @@ export const storyMainLoop = function*(init: ISubStory, conditionallyFindNextIte
 			let eventData: StoryAnim.IEventData = null
 			while (true) {
 				const result = gen.next(eventData)
-				const {eventData: nextEventData, nextIterator} = yield* yieldAndCheckIterator(result.done ? {type: NOP} : result.value, iterator)
+				const {eventData: nextEventData, nextIterator} =
+					yield* yieldAndCheckIterator(result.done ?
+						{type: NOP} :
+						result.value, iterator)
 				if (nextIterator !== iterator) {
 					return nextIterator
 				}
