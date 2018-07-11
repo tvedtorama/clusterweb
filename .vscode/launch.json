@@ -1,0 +1,28 @@
+{
+	// Use IntelliSense to learn about possible attributes.
+	// Hover to view descriptions of existing attributes.
+	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+	"version": "0.2.0",
+	"configurations": [
+		{
+            "name": "Run TS or JS in mocha",
+            "type": "node",
+            "request": "launch",
+            "program": "/usr/local/lib/node_modules/mocha/bin/_mocha",
+            "stopOnEntry": false,
+            "args": ["--recursive", "${workspaceRoot}/build/tests/**/${fileBasenameNoExtension}.js", "--require", "source-map-support/register", "--no-timeout"],
+            "cwd": "${workspaceRoot}",
+            "runtimeExecutable": null,
+			"env": { "NODE_ENV": "testing"},
+ 			"protocol": "auto"
+    },
+		{
+			"name": "Attach to Process",
+			"type": "node",
+			"request": "attach",
+			"protocol": "inspector",
+			// outFiles should point the debugger to the sourceMaps, but does not work ATW. Might be because we are in a multi project config?
+			"outFiles": ["${workspaceRoot}/build/**/*.js"]
+		}
+	]
+}
