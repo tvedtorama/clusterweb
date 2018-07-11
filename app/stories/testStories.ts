@@ -49,13 +49,16 @@ export const rootStory = function*() {
 }
 
 // We got stories now
-// We need storyRunners
+// DONE We need storyRunners
 // We need to test story main loop
-// We need to test story runners
+// DONE We need to test story runners
 // We need to figure out when to start new stories.
 //    We need a list of story concepts, then start them when entering their frame.  When they exit - mark them.
 // We need to clean up the stories' acts
-// We need a reducer for the storyItems to create and delete
+// DONE We need a reducer for the storyItems to create and delete
+// We might need a reducer to update an item, instead of overwriting
+// We can't use svg all the way, becuase it does not support 3d transforms.
+//   Must instead use layered divs, with svgs inside them.  The backgrounds should be spaced.
 
 type ISubStory = () => IterableIterator<any>
 type IConditionallyFindNextIterator = (ed: StoryAnim.IEventData, iterator: ISubStory) => ISubStory
