@@ -49,8 +49,6 @@ describe("storyRunner", () => {
 	it("should run the story with children and dispatch any actions they produce", async () => {
 		const {tester} = startMeUp()
 
-
-
 		const provider = <IStoryRunnerProvider>{
 			id: "abc123",
 			getStory: function*() {
@@ -92,6 +90,7 @@ describe("storyRunner", () => {
 	})
 
 	it("should run the story and track the objects created by it and its children", async () => {
+		// and cancel stuffs
 	})
 
 })
