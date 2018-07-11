@@ -3,7 +3,7 @@
         "jsx": "react", // this line causes problems with the exports of the State class, but only when placed out of order!!!!! Seems this crap needs to be in order....
         "module": "CommonJS",
         "moduleResolution": "node",
-        "target": "es6",
+        "target": "ESNEXT",
         "sourceMap": true,  // required for webpack ts-loader
         "skipLibCheck": true,
         "experimentalDecorators": true,

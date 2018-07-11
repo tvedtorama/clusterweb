@@ -3,7 +3,7 @@
         "jsx": "react",
         "module": "esnext",
         "moduleResolution": "node",
-        "target": "es6",
+        "target": "ESNEXT",
         "sourceMap": true,
         "skipLibCheck": true,
         "experimentalDecorators": true
