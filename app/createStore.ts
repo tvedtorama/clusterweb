@@ -9,7 +9,7 @@ import { countEpic } from './components/CountTest';
 
 export const rootEpic = combineEpics(
 	countEpic
-  );
+);
 
 export function createStore(loginFlow: boolean): Store<State.IState> {
 	const windowMod = window as any
