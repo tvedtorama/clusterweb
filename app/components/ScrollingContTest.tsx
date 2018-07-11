@@ -8,7 +8,9 @@ class ScrollingContTestRaw extends React.Component {
 				<div className="sliding-container">
 					<div className="sliding-content">
 						<span>Hello</span>
-						<StoryItem itemId={"ROOT"} />
+						<svg viewBox={`-500 -500 500 500`}>
+							<StoryItem itemId={"ROOT"} />
+						</svg>
 					</div>
 				</div>
 			</div>
