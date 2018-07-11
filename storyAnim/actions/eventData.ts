@@ -1,0 +1,1 @@
+export const SET_EVENT_DATA = "SET_EVENT_DATA"
