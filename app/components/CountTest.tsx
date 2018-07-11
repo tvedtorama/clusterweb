@@ -12,7 +12,7 @@ export const countEpic = (action$: Observable<Action>) =>
 	merge(action$.pipe(
 			ofType(INCREMENT_MANUAL),
 		),
-		timer(2000, 2000)).pipe(
+		timer(2000, 6000)).pipe(
 			map(x => ({type: INCREMENT})) // Could have used mapTo
 		)
 
