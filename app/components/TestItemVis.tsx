@@ -1,4 +1,4 @@
-import * as React from 'React'
+import * as React from 'react'
 
 /** Test visual */
 export class TestItemViz extends React.Component {
