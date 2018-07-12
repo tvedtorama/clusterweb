@@ -4,6 +4,6 @@ namespace StoryAnim {
 		pos: number,	
 	} | {
 		type: "TIME",
-		elapsed: number,
+		frameTime: number,
 	}	
 }

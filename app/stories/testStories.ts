@@ -1,15 +1,16 @@
 import { STORE_STORY_ITEM } from "../../storyAnim/actions/storyItem";
 import { NOP } from "../../storyAnim/actions/nop";
 import { storyMainLoop } from "../../storyAnim/storySupport/storyMainLoop";
+import { IStoryRunnerChildrenStatus, IStoryRunnerYieldFormat } from "../../storyAnim/storyRunner";
 
 export interface ITestStoryProps {
 	propText: string
 }
 
-export const rootStory = function*() {
+export const rootStory = function*(initialState: StoryAnim.IEventState) {
 	const id = "ROOT"
-	const startLoop = function*() {
-		const yielder = function*(eventData?: StoryAnim.IEventData) {
+	const startLoop = function*(initialState: StoryAnim.IEventState) {
+		const yielder = function*(eventPack?: IStoryRunnerYieldFormat) {
 			return yield {
 				type: STORE_STORY_ITEM,
 				payload: <StoryAnimDataSchema.IStoryItem>{
@@ -17,18 +18,18 @@ export const rootStory = function*() {
 					id,
 					visual: {
 						component: "GOAT",
-						props: <ITestStoryProps>{propText: `Gee ${eventData && eventData.type === "SCROLL_POS" ? eventData.pos : "N/A"}`}
+						props: <ITestStoryProps>{propText: `Gee ${eventPack.eventState.pos}`}
 					}
 				}
 			}
 		}
-		let eventData = null;
+		let eventData: IStoryRunnerYieldFormat = {eventState: initialState, eventData: null};
 		while (true) {
 			eventData = yield* yielder(eventData)
 		}
 	}
 	const finalLoop = function*() {
-		yield {
+		return yield {
 			type: STORE_STORY_ITEM,
 			payload: <StoryAnimDataSchema.IStoryItem>{
 				position: {x: 15, y: 22, z: 40, scale: 0.5},
@@ -41,7 +42,7 @@ export const rootStory = function*() {
 		}
 	}
 	const findNextGenerator = (pos: number) => pos < 20 ? startLoop : pos < 50 ? finalLoop : null
-	const conditionallyFindNextIterator = (eventData: StoryAnim.IEventData, defaultIterator) => eventData.type === "SCROLL_POS" && findNextGenerator(eventData.pos) || defaultIterator
+	const conditionallyFindNextIterator = (eventPack: IStoryRunnerYieldFormat, defaultIterator) => findNextGenerator(eventPack.eventState.pos) || defaultIterator
 	const init = function*() {
 		yield {
 			type: STORE_STORY_ITEM,
@@ -56,7 +57,7 @@ export const rootStory = function*() {
 		}
 	}
 
-	yield* storyMainLoop(init, conditionallyFindNextIterator)
+	yield* storyMainLoop(init, initialState, conditionallyFindNextIterator)
 }
 
 // We got stories now

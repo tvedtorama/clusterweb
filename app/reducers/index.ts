@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
 import { count } from "./countTest";
-import { items } from "../../storyAnim/reducers/items";
+import { storyAppReducers } from "../../storyAnim/reducers";
 
-export default combineReducers({count, items})
+export default combineReducers({count, ...storyAppReducers})
