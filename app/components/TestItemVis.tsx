@@ -1,7 +1,8 @@
 import * as React from 'react'
+import { ITestStoryProps } from '../stories/testStories';
 
 /** Test visual */
-export class TestItemViz extends React.Component {
+export class TestItemViz extends React.Component<ITestStoryProps & StoryAnim.IVisualCommonProps> {
 	render() {
 		return <g>
 			<path
@@ -9,7 +10,7 @@ export class TestItemViz extends React.Component {
 				transform={`scale(10) translate(-40 -40) `}
 				fillOpacity={0.5}
 			/>
-			<text>{`Item  ${"ITEM_ID"} ${"this.props.itemVisual.component"}`}</text>
+			<text>{`Item  ${this.props.itemId} ${this.props.propText}`}</text>
 		</g>
 	}
 }

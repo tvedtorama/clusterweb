@@ -1,19 +1,30 @@
 import { STORE_STORY_ITEM } from "../../storyAnim/actions/storyItem";
 import { NOP } from "../../storyAnim/actions/nop";
+import { storyMainLoop } from "../../storyAnim/storySupport/storyMainLoop";
+
+export interface ITestStoryProps {
+	propText: string
+}
 
 export const rootStory = function*() {
 	const id = "ROOT"
 	const startLoop = function*() {
-		yield {
-			type: STORE_STORY_ITEM,
-			payload: <StoryAnimDataSchema.IStoryItem>{
-				position: {x: 10, y: 20, z: 40, scale: 0.5},
-				id,
-				visual: {
-					component: "GOAT",
-					props: {}
+		const yielder = function*(eventData?: StoryAnim.IEventData) {
+			return yield {
+				type: STORE_STORY_ITEM,
+				payload: <StoryAnimDataSchema.IStoryItem>{
+					position: {x: 10, y: 20, z: 40, scale: 0.5},
+					id,
+					visual: {
+						component: "GOAT",
+						props: <ITestStoryProps>{propText: `Gee ${eventData && eventData.type === "SCROLL_POS" ? eventData.pos : "N/A"}`}
+					}
 				}
 			}
+		}
+		let eventData = null;
+		while (true) {
+			eventData = yield* yielder(eventData)
 		}
 	}
 	const finalLoop = function*() {
@@ -24,7 +35,7 @@ export const rootStory = function*() {
 				id,
 				visual: {
 					component: "HORSE",
-					props: {}
+					props: <ITestStoryProps>{propText: "Hoo"}
 				}
 			}
 		}
@@ -39,7 +50,7 @@ export const rootStory = function*() {
 				id,
 				visual: {
 					component: "BALL",
-					props: {}
+					props: <ITestStoryProps>{propText: "Boo"}
 				}
 			}
 		}
@@ -60,33 +71,3 @@ export const rootStory = function*() {
 // We can't use svg all the way, becuase it does not support 3d transforms.
 //   Must instead use layered divs, with svgs inside them.  The backgrounds should be spaced.
 
-type ISubStory = () => IterableIterator<any>
-type IConditionallyFindNextIterator = (ed: StoryAnim.IEventData, iterator: ISubStory) => ISubStory
-
-export const storyMainLoop = function*(init: ISubStory, conditionallyFindNextIterator: IConditionallyFindNextIterator = (_, iterator) => iterator) {
-	let iterator = init
-
-	while (iterator) {
-		const yieldAndCheckIterator = function*(yieldThings, iterator: ISubStory) {
-			const eventData = yield yieldThings
-			const nextIterator = conditionallyFindNextIterator(eventData, iterator)
-			return {eventData, nextIterator}
-		}
-		const runGenerator = function*(iterator: ISubStory) {
-			const gen = iterator()
-			let eventData: StoryAnim.IEventData = null
-			while (true) {
-				const result = gen.next(eventData)
-				const {eventData: nextEventData, nextIterator} =
-					yield* yieldAndCheckIterator(result.done ?
-						{type: NOP} :
-						result.value, iterator)
-				if (nextIterator !== iterator) {
-					return nextIterator
-				}
-				eventData = nextEventData
-			}
-		}
-		iterator = yield* runGenerator(iterator)
-	}
-}
