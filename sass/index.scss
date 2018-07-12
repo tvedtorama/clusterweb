@@ -39,7 +39,12 @@ body {
 				border: 0.2em solid seagreen;
 				border-radius: 0.5em;
 
-				svg {
+				.story-anim-item, .story-anim-svg, .story-anim-child {
+					width: 100%;
+					height: 100%;
+				}
+
+				.story-anim-svg {
 					font-size: 22px;
 				}
 

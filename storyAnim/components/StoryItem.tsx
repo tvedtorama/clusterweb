@@ -20,8 +20,8 @@ class StoryItemRaw extends React.Component<IProps & IMangledProps> {
 	render() {
 		if (!this.props.itemVisual)
 			return <div className="story-item-loading" />
-		return <div className="story-anim-item" style={{width: "100%", height: "100%"}}>
-			<svg viewBox={`-500 -500 1000 1000`} style={{width: "100%", height: "100%"}}>
+		return <div className="story-anim-item" style={{}}>
+			<svg className="story-anim-svg" viewBox={`-500 -500 1000 1000`} style={{}}>
 				<ItemFactoryContext.Consumer>
 					{factory => <FactoryItem {...this.props.itemVisual} {...{factory}} />}
 				</ItemFactoryContext.Consumer>
