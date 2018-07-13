@@ -6,6 +6,7 @@ import { IStoryRunnerProvider, storyRunner, IStoryRunnerChildrenStatus, IStoryRu
 import { SET_EVENT_DATA } from '../../storyAnim/actions/eventData';
 import { combineReducers } from 'redux';
 import { storyAppReducers } from '../../storyAnim/reducers';
+import { STORE_STORY_ITEM, DELETE_STORY_ITEM } from '../../storyAnim/actions/storyItem';
 
 
 chai.should()
@@ -41,46 +42,48 @@ describe("storyRunner", () => {
 		const results = await Promise.all([waitForA, waitForB])
 		results[1].should.deep.equal({type: "B", eventState: {pos: 20, frameTime: 1000}, eventData: {type: "SCROLL_POS", pos: 20}})
 	})
+	const providerWithChildren = <IStoryRunnerProvider>{
+		id: "abc123",
+		getStory: function*() {
+			const nextEventData = yield {type: STORE_STORY_ITEM, payload: {id: "A"}}
+			yield {type: STORE_STORY_ITEM, payload: {id: "B"}}
+			yield {type: DELETE_STORY_ITEM, payload: {id: "B"}}
+		},
+		getChildrenIterator: function*() {
+			const {eventState: initialEventState}: IStoryRunnerChildrenStatus = yield []
+			let eventState = initialEventState
+			let runningCur = []
+			while (true) {
+				const myEventState = eventState
+				const {eventState: eventStateNew, running}: IStoryRunnerChildrenStatus = yield [<IStoryRunnerProvider>{
+					id: `abcChild_${eventState.pos}`,
+					getStory: function*() {
+						const nextEventData = yield {type: STORE_STORY_ITEM, payload: {id: myEventState.pos === 1 ? "A1" : (runningCur.length ? `A_${runningCur[0]}` : "VERY_WEIRD")}}
+						// yield {...nextEventData, type: "BX"}
+					},
+					getChildrenIterator: function*() {}
+				}]
+				eventState = eventStateNew
+				runningCur = running
+			}
+		},
+	}
+
 
 	it("should run the story with children and dispatch any actions they produce", async () => {
 		const {tester} = startMeUp()
 
-		const provider = <IStoryRunnerProvider>{
-			id: "abc123",
-			getStory: function*() {
-				const nextEventData = yield {type: "A"}
-				yield {...nextEventData, type: "B"}
-			},
-			getChildrenIterator: function*() {
-				const {eventState: initialEventState}: IStoryRunnerChildrenStatus = yield []
-				let eventState = initialEventState
-				let runningCur = []
-				while (true) {
-					const myEventState = eventState
-					const {eventState: eventStateNew, running}: IStoryRunnerChildrenStatus = yield [<IStoryRunnerProvider>{
-						id: `abcChild_${eventState.pos}`,
-						getStory: function*() {
-							const nextEventData = yield {type: myEventState.pos === 1 ? "A1" : (runningCur.length ? `A_${runningCur[0]}` : "VERY_WEIRD")}
-							// yield {...nextEventData, type: "BX"}
-						},
-						getChildrenIterator: function*() {}
-					}]
-					eventState = eventStateNew
-					runningCur = running
-				}
-			},
-		}
-
-		const waitForA = tester.waitFor("A")
-		const waitForA1 = tester.waitFor("A1")
-		const waitForA2 = tester.waitFor("A_abcChild_1") // This time abcChild_1 should be running, hence it is added to the name
-		const waitForB = tester.waitFor("B")
-		tester.start(storyRunner, provider)
+		tester.start(storyRunner, providerWithChildren)
 		tester.dispatch({type: SET_EVENT_DATA, eventData: {type: "SCROLL_POS", pos: 1}})
 		tester.dispatch({type: SET_EVENT_DATA, eventData: {type: "SCROLL_POS", pos: 2}})
 
-		const results = await Promise.all([waitForA, waitForB, waitForA1, waitForA2])
-// 		results[1].should.deep.equal({type: "B", balubaTime: true})
+		await tester.waitFor(STORE_STORY_ITEM, true)
+		const actions = tester.getCalledActions().filter(x => x.type === STORE_STORY_ITEM)
+		actions.should.have.length(4)
+		actions[0].should.have.property("payload").deep.equal({id: "A"})
+		actions[1].should.have.property("payload").deep.equal({id: "B"})
+		actions[2].should.have.property("payload").deep.equal({id: "A1"})
+		actions[3].should.have.property("payload").deep.equal({id: "A_abcChild_1"})
 	})
 
 	it("should run the story and track the objects created by it and its children", async () => {
