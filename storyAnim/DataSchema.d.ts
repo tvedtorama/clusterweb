@@ -21,7 +21,7 @@ namespace StoryAnimDataSchema {
 		rotateX: number
 	}>
 	
-	export interface IStoryItem extends IItemBase, IHierarchicalItem {
+	export interface IStoryItem extends IItemBase, Partial<IHierarchicalItem> {
 		visual: IStoryVisual
 		position: IItemPosition
 	}	
