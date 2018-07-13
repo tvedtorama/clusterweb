@@ -1,14 +1,33 @@
 import { spawn } from "redux-saga/effects";
-import { storyRunner, IStoryRunnerProvider } from "../../storyAnim/storyRunner";
-import { rootStory } from "../stories/testStories";
+import { storyRunner, IStoryRunnerProvider, IStoryRunnerChildrenStatus } from "../../storyAnim/storyRunner";
+import { rootStory, childStoryGen } from "../stories/testStories";
+import { filterChildren } from "../../storyAnim/storySupport/filterChildren";
+import { getRootStory } from "../../storyAnim/storySupport/rootStory";
+
+const parentId = "ROOT"
 
 export const mainLoop = function*() {
 	const storySetup: IStoryRunnerProvider = {
-		id: "ROOT",
+		id: parentId,
 		getStory: rootStory,
-		getChildrenIterator: function*() {},
+		getChildrenIterator: function*() {
+			let state: IStoryRunnerChildrenStatus = yield null
+			while (true) {
+				const newStories =
+					filterChildren([
+						state.eventState.pos > 40 && state.eventState.pos < 60 ? <IStoryRunnerProvider>{
+							id: "Bacalao",
+							getStory: childStoryGen(70, parentId),
+							getChildrenIterator: function*() {}
+						} : null
+					], state.running)
+				state = yield newStories
+			}
+		},
 	}
 
-	yield  spawn(storyRunner, storySetup, <StoryAnim.IEventData>{type: "SCROLL_POS", pos: 0})
+	const realRootStory = getRootStory(storySetup)
+
+	yield spawn(storyRunner, realRootStory, <StoryAnim.IEventData>{type: "SCROLL_POS", pos: 0})
 	// NOP
 }
