@@ -50,10 +50,10 @@ export const rootStory = function*(initialState: StoryAnim.IEventState) {
 		yield {
 			type: STORE_STORY_ITEM,
 			payload: <StoryAnimDataSchema.IStoryItem>{
-				position: {x: 10, y: 20, z: 40, scale: 0.5},
+				position: {x: 0, y: 0, z: 40, scale: 0.5},
 				...commonProps,
 				visual: {
-					component: "BALL",
+					component: "MAP",
 					props: <ITestStoryProps>{propText: "Boo"}
 				}
 			}

@@ -2,10 +2,11 @@ import * as React from 'react'
 import { StoryItem } from '../../storyAnim/components/StoryItem';
 import { ItemFactoryContext, IItemFactory } from '../../storyAnim/components/factoryContext';
 import { TestItemViz } from './TestItemVis';
+import { WorldMap } from './story/WorldMap';
 
 /** Sample factory, should be extended to return the visual components needed in the visualization */
 const factory: IItemFactory = {
-	createComponent: (component) => TestItemViz
+	createComponent: (component) => component === "MAP" ? WorldMap : TestItemViz
 }
 
 class ScrollingContTestRaw extends React.Component {
