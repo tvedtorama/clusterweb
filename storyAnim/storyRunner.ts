@@ -84,7 +84,7 @@ export const storyRunner = function*(storyData: IStoryRunnerProvider, eventData?
 		if (result.done) {
 			const running = getActualRunningChildren(runningChildren)
 			for (const cancelId of running)
-				yield cancel(running[cancelId])
+				yield cancel(runningChildren[cancelId])
 			return
 		}
 		yield put(result.value)
