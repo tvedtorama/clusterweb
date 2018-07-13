@@ -2,7 +2,19 @@ import * as React from 'react'
 import { StoryItem } from '../../storyAnim/components/StoryItem';
 import { ItemFactoryContext, IItemFactory } from '../../storyAnim/components/factoryContext';
 import { TestItemViz } from './TestItemVis';
-import { WorldMap } from './story/WorldMap';
+
+// Why isn't this part of Typescript? Example fetched from documentation.
+type Unpacked<T> =
+	T extends (infer U)[] ? U :
+	T extends (...args: any[]) => infer U ? U :
+	T extends Promise<infer U> ? U :
+	T;
+
+const loadWorldMap = import(/* webpackChunkName: "world-map" */ './story/WorldMap')
+type WorldMapModule = typeof loadWorldMap // ReturnType<typeof loadWorldMap>
+type WorldMapType = Unpacked<WorldMapModule>["WorldMap"]
+let WorldMap: WorldMapType = null
+loadWorldMap.then(x => WorldMap = x.WorldMap)
 
 /** Sample factory, should be extended to return the visual components needed in the visualization */
 const factory: IItemFactory = {
@@ -10,7 +22,15 @@ const factory: IItemFactory = {
 }
 
 class ScrollingContTestRaw extends React.Component {
+	componentDidMount() {
+		if (!WorldMap) {
+			loadWorldMap.then(x => this.forceUpdate())
+		}
+	}
 	render() {
+		if (!WorldMap) {
+			return <div className="loading" />
+		}
 		return <div className="scroll-test">
 			<div className="scrolling-container">
 				<div className="sliding-container">
