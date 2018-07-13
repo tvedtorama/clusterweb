@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Children } from './Children';
 import { connect } from 'react-redux';
 import { IItemFactory, ItemFactoryContext } from './factoryContext';
+import { ROOT_STORY_COMPONENT } from '../storySupport/rootStory';
 
 interface IProps {
 	itemId: string
@@ -12,7 +13,7 @@ interface IMangledProps {
 }
 
 const FactoryItem = (props: {component: string, factory: IItemFactory, props: any}) => {
-	const Component = props.factory.createComponent(props.component)
+	const Component = props.component === ROOT_STORY_COMPONENT ? (props => null) : props.factory.createComponent(props.component)
 	return <Component {...props.props} />
 }
 
