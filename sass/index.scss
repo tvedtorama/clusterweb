@@ -50,6 +50,7 @@ body {
 
 				.story-anim-item {
 					position: relative;
+					overflow: hidden; // Prevent translated objects to move outside their container
 					> svg {
 						transform: rotateX(20deg);
 					}
