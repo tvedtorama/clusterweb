@@ -1,4 +1,4 @@
-import { STORE_STORY_ITEM } from "../../storyAnim/actions/storyItem";
+import { STORE_STORY_ITEM, storeStoryItem } from "../../storyAnim/actions/storyItem";
 import { NOP } from "../../storyAnim/actions/nop";
 import { storyMainLoop } from "../../storyAnim/storySupport/storyMainLoop";
 import { IStoryRunnerYieldFormat } from "../../storyAnim/storyRunner";
@@ -14,17 +14,14 @@ export const commonProps = {id: rootStoryId, parentId: ROOT_STORY_ID}
 export const rootStory = function*(initialState: StoryAnim.IEventState) {
 	const startLoop = function*(initialState: StoryAnim.IEventState) {
 		const yielder = function*(eventPack?: IStoryRunnerYieldFormat) {
-			return yield {
-				type: STORE_STORY_ITEM,
-				payload: <StoryAnimDataSchema.IStoryItem>{
+			return yield storeStoryItem({
 					position: {x: 10, y: 20, z: 40, scale: 0.5},
 					...commonProps,
 					visual: {
 						component: "GOAT",
 						props: <ITestStoryProps>{propText: `Gee ${eventPack.eventState.pos}`}
 					}
-				}
-			}
+				})
 		}
 		let eventData: IStoryRunnerYieldFormat = {eventState: initialState, eventData: null};
 		while (true) {
@@ -32,32 +29,26 @@ export const rootStory = function*(initialState: StoryAnim.IEventState) {
 		}
 	}
 	const finalLoop = function*() {
-		yield {
-			type: STORE_STORY_ITEM,
-			payload: <StoryAnimDataSchema.IStoryItem>{
+		yield storeStoryItem({
 				position: {x: 15, y: 50, z: 40, scale: 0.5},
 				...commonProps,
 				visual: {
 					component: "HORSE",
 					props: <ITestStoryProps>{propText: "Hoo"}
 				}
-			}
-		}
+			})
 	}
 	const findNextGenerator = (pos: number) => pos < 20 ? startLoop : pos < 50 ? finalLoop : null
 	const conditionallyFindNextIterator = (eventPack: IStoryRunnerYieldFormat, defaultIterator) => findNextGenerator(eventPack.eventState.pos) || defaultIterator
 	const init = function*() {
-		yield {
-			type: STORE_STORY_ITEM,
-			payload: <StoryAnimDataSchema.IStoryItem>{
+		yield storeStoryItem({
 				position: {x: 0, y: 0, z: 40, scale: 0.5},
 				...commonProps,
 				visual: {
 					component: "MAP",
 					props: <ITestStoryProps>{propText: "Boo"}
 				}
-			}
-		}
+			})
 	}
 
 	yield* storyMainLoop(init, initialState, conditionallyFindNextIterator)
@@ -65,9 +56,7 @@ export const rootStory = function*(initialState: StoryAnim.IEventState) {
 
 export const childStoryGen = (maxPos, parentId) =>
 	function*() {
-		yield {
-			type: STORE_STORY_ITEM,
-			payload: <StoryAnimDataSchema.IStoryItem>{
+		yield storeStoryItem({
 				position: {x: 150, y: 0, z: 40, scale: 0.5},
 				parentId,
 				id: "Bacalao",
@@ -75,8 +64,7 @@ export const childStoryGen = (maxPos, parentId) =>
 					component: "BACALAO",
 					props: <ITestStoryProps>{propText: "HOBLA"}
 				}
-			}
-		}
+			})
 		while (true) {
 			const state: IStoryRunnerYieldFormat = yield {type: NOP}
 			if (state.eventState.pos > maxPos)
