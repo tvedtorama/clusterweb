@@ -6,7 +6,8 @@ import { IStoryRunnerProvider, storyRunner, IStoryRunnerChildrenStatus, IStoryRu
 import { SET_EVENT_DATA } from '../../storyAnim/actions/eventData';
 import { combineReducers } from 'redux';
 import { storyAppReducers } from '../../storyAnim/reducers';
-import { STORE_STORY_ITEM, DELETE_STORY_ITEM } from '../../storyAnim/actions/storyItem';
+import { STORE_STORY_ITEM, DELETE_STORY_ITEM, deleteStoryItem } from '../../storyAnim/actions/storyItem';
+import { NOP } from '../../storyAnim/actions/nop';
 
 
 chai.should()
@@ -42,12 +43,12 @@ describe("storyRunner", () => {
 		const results = await Promise.all([waitForA, waitForB])
 		results[1].should.deep.equal({type: "B", eventState: {pos: 20, frameTime: 1000}, eventData: {type: "SCROLL_POS", pos: 20}})
 	})
-	const providerWithChildren = <IStoryRunnerProvider>{
+	const providerWithChildren = (neverExitChildren?: true) => <IStoryRunnerProvider>{
 		id: "abc123",
 		getStory: function*() {
 			const nextEventData = yield {type: STORE_STORY_ITEM, payload: {id: "A"}}
 			yield {type: STORE_STORY_ITEM, payload: {id: "B"}}
-			yield {type: DELETE_STORY_ITEM, payload: {id: "B"}}
+			yield deleteStoryItem({id: "B"})
 		},
 		getChildrenIterator: function*() {
 			const {eventState: initialEventState}: IStoryRunnerChildrenStatus = yield []
@@ -59,7 +60,8 @@ describe("storyRunner", () => {
 					id: `abcChild_${eventState.pos}`,
 					getStory: function*() {
 						const nextEventData = yield {type: STORE_STORY_ITEM, payload: {id: myEventState.pos === 1 ? "A1" : (runningCur.length ? `A_${runningCur[0]}` : "VERY_WEIRD")}}
-						// yield {...nextEventData, type: "BX"}
+						while (neverExitChildren)
+							yield {type: NOP}
 					},
 					getChildrenIterator: function*() {}
 				}]
@@ -73,7 +75,7 @@ describe("storyRunner", () => {
 	it("should run the story with children and dispatch any actions they produce", async () => {
 		const {tester} = startMeUp()
 
-		tester.start(storyRunner, providerWithChildren)
+		tester.start(storyRunner, providerWithChildren())
 		tester.dispatch({type: SET_EVENT_DATA, eventData: {type: "SCROLL_POS", pos: 1}})
 		tester.dispatch({type: SET_EVENT_DATA, eventData: {type: "SCROLL_POS", pos: 2}})
 
@@ -87,7 +89,30 @@ describe("storyRunner", () => {
 	})
 
 	it("should run the story and track the objects created by it and its children", async () => {
-		// and cancel stuffs
+		const {tester} = startMeUp()
+
+		tester.start(storyRunner, providerWithChildren(true))
+		tester.dispatch({type: SET_EVENT_DATA, eventData: {type: "SCROLL_POS", pos: 1}})
+		await tester.waitFor(STORE_STORY_ITEM, true)
+		tester.dispatch({type: SET_EVENT_DATA, eventData: {type: "SCROLL_POS", pos: 2}})
+		await tester.waitFor(STORE_STORY_ITEM, true)
+		tester.dispatch({type: SET_EVENT_DATA, eventData: {type: "SCROLL_POS", pos: 50}})
+		await tester.waitFor(STORE_STORY_ITEM, true)
+		tester.dispatch({type: SET_EVENT_DATA, eventData: {type: "SCROLL_POS", pos: 80}})
+
+		// await tester.waitFor(STORE_STORY_ITEM, true)
+		const actions = tester.getCalledActions().filter(x => [STORE_STORY_ITEM, DELETE_STORY_ITEM].indexOf(x.type) > -1)
+		actions.should.have.length(10)
+
+		// B is deleted manually and should not be deleted again
+		actions[4].should.have.property("type").equal(DELETE_STORY_ITEM)
+		actions[4].should.have.property("payload").deep.equal({id: "B"})
+
+		// Remove all the created items...
+		actions[6].should.have.property("type").equal(DELETE_STORY_ITEM)
+		actions[7].should.have.property("type").equal(DELETE_STORY_ITEM)
+		actions[8].should.have.property("type").equal(DELETE_STORY_ITEM)
+		actions[9].should.have.property("type").equal(DELETE_STORY_ITEM)
 	})
 
 })

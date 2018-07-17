@@ -3,6 +3,9 @@ import { SET_EVENT_DATA } from "./actions/eventData";
 import { Task } from "redux-saga";
 import * as Ix from 'ix'
 import { Action } from "redux";
+import { deleteStoryItem, STORE_STORY_ITEM, IStoreStoryItemAction, DELETE_STORY_ITEM } from "./actions/storyItem";
+import { NOP } from "./actions/nop";
+import { CreatedItemRegistry } from "./utils/CreatedItemsRegistry";
 
 export interface IStoryRunnerYieldFormat {
 	eventData: StoryAnim.IEventData
@@ -59,8 +62,13 @@ const getStoryWhenItsTime = function*(storyData: IStoryRunnerProvider): Iterable
 			yield gen
 	}
 
+const isAction = (a: Partial<Action>): a is Action => a && a.type ? true : false
+const isStoreAction = (a: Action): a is IStoreStoryItemAction => a.type === STORE_STORY_ITEM
+const isDeleteAction = (a: Action): a is IStoreStoryItemAction => a.type === DELETE_STORY_ITEM
+
 /** Runs a story and its children. `put`s any actions it dispatches. */
-export const storyRunner = function*(storyData: IStoryRunnerProvider, eventData?: StoryAnim.IEventData) {
+export const storyRunner = function*(storyData: IStoryRunnerProvider, eventData?: StoryAnim.IEventData, itemRegistryInput?: CreatedItemRegistry) {
+	const itemRegistry = itemRegistryInput || new CreatedItemRegistry()
 	const genIterator = getStoryWhenItsTime(storyData)
 	const childIterator = storyData.getChildrenIterator()
 	const eventDataGenerator = produceYieldableEventData(eventData)
@@ -77,7 +85,7 @@ export const storyRunner = function*(storyData: IStoryRunnerProvider, eventData?
 		for (const child of newChildren)
 			runningChildren = {
 				...runningChildren,
-				[child.id]: yield fork(storyRunner, child, eventData)
+				[child.id]: yield fork(storyRunner, child, eventData, itemRegistry.createAndRegisterChild(child.id))
 			}
 		const gen = takeTwoOnFirst(isFirstIteration).map(i => genIterator.next(eventState).value).last()
 		const result = gen.next(<IStoryRunnerYieldFormat>{eventState, eventData})
@@ -85,8 +93,19 @@ export const storyRunner = function*(storyData: IStoryRunnerProvider, eventData?
 			const running = getActualRunningChildren(runningChildren)
 			for (const cancelId of running)
 				yield cancel(runningChildren[cancelId])
-			return
+			break
 		}
-		yield put(result.value)
+		if (isAction(result.value) && result.value.type !== NOP) {
+			// Note: result.value should always be an action, the test is mostly a type guard
+			if (isStoreAction(result.value))
+				itemRegistry.registerSet(result.value.payload.id)
+			else if (isDeleteAction(result.value))
+				itemRegistry.registerDelete(result.value.payload.id)
+			yield put(result.value)
+		}
 	}
+
+	// Remove any items crated by this story, and any cancelled child stories
+	for (const itemId of itemRegistry.getAllActive())
+		yield put(deleteStoryItem({id: itemId}))
 }
