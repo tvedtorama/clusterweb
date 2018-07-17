@@ -17,7 +17,7 @@ export const mainLoop = function*() {
 					filterChildren([
 						state.eventState.pos > 40 && state.eventState.pos < 60 ? <IStoryRunnerProvider>{
 							id: "Bacalao",
-							getStory: childStoryGen(70, parentId),
+							getStory: childStoryGen([40, 70], parentId),
 							getChildrenIterator: function*() {}
 						} : null
 					], state.running)

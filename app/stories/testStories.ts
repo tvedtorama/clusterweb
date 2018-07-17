@@ -54,7 +54,7 @@ export const rootStory = function*(initialState: StoryAnim.IEventState) {
 	yield* storyMainLoop(init, initialState, conditionallyFindNextIterator)
 }
 
-export const childStoryGen = (maxPos, parentId) =>
+export const childStoryGen = (existRange: [number, number], parentId) =>
 	function*() {
 		yield storeStoryItem({
 				position: {x: 150, y: 0, z: 40, scale: 0.5},
@@ -67,7 +67,7 @@ export const childStoryGen = (maxPos, parentId) =>
 			})
 		while (true) {
 			const state: IStoryRunnerYieldFormat = yield {type: NOP}
-			if (state.eventState.pos > maxPos)
+			if (state.eventState.pos < existRange[0] || state.eventState.pos > existRange[1])
 				return
 		}
 	}
