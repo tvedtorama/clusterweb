@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { StoryItem } from './StoryItem';
 import { Motion, spring } from 'react-motion';
 import { createBuildStyles } from '../utils/components/buildStyles';
+import { isUndefined } from 'util';
 
 interface IProps {
 	itemId: string
@@ -31,23 +32,46 @@ const dimensionDefs: StoryAnimGUI.IStyleDimensionDefs = {
 		propOutput: "transform",
 		serialize: ty => `translateY(${ty}px)`,
 		srcData: (itemPos: StoryAnimDataSchema.IItemPosition) => itemPos.y,
+	},
+	scale: {
+		defaultValue: 1,
+		propOutput: "transform",
+		serialize: scale => `scale(${scale})`,
+		srcData: (itemPos: StoryAnimDataSchema.IItemPosition) => itemPos.scale,
+	},
+	rotateX: {
+		defaultValue: 0,
+		propOutput: "transform",
+		serialize: ang => `rotateX(${ang}deg)`,
+		srcData: (itemPos: StoryAnimDataSchema.IItemPosition) => {
+			return itemPos.rotateX
+		}
 	}
+
 }
 const dimensionKeys = Object.keys(dimensionDefs)
 
 const buildStyles = createBuildStyles(dimensionDefs)
+
+const buildAnimationStyles = (item: IChildData) =>
+	dimensionKeys.map(key => ({key, value: dimensionDefs[key].srcData(item.itemPosition)})).
+	map(({key, value}) => ({key, value: isUndefined(value) ? dimensionDefs[key].defaultValue : value})).
+	reduce((x, {key, value}) => ({...x, [key]: spring(value)}), {})
 
 class ChildrenRaw extends React.Component<IProps & IMangledProps> {
 	render() {
 		return this.props.itemChildren.map(item =>
 			<Motion key={item.itemId}
 				defaultStyle={dimensionKeys.reduce((x, key) => ({...x, [key]: dimensionDefs[key].defaultValue}), {})}
-				style={dimensionKeys.reduce((x, key) => ({...x, [key]: spring(dimensionDefs[key].srcData(item.itemPosition))}), {})}
-				>
-				{animState =>
-			<div className="story-anim-child" style={buildStyles(animState)}>
-				<StoryItem itemId={item.itemId} />
-				</div>}</Motion>)
+				style={buildAnimationStyles(item)}>
+				{
+					animState => {
+						// console.log(`Motion render, ${item.itemId}`, animState)
+						return <div className="story-anim-child" style={buildStyles(animState)}>
+							<StoryItem itemId={item.itemId} />
+						</div>
+					}
+				}</Motion>)
 	}
 }
 
