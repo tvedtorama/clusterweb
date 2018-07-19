@@ -38,17 +38,27 @@ export const rootStory = function*(initialState: StoryAnim.IEventState) {
 				}
 			})
 	}
-	const findNextGenerator = (pos: number) => pos < 20 ? startLoop : pos < 50 ? finalLoop : null
+	const findNextGenerator = (pos: number) => pos < 20 ? init : pos < 30 ? startLoop : pos < 50 ? finalLoop : null
 	const conditionallyFindNextIterator = (eventPack: IStoryRunnerYieldFormat, defaultIterator) => findNextGenerator(eventPack.eventState.pos) || defaultIterator
-	const init = function*() {
-		yield storeStoryItem({
-				position: {x: 0, y: 0, z: 40, scale: 0.5},
-				...commonProps,
-				visual: {
-					component: "MAP",
-					props: <ITestStoryProps>{propText: "Boo"}
-				}
-			})
+	const init = function*(initialState: StoryAnim.IEventState) {
+		let state = initialState
+		let lastMoveOn = 'INIT'
+		while (true) {
+			const moveOn = state && state.pos > 3
+			const moveOnFunc = () => moveOn.toString()
+			const update: IStoryRunnerYieldFormat = yield lastMoveOn === moveOnFunc() ?
+				{type: NOP} :
+				storeStoryItem({
+					position: {x: 0, y: moveOn ? 230 : 0, z: 40, scale: moveOn ? 10 : 1.5, rotateX: moveOn ? 55 : 0},
+					...commonProps,
+					visual: {
+						component: "MAP",
+						props: <ITestStoryProps>{propText: "Boo"}
+					}
+				})
+			state = update.eventState
+			lastMoveOn = moveOnFunc()
+		}
 	}
 
 	yield* storyMainLoop(init, initialState, conditionallyFindNextIterator)
