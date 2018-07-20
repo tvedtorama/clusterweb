@@ -3,9 +3,10 @@
 import * as React from 'react'
 import { connect } from 'react-redux';
 import { StoryItem } from './StoryItem';
-import { Motion, spring } from 'react-motion';
+import { Motion } from 'react-motion';
 import { createBuildStyles } from '../utils/components/buildStyles';
 import { isUndefined } from 'util';
+import { slowSpring } from '../utils/springs';
 
 interface IProps {
 	itemId: string
@@ -56,7 +57,7 @@ const buildStyles = createBuildStyles(dimensionDefs)
 const buildAnimationStyles = (item: IChildData) =>
 	dimensionKeys.map(key => ({key, value: dimensionDefs[key].srcData(item.itemPosition)})).
 	map(({key, value}) => ({key, value: isUndefined(value) ? dimensionDefs[key].defaultValue : value})).
-	reduce((x, {key, value}) => ({...x, [key]: spring(value)}), {})
+	reduce((x, {key, value}) => ({...x, [key]: slowSpring(value)}), {})
 
 class ChildrenRaw extends React.Component<IProps & IMangledProps> {
 	render() {
