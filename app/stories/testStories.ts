@@ -3,6 +3,7 @@ import { NOP } from "../../storyAnim/actions/nop";
 import { storyMainLoop } from "../../storyAnim/storySupport/storyMainLoop";
 import { IStoryRunnerYieldFormat } from "../../storyAnim/storyRunner";
 import { ROOT_STORY_ID } from "../../storyAnim/storySupport/rootStory";
+import { IWorldMapProps } from "../components/story/WorldMap";
 
 export interface ITestStoryProps {
 	propText: string
@@ -49,11 +50,11 @@ export const rootStory = function*(initialState: StoryAnim.IEventState) {
 			const update: IStoryRunnerYieldFormat = yield lastMoveOn === moveOnFunc() ?
 				{type: NOP} :
 				storeStoryItem({
-					position: {x: 0, y: moveOn ? 230 : 0, z: 40, scale: moveOn ? 10 : 1.5, rotateX: moveOn ? 55 : 0},
+					position: {rotateX: moveOn ? 55 : 0, scale: moveOn ? 18 : 1}, // {x: moveOn ? -120 : 0, y: moveOn ? 750 : 0, z: 40, scale: moveOn ? 18 : 1.5, rotateX: moveOn ? 55 : 0},
 					...commonProps,
 					visual: {
 						component: "MAP",
-						props: <ITestStoryProps>{propText: "Boo"}
+						props: <IWorldMapProps>{selectedHotspot: moveOn ? 1 : undefined}
 					}
 				})
 			state = update.eventState
