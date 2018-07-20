@@ -1,56 +1,88 @@
 
 import * as React from 'react'
+import { Motion, spring, presets } from 'react-motion';
 import { feature } from "topojson-client"
 import { GeometryCollection } from "topojson-specification";
 import { geoNaturalEarth1, geoPath } from 'd3-geo';
+import { isUndefined } from '../../../storyAnim/utils/lowLevelUtils';
+import { slowSpring, mediumSpring } from '../../../storyAnim/utils/springs';
 
-const worldDataJson = require('../../maps/50m.json')
+const worldDataJson = require('../../maps/110m.json')
 
 const worldData = feature(worldDataJson, worldDataJson.objects.countries as GeometryCollection).features
+
+export interface IWorldMapProps {
+	selectedHotspot?: number
+}
+
+const cityCooridnates: [number, number][] = [
+	[-83.045754, 42.331427], // Detroit
+	[5.628929, 62.3317447], // Fosnavaag
+	[0, 0],
+]
+
+const WorldMapContent: React.StatelessComponent<{projection, currentCity, worldData}> = ({projection, currentCity, worldData}) => [
+	<g className="countries" key="countries">
+		{
+			worldData.map((d, i) => (
+				<path
+					key={`path-${i}`}
+					d={geoPath().projection(projection)(d)}
+					className="country"
+					fill={`rgba(38,50,56,${1 / worldData.length * i})`}
+					stroke="#FFFFFF"
+					strokeWidth={currentCity ? 0.1 : 0.5}
+				/>
+			))
+		}
+	</g>,
+	<g className="markers" key="markers">
+		{cityCooridnates.
+			map(city => ({city, proj: projection(city)})).
+			map(({city, proj}) =>
+			<circle key={proj[0].toString()}
+				cx={proj[0]}
+				cy={proj[1]}
+				r={currentCity ? 2 : 8}
+				fill="#E91E63"
+				className="marker"
+		/>)}
+	</g>
+] as any
 
 /** Renders a map of the world.
  *
  * Inspired by: https://medium.com/@zimrick/how-to-create-pure-react-svg-maps-with-topojson-and-d3-geo-e4a6b6848a98
   */
-export class WorldMap extends React.Component<any, {worldData: typeof worldData}> {
+export class WorldMap extends React.Component<IWorldMapProps, {worldData: typeof worldData}> {
 	constructor(props) {
 		super(props)
 		this.state = {
 			worldData,
 		}
 	}
-	projection() {
-		return geoNaturalEarth1()
-			.scale(100)
+	projection(center?: [number, number]) {
+		const base = geoNaturalEarth1()
 			.translate([0, 0])
+		if (!center)
+			return base
+		// const translate = base(center)
+		return base.center(center) // translate([translate[0], translate[1]])
+// 			.scale(250)
 	}
 	render() {
-		const cityCooridnate: [number, number] = [-83.045754, 42.331427] // Detroit
-		return [
-				<g className="countries" key="countries">
-					{
-						this.state.worldData.map((d, i) => (
-							<path
-								key={`path-${i}`}
-								d={geoPath().projection(this.projection())(d)}
-								className="country"
-								fill={`rgba(38,50,56,${1 / this.state.worldData.length * i})`}
-								stroke="#FFFFFF"
-								strokeWidth={0.5}
-							/>
-						))
-					}
-				</g>,
-				<g className="markers" key="markers">
-					<circle
-						cx={this.projection()(cityCooridnate)[0]}
-						cy={this.projection()(cityCooridnate)[1]}
-						r={8}
-						fill="#E91E63"
-						className="marker"
-					/>
-				</g>
-		]
+		const currentCity = isUndefined(this.props.selectedHotspot) ? null : cityCooridnates[this.props.selectedHotspot]
+		const longLat = currentCity ? {
+			long: mediumSpring(currentCity[0]),
+			lat: mediumSpring(currentCity[1])} :
+			{
+				long: spring(0), lat: spring(0)
+			}
+		return <Motion defaultStyle={{long: 0, lat: 0}} style={longLat}>{
+			anims =>
+				[this.projection([anims.long, anims.lat])].
+				map(projection => <WorldMapContent {...{currentCity, projection, worldData: this.state.worldData}} />)
+				[0]}</Motion>
 	}
 }
 
