@@ -53,7 +53,7 @@ router.use("/invite/:inviteId", async (req, res: express.Response) => {
 	renderMain(req, res, {inviteId: req.params.inviteId})
 })
 
-router.use(/\/(someDefaultRoute|someOtherRoute)?$/, async (req, res: express.Response) => {
+router.use(/\/(scrollTest|someOtherRoute)?$/, async (req, res: express.Response) => {
 	const identity = await handleChatUserCookieSetup(req, res)
 	const jwt = await signJwt("CTF", identity)
 	renderMain(req, res, {jwt})
