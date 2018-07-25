@@ -27,6 +27,7 @@ body {
 			width: 90vw;
 			margin: 0 auto;
 			position: sticky;
+			position: -webkit-sticky;
 			top: 0em;
 			.sliding-content {
 				display: flex;
