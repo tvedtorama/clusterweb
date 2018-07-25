@@ -43,7 +43,7 @@ const getKeyAndOptions = _.memoize(async (): Promise<IKeyData> => {
 			key,
 			algorithm: "RS256",
 		}
-	} catch {
+	} catch (e) {
 	}
 	return {
 		key: secretKey,

@@ -4,7 +4,9 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"test": "mocha --require source-map-support/register $(find build/tests -name '*.js') --watch --reporter landing"
+		"test": "mocha --require source-map-support/register $(find build/tests -name '*.js') --watch --reporter landing",
+		"build": "tsc && webpack",
+		"start": "serverApp=adminGuiServer node index"
 	},
 	"author": "",
 	"license": "ISC",
@@ -60,6 +62,7 @@
 		"style-loader": "^0.21.0",
 		"typescript": "^2.9.2",
 		"webpack": "^4.15.1",
+		"webpack-cli": "^3.1.0",
 		"webpack-dev-middleware": "^3.0.1",
 		"webpack-hot-middleware": "^2.21.2"
 	}
