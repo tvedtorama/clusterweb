@@ -15,17 +15,12 @@ const HalloComp = (props) => <span>You got hallo</span>
 class WebMainRaw extends React.Component<{store: any}> {
 	render() {
 		return <div>
-			
 			<Router>
 				<div>
 					<div className={"paragraph"} style={{display: "flex", flexDirection: "column" }}>
-						<span>This is the <Link to="/hei">Hei Link</Link></span>
-						<span>This is the <Link to="/hei/paaDeg">HeiPaaDeg Link</Link></span>
-						<span>This is the <Link to="/countTest">Count Test</Link></span>
 						<span>This is the <Link to="/scrollTest">Scroll Test</Link></span>
 					</div>
 					<div className={"paragraph"} style={{display: "flex", flexDirection: "column" }}>
-						<span>The Route outputs:</span>
 						<Route exact path="/" component={(p) => <span>Rootish!</span>} />
 						<Route path="/hei" component={HeiComp} />
 						<Route path="/hallo" component={HalloComp} />
