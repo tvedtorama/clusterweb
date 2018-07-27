@@ -39,26 +39,34 @@ export const rootStory = function*(initialState: StoryAnim.IEventState) {
 				}
 			})
 	}
-	const findNextGenerator = (pos: number) => pos < 20 ? init : pos < 30 ? startLoop : pos < 50 ? finalLoop : null
+	const findNextGenerator = (pos: number) => pos < 5 ? init : pos < 20 ? init2 : pos < 30 ? startLoop : pos < 50 ? finalLoop : null
 	const conditionallyFindNextIterator = (eventPack: IStoryRunnerYieldFormat, defaultIterator) => findNextGenerator(eventPack.eventState.pos) || defaultIterator
-	const init = function*(initialState: StoryAnim.IEventState) {
-		let state = initialState
-		let lastMoveOn = 'INIT'
+	const init = function*() {
+		yield storeStoryItem({
+			position: {},
+			...commonProps,
+			visual: {
+				component: "MAP",
+				props: <IWorldMapProps>{}
+			}
+		})
+
 		while (true) {
-			const moveOn = state && state.pos > 3
-			const moveOnFunc = () => moveOn.toString()
-			const update: IStoryRunnerYieldFormat = yield lastMoveOn === moveOnFunc() ?
-				{type: NOP} :
-				storeStoryItem({
-					position: {rotateX: moveOn ? 55 : 0}, // scale: moveOn ? 18 : 1 uncool on safari // {x: moveOn ? -120 : 0, y: moveOn ? 750 : 0, z: 40, scale: moveOn ? 18 : 1.5, rotateX: moveOn ? 55 : 0},
-					...commonProps,
-					visual: {
-						component: "MAP",
-						props: <IWorldMapProps>{selectedHotspot: moveOn ? 1 : undefined}
-					}
-				})
-			state = update.eventState
-			lastMoveOn = moveOnFunc()
+			yield {type: NOP}
+		}
+	}
+	const init2 = function*() {
+		yield storeStoryItem({
+			position: {rotateX: 55, scale: 0.5, x: -300},
+			...commonProps,
+			visual: {
+				component: "MAP",
+				props: <IWorldMapProps>{selectedHotspot: 1}
+			}
+		})
+
+		while (true) {
+			yield {type: NOP}
 		}
 	}
 
@@ -84,15 +92,23 @@ export const childStoryGen = (existRange: [number, number], parentId) =>
 	}
 
 // We got stories now
-// We need to clean up the stories' acts
-// We need a D3 map
+// We need smart coordinates when moving things around
+// We want to show a presentation box with text and bullet points when zooming in on the action points
+//    Move the map somewhat, scale and translate
+//    Show the presentation, which is html (or does it have to be svg?)
+// We might need a reducer to update an item, instead of overwriting
+// We might want to shift to a limited-country high res version when zooming the world map
+//   Simply brute force filter high res countries and use that model when the zoom moves past a given threshold
+//   Animations are smooths when every third country is removed
+// The world map is visiable all the time (?). Should it have its own story? Can we have more than one? Can another story inherit the first?
+//    Do not clean up a storyItem that is also present in a new story, or is there any way around it?
+// ??? We need to figure out when to start new stories.
+//    We need a list of story concepts, then start them when entering their frame.  When they exit - mark them.
+// DONE We need a reducer for the storyItems to create and delete
+// DONE We need to clean up the stories' acts
+// DONE We need a D3 map
 // DONE We need storyRunners
 // POSTPONED / OBSOLETE? We need to test story main loop
 // DONE We need to test story runners
-// We need to figure out when to start new stories.
-//    We need a list of story concepts, then start them when entering their frame.  When they exit - mark them.
-// DONE We need a reducer for the storyItems to create and delete
-// We might need a reducer to update an item, instead of overwriting
-// We can't use svg all the way, becuase it does not support 3d transforms.
-//   Must instead use layered divs, with svgs inside them.  The backgrounds should be spaced.
-
+// DONE We can't use svg all the way, becuase it does not support 3d transforms.
+//     Must instead use layered divs, with svgs inside them.  The backgrounds should be spaced.
