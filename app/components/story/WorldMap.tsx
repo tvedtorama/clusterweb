@@ -1,6 +1,6 @@
 
 import * as React from 'react'
-import { Motion, spring, presets } from 'react-motion';
+import { Motion, spring, presets, OpaqueConfig } from 'react-motion';
 import { feature } from "topojson-client"
 import { GeometryCollection } from "topojson-specification";
 import { geoNaturalEarth1, geoPath } from 'd3-geo';
@@ -21,7 +21,7 @@ const cityCooridnates: [number, number][] = [
 	[0, 0],
 ]
 
-const WorldMapContent: React.StatelessComponent<{projection, currentCity, worldData}> = ({projection, currentCity, worldData}) => [
+const WorldMapContent: React.StatelessComponent<{projection, currentCity, worldData, scale}> = ({projection, currentCity, worldData, scale}) => [
 	<g className="countries" key="countries">
 		{
 			worldData.map((d, i) => (
@@ -43,12 +43,15 @@ const WorldMapContent: React.StatelessComponent<{projection, currentCity, worldD
 			<circle key={proj[0].toString()}
 				cx={proj[0]}
 				cy={proj[1]}
-				r={currentCity ? 2 : 8}
+				r={6}
 				fill="#E91E63"
 				className="marker"
 		/>)}
 	</g>
 ] as any
+
+const animDefaults = {long: 0, lat: 0, scale: 100}
+type IAnimProps = {[index in keyof typeof animDefaults]: OpaqueConfig}
 
 /** Renders a map of the world.
  *
@@ -61,27 +64,29 @@ export class WorldMap extends React.Component<IWorldMapProps, {worldData: typeof
 			worldData,
 		}
 	}
-	projection(center?: [number, number]) {
+	projection(center?: [number, number], scale: number = 100) {
 		const base = geoNaturalEarth1()
 			.translate([0, 0])
 		if (!center)
 			return base
 		// const translate = base(center)
-		return base.center(center) // translate([translate[0], translate[1]])
+		return base.center(center).scale(scale) // translate([translate[0], translate[1]])
 // 			.scale(250)
 	}
 	render() {
 		const currentCity = isUndefined(this.props.selectedHotspot) ? null : cityCooridnates[this.props.selectedHotspot]
-		const longLat = currentCity ? {
+		const animStyles: IAnimProps = currentCity ? {
 			long: mediumSpring(currentCity[0]),
-			lat: mediumSpring(currentCity[1])} :
+			lat: mediumSpring(currentCity[1]),
+			scale: slowSpring(1800),
+		} :
 			{
-				long: spring(0), lat: spring(0)
+				long: spring(0), lat: spring(0), scale: spring(100)
 			}
-		return <Motion defaultStyle={{long: 0, lat: 0}} style={longLat}>{
-			anims =>
-				[this.projection([anims.long, anims.lat])].
-				map(projection => <WorldMapContent {...{currentCity, projection, worldData: this.state.worldData}} />)
+		return <Motion defaultStyle={animDefaults} style={animStyles}>{
+			({long, lat, scale}) =>
+				[this.projection([long, lat], scale)].
+				map(projection => <WorldMapContent {...{currentCity, projection, worldData: this.state.worldData, scale}} />)
 				[0]}</Motion>
 	}
 }

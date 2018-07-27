@@ -50,7 +50,7 @@ export const rootStory = function*(initialState: StoryAnim.IEventState) {
 			const update: IStoryRunnerYieldFormat = yield lastMoveOn === moveOnFunc() ?
 				{type: NOP} :
 				storeStoryItem({
-					position: {rotateX: moveOn ? 55 : 0, scale: moveOn ? 18 : 1}, // {x: moveOn ? -120 : 0, y: moveOn ? 750 : 0, z: 40, scale: moveOn ? 18 : 1.5, rotateX: moveOn ? 55 : 0},
+					position: {rotateX: moveOn ? 55 : 0}, // scale: moveOn ? 18 : 1 uncool on safari // {x: moveOn ? -120 : 0, y: moveOn ? 750 : 0, z: 40, scale: moveOn ? 18 : 1.5, rotateX: moveOn ? 55 : 0},
 					...commonProps,
 					visual: {
 						component: "MAP",
