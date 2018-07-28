@@ -3,6 +3,7 @@ import { Children } from './Children';
 import { connect } from 'react-redux';
 import { IItemFactory, ItemFactoryContext } from './factoryContext';
 import { ROOT_STORY_COMPONENT } from '../storySupport/rootStory';
+import { SLIDE_COMPONENT, Slide } from './Slide';
 
 interface IProps {
 	itemId: string
@@ -13,20 +14,27 @@ interface IMangledProps {
 }
 
 const FactoryItem = (props: {component: string, factory: IItemFactory, props: any}) => {
-	const Component = props.component === ROOT_STORY_COMPONENT ? (props => null) : props.factory.createComponent(props.component)
+	const Component = props.component === ROOT_STORY_COMPONENT ? (props => null) :
+		props.component === SLIDE_COMPONENT ?
+			Slide :
+			props.factory.createComponent(props.component)
 	return <Component {...props.props} />
 }
+
+const DivWrapper = props => <div className="story-anim-div">{props.children}</div>
+const SvgWrapper = props => <svg className="story-anim-svg" viewBox={`-400 -225 800 450`} style={{}}>{props.children}</svg>
 
 class StoryItemRaw extends React.Component<IProps & IMangledProps> {
 	render() {
 		if (!this.props.itemVisual)
 			return <div className="story-item-loading" />
+		const ContainerVisual = this.props.itemVisual.component === SLIDE_COMPONENT ? DivWrapper : SvgWrapper
 		return <div className="story-anim-item" style={{}}>
-			<svg className="story-anim-svg" viewBox={`-400 -225 800 450`} style={{}}>
+			<ContainerVisual>
 				<ItemFactoryContext.Consumer>
 					{factory => <FactoryItem {...this.props.itemVisual} {...{factory}} />}
 				</ItemFactoryContext.Consumer>
-			</svg>
+			</ContainerVisual>
 			<Children itemId={this.props.itemId} />
 		</div>
 	}

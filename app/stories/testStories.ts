@@ -57,11 +57,21 @@ export const rootStory = function*(initialState: StoryAnim.IEventState) {
 	}
 	const init2 = function*() {
 		yield storeStoryItem({
-			position: {rotateX: 55, scale: 0.5, x: -300},
+			position: {rotateX: 50, scale: 0.45, x: -25},
 			...commonProps,
 			visual: {
 				component: "MAP",
 				props: <IWorldMapProps>{selectedHotspot: 1}
+			}
+		})
+		// ATW, this component will not be removed until the main story exists (never).
+		yield storeStoryItem({
+			position: {x: 25, scale: 0.45},
+			...commonProps,
+			id: "SLIDE",
+			visual: {
+				component: "SLIDE",
+				props: <IWorldMapProps>{text: "hei"}
 			}
 		})
 
@@ -93,6 +103,7 @@ export const childStoryGen = (existRange: [number, number], parentId) =>
 
 // We got stories now
 // We need smart coordinates when moving things around
+// Need to use regular stories, with children, not this simple wrap up - as we want things to disappear when not in the story anymore.
 // We want to show a presentation box with text and bullet points when zooming in on the action points
 //    Move the map somewhat, scale and translate
 //    Show the presentation, which is html (or does it have to be svg?)

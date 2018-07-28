@@ -25,13 +25,13 @@ const dimensionDefs: StoryAnimGUI.IStyleDimensionDefs = {
 	translateX: {
 		defaultValue: 0,
 		propOutput: "transform",
-		serialize: tx => `translateX(${tx}px)`,
+		serialize: tx => `translateX(${tx}%)`,
 		srcData: (itemPos: StoryAnimDataSchema.IItemPosition) => itemPos.x,
 	},
 	translateY: {
 		defaultValue: 0,
 		propOutput: "transform",
-		serialize: ty => `translateY(${ty}px)`,
+		serialize: ty => `translateY(${ty}%)`,
 		srcData: (itemPos: StoryAnimDataSchema.IItemPosition) => itemPos.y,
 	},
 	scale: {
