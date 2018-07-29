@@ -43,6 +43,8 @@ describe("storyRunner", () => {
 		const results = await Promise.all([waitForA, waitForB])
 		results[1].should.deep.equal({type: "B", eventState: {pos: 20, frameTime: 1000}, eventData: {type: "SCROLL_POS", pos: 20}})
 	})
+
+	/** A provider that creates children.  The main loop creates two story items then exits, bringing down any children it has created. */
 	const providerWithChildren = (neverExitChildren?: true) => <IStoryRunnerProvider>{
 		id: "abc123",
 		getStory: function*() {
@@ -70,7 +72,6 @@ describe("storyRunner", () => {
 			}
 		},
 	}
-
 
 	it("should run the story with children and dispatch any actions they produce", async () => {
 		const {tester} = startMeUp()
@@ -115,4 +116,30 @@ describe("storyRunner", () => {
 		actions[9].should.have.property("type").equal(DELETE_STORY_ITEM)
 	})
 
+	it("must provide smooth transitions", async () => {
+		const {tester} = startMeUp()
+
+		tester.start(storyRunner, providerWithChildren())
+		tester.dispatch({type: SET_EVENT_DATA, eventData: {type: "SCROLL_POS", pos: 1}})
+		await tester.waitFor(STORE_STORY_ITEM, true)
+		const actions = tester.getCalledActions().filter(x => [STORE_STORY_ITEM, DELETE_STORY_ITEM].indexOf(x.type) > -1)
+		actions.should.have.length(2)
+		actions[0].should.have.property("type").equal(STORE_STORY_ITEM)
+		actions[0].should.have.property("payload").deep.equal({id: "A"})
+		actions[1].should.have.property("type").equal(STORE_STORY_ITEM)
+		actions[1].should.have.property("payload").deep.equal({id: "A1"})
+
+
+		tester.dispatch({type: SET_EVENT_DATA, eventData: {type: "SCROLL_POS", pos: 2}})
+		await tester.waitFor(STORE_STORY_ITEM, true)
+		const actions2 = tester.getCalledActions().filter(x => [STORE_STORY_ITEM, DELETE_STORY_ITEM].indexOf(x.type) > -1)
+		actions2.should.have.length(5)
+		// The children are exiting immediately, hence we should see one delete and one create
+		actions2[2].should.have.property("type").equal(STORE_STORY_ITEM)
+		actions2[2].should.have.property("payload").deep.equal({id: "B"}) // Parent (irrelevant)
+		actions2[3].should.have.property("type").equal(DELETE_STORY_ITEM) // Remove of exiting child's visual
+		actions2[3].should.have.property("payload").deep.equal({id: "A1"})
+		actions2[4].should.have.property("type").equal(STORE_STORY_ITEM) // New child coming up
+		actions2[4].should.have.property("payload").deep.equal({id: "A_abcChild_1"})
+	})
 })
