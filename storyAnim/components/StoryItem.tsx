@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { IItemFactory, ItemFactoryContext } from './factoryContext';
 import { ROOT_STORY_COMPONENT } from '../storySupport/rootStory';
 import { SLIDE_COMPONENT, Slide } from './Slide';
+import { CONTAINER_COMPONENT, Container } from './Container';
 
 interface IProps {
 	itemId: string
@@ -13,11 +14,15 @@ interface IMangledProps {
 	itemVisual: StoryAnimDataSchema.IStoryVisual
 }
 
+const isHtmlComponent = (comp) => [SLIDE_COMPONENT, CONTAINER_COMPONENT].indexOf(comp) > -1 ? true : false
+
 const FactoryItem = (props: {component: string, factory: IItemFactory, props: any}) => {
 	const Component = props.component === ROOT_STORY_COMPONENT ? (props => null) :
 		props.component === SLIDE_COMPONENT ?
 			Slide :
-			props.factory.createComponent(props.component)
+			props.component === CONTAINER_COMPONENT ?
+				Container :
+				props.factory.createComponent(props.component)
 	return <Component {...props.props} />
 }
 
@@ -28,7 +33,7 @@ class StoryItemRaw extends React.Component<IProps & IMangledProps> {
 	render() {
 		if (!this.props.itemVisual)
 			return <div className="story-item-loading" />
-		const ContainerVisual = this.props.itemVisual.component === SLIDE_COMPONENT ? DivWrapper : SvgWrapper
+		const ContainerVisual = isHtmlComponent(this.props.itemVisual.component) ? DivWrapper : SvgWrapper
 		return <div className="story-anim-item" style={{}}>
 			<ContainerVisual>
 				<ItemFactoryContext.Consumer>

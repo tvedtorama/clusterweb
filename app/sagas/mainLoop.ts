@@ -3,28 +3,13 @@ import { storyRunner, IStoryRunnerProvider, IStoryRunnerChildrenStatus } from ".
 import { rootStory, childStoryGen } from "../stories/testStories";
 import { filterChildren } from "../../storyAnim/storySupport/filterChildren";
 import { getRootStory } from "../../storyAnim/storySupport/rootStory";
+import { clusterStorySetup } from "../stories/clusterStories";
 
-const parentId = "ROOT"
+
 
 export const mainLoop = function*() {
-	const storySetup: IStoryRunnerProvider = {
-		id: parentId,
-		getStory: rootStory,
-		getChildrenIterator: function*() {
-			let state: IStoryRunnerChildrenStatus = yield null
-			while (true) {
-				const newStories =
-					filterChildren([
-						state.eventState.pos > 40 && state.eventState.pos < 60 ? <IStoryRunnerProvider>{
-							id: "Bacalao",
-							getStory: childStoryGen([40, 70], parentId),
-							getChildrenIterator: function*() {}
-						} : null
-					], state.running)
-				state = yield newStories
-			}
-		},
-	}
+
+	const storySetup = clusterStorySetup
 
 	const realRootStory = getRootStory(storySetup)
 

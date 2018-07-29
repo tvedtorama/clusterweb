@@ -1,9 +1,10 @@
 import { STORE_STORY_ITEM, storeStoryItem } from "../../storyAnim/actions/storyItem";
 import { NOP } from "../../storyAnim/actions/nop";
 import { storyMainLoop } from "../../storyAnim/storySupport/storyMainLoop";
-import { IStoryRunnerYieldFormat } from "../../storyAnim/storyRunner";
+import { IStoryRunnerYieldFormat, IStoryRunnerProvider, IStoryRunnerChildrenStatus } from "../../storyAnim/storyRunner";
 import { ROOT_STORY_ID } from "../../storyAnim/storySupport/rootStory";
 import { IWorldMapProps } from "../components/story/WorldMap";
+import { filterChildren } from "../../storyAnim/storySupport/filterChildren";
 
 export interface ITestStoryProps {
 	propText: string
@@ -100,6 +101,27 @@ export const childStoryGen = (existRange: [number, number], parentId) =>
 				return
 		}
 	}
+
+const parentId = "ROOT"
+
+export const storySetup: IStoryRunnerProvider = {
+	id: parentId,
+	getStory: rootStory,
+	getChildrenIterator: function*() {
+		let state: IStoryRunnerChildrenStatus = yield null
+		while (true) {
+			const newStories =
+				filterChildren([
+					state.eventState.pos > 40 && state.eventState.pos < 60 ? <IStoryRunnerProvider>{
+						id: "Bacalao",
+						getStory: childStoryGen([40, 70], parentId),
+						getChildrenIterator: function*() {}
+					} : null
+				], state.running)
+			state = yield newStories
+		}
+	},
+}
 
 // We got stories now
 // We need smart coordinates when moving things around
