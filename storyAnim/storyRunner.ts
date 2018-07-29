@@ -1,6 +1,6 @@
 import { take, fork, cancel, put, select, actionChannel } from "redux-saga/effects";
 import { SET_EVENT_DATA } from "./actions/eventData";
-import { Task, Channel, buffers } from "redux-saga";
+import { Task } from "redux-saga";
 import * as Ix from 'ix'
 import { Action } from "redux";
 import { deleteStoryItem, STORE_STORY_ITEM, IStoreStoryItemAction, DELETE_STORY_ITEM } from "./actions/storyItem";
@@ -29,11 +29,11 @@ export interface IStoryRunnerChildrenStatus {
 }
 
 /** Returns something like an action with event data, either from input data or by taking one from redux */
-const produceYieldableEventData = function*(channel: Channel<any>, eventData?: StoryAnim.IEventData) {
+const produceYieldableEventData = function*(eventData?: StoryAnim.IEventData) {
 	if (eventData)
 		yield Promise.resolve(<IEventDataAction>{eventData})
 	while (true) {
-		yield take(channel)
+		yield take(SET_EVENT_DATA)
 	}
 }
 
@@ -71,8 +71,7 @@ export const storyRunner = function*(storyData: IStoryRunnerProvider, eventData?
 	const itemRegistry = itemRegistryInput || new CreatedItemRegistry()
 	const genIterator = getStoryWhenItsTime(storyData)
 	const childIterator = storyData.getChildrenIterator()
-	const channel = yield actionChannel(SET_EVENT_DATA, buffers.expanding())
-	const eventDataGenerator = produceYieldableEventData(channel, eventData)
+	const eventDataGenerator = produceYieldableEventData(eventData)
 	let runningChildren: {[id: string]: Task} = {}
 	for (const iteration of Ix.Iterable.range(0, Number.MAX_SAFE_INTEGER)) {
 		const isFirstIteration = iteration === 0
