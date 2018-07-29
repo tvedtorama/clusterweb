@@ -82,6 +82,7 @@ export const storyRunner = function*(storyData: IStoryRunnerProvider, eventData?
 			eventState,
 		}
 		const newChildren = iterateChildrenLister(childIterator, childrenStatus, isFirstIteration)
+		// Todo: Move filtering of children here, it does not make sense to overwrite an existing story, without first deleting the running one
 		for (const child of newChildren)
 			runningChildren = {
 				...runningChildren,
