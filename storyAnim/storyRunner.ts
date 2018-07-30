@@ -1,6 +1,6 @@
 import { take, fork, cancel, put, select, actionChannel } from "redux-saga/effects";
 import { SET_EVENT_DATA } from "./actions/eventData";
-import { Task } from "redux-saga";
+import { Task, delay } from "redux-saga";
 import * as Ix from 'ix'
 import { Action } from "redux";
 import { deleteStoryItem, STORE_STORY_ITEM, IStoreStoryItemAction, DELETE_STORY_ITEM } from "./actions/storyItem";
@@ -72,6 +72,7 @@ export const storyRunner = function*(storyData: IStoryRunnerProvider, eventData?
 	const genIterator = getStoryWhenItsTime(storyData)
 	const childIterator = storyData.getChildrenIterator()
 	const eventDataGenerator = produceYieldableEventData(eventData)
+	const actionOwners = {owners: [storyData.id]}
 	let runningChildren: {[id: string]: Task} = {}
 	for (const iteration of Ix.Iterable.range(0, Number.MAX_SAFE_INTEGER)) {
 		const isFirstIteration = iteration === 0
@@ -97,18 +98,20 @@ export const storyRunner = function*(storyData: IStoryRunnerProvider, eventData?
 			break
 		}
 		if (isAction(result.value) && result.value.type !== NOP) {
-			// Note: result.value should always be an action, the test is mostly a type guard
-			if (isStoreAction(result.value))
-				itemRegistry.registerSet(result.value.payload.id)
-			else if (isDeleteAction(result.value))
-				itemRegistry.registerDelete(result.value.payload.id)
-			yield put(result.value)
+			// Note: result.value should always be an action, the above test is mostly a type guard
+			let action = result.value
+			if (isStoreAction(action)) {
+				itemRegistry.registerSet(action.payload.id)
+				action = <IStoreStoryItemAction>{...action, payload: {...action.payload, ...actionOwners}}
+			} else if (isDeleteAction(action))
+				itemRegistry.registerDelete(action.payload.id)
+			yield put(action)
 		}
 	}
 
-	// yield delay(0)
+	yield delay(0)
 
 	// Remove any items crated by this story, and any cancelled child stories
 	for (const itemId of itemRegistry.getAllActive())
-		yield put(deleteStoryItem({id: itemId}))
+		yield put(deleteStoryItem({id: itemId, ...actionOwners}))
 }

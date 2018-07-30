@@ -2,6 +2,10 @@ namespace StoryAnimDataSchema {
 	export interface IItemBase {
 		id: string
 	}
+
+	export interface IItemOwners {
+		owners: string[]
+	}
 	
 	export interface IHierarchicalItem {
 		parentId: string
@@ -21,9 +25,9 @@ namespace StoryAnimDataSchema {
 		rotateX: number
 	}>
 	
-	export interface IStoryItem extends IItemBase, Partial<IHierarchicalItem> {
+	export interface IStoryItem extends IItemBase, Partial<IItemOwners>, Partial<IHierarchicalItem> {
 		visual: IStoryVisual
 		position: IItemPosition
-	}	
+	}
 }
 
