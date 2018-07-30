@@ -2,13 +2,13 @@
 
 import * as chai from 'chai'
 import SagaTester from 'redux-saga-tester'
+import { delay } from 'redux-saga';
 import { IStoryRunnerProvider, storyRunner, IStoryRunnerChildrenStatus, IStoryRunnerYieldFormat } from '../../storyAnim/storyRunner';
 import { SET_EVENT_DATA } from '../../storyAnim/actions/eventData';
 import { combineReducers } from 'redux';
 import { storyAppReducers } from '../../storyAnim/reducers';
 import { STORE_STORY_ITEM, DELETE_STORY_ITEM, deleteStoryItem } from '../../storyAnim/actions/storyItem';
 import { NOP } from '../../storyAnim/actions/nop';
-
 
 chai.should()
 
@@ -83,10 +83,10 @@ describe("storyRunner", () => {
 		await tester.waitFor(STORE_STORY_ITEM, true)
 		const actions = tester.getCalledActions().filter(x => x.type === STORE_STORY_ITEM)
 		actions.should.have.length(4)
-		actions[0].should.have.property("payload").deep.equal({id: "A"})
-		actions[1].should.have.property("payload").deep.equal({id: "B"})
-		actions[2].should.have.property("payload").deep.equal({id: "A1"})
-		actions[3].should.have.property("payload").deep.equal({id: "A_abcChild_1"})
+		actions[0].should.have.property("payload").deep.equal({id: "A", owners: ["abc123"]})
+		actions[1].should.have.property("payload").deep.equal({id: "B", owners: ["abc123"]})
+		actions[2].should.have.property("payload").deep.equal({id: "A1", owners: ["abcChild_1"]})
+		actions[3].should.have.property("payload").deep.equal({id: "A_abcChild_1", owners: ["abcChild_2"]})
 	})
 
 	it("should run the story and track the objects created by it and its children", async () => {
@@ -99,7 +99,10 @@ describe("storyRunner", () => {
 		await tester.waitFor(STORE_STORY_ITEM, true)
 		tester.dispatch({type: SET_EVENT_DATA, eventData: {type: "SCROLL_POS", pos: 50}})
 		await tester.waitFor(STORE_STORY_ITEM, true)
+		await delay(0) // Yield back to the sagas
 		tester.dispatch({type: SET_EVENT_DATA, eventData: {type: "SCROLL_POS", pos: 80}})
+		await delay(0) // Yield back to the sagas
+
 
 		// await tester.waitFor(STORE_STORY_ITEM, true)
 		const actions = tester.getCalledActions().filter(x => [STORE_STORY_ITEM, DELETE_STORY_ITEM].indexOf(x.type) > -1)
@@ -117,6 +120,10 @@ describe("storyRunner", () => {
 	})
 
 	it("must provide smooth transitions", async () => {
+		// This test verifies that exiting stories' items are deleted after entering stories' items are added,
+		//  to allow transfer of ownership, without glitches.
+		//  This allows the different stories to create the same item, and have it remain until none are using it.
+
 		const {tester} = startMeUp()
 
 		tester.start(storyRunner, providerWithChildren())
@@ -125,21 +132,21 @@ describe("storyRunner", () => {
 		const actions = tester.getCalledActions().filter(x => [STORE_STORY_ITEM, DELETE_STORY_ITEM].indexOf(x.type) > -1)
 		actions.should.have.length(2)
 		actions[0].should.have.property("type").equal(STORE_STORY_ITEM)
-		actions[0].should.have.property("payload").deep.equal({id: "A"})
+		actions[0].should.have.property("payload").property("id").equal("A")
 		actions[1].should.have.property("type").equal(STORE_STORY_ITEM)
-		actions[1].should.have.property("payload").deep.equal({id: "A1"})
-
+		actions[1].should.have.property("payload").property("id").equal("A1")
 
 		tester.dispatch({type: SET_EVENT_DATA, eventData: {type: "SCROLL_POS", pos: 2}})
 		await tester.waitFor(STORE_STORY_ITEM, true)
+		await delay(0) // Yield back to the sagas
 		const actions2 = tester.getCalledActions().filter(x => [STORE_STORY_ITEM, DELETE_STORY_ITEM].indexOf(x.type) > -1)
 		actions2.should.have.length(5)
 		// The children are exiting immediately, hence we should see one delete and one create
 		actions2[2].should.have.property("type").equal(STORE_STORY_ITEM)
-		actions2[2].should.have.property("payload").deep.equal({id: "B"}) // Parent (irrelevant)
-		actions2[3].should.have.property("type").equal(DELETE_STORY_ITEM) // Remove of exiting child's visual
-		actions2[3].should.have.property("payload").deep.equal({id: "A1"})
-		actions2[4].should.have.property("type").equal(STORE_STORY_ITEM) // New child coming up
-		actions2[4].should.have.property("payload").deep.equal({id: "A_abcChild_1"})
+		actions2[2].should.have.property("payload").deep.equal({id: "B", owners: ["abc123"]}) // Parent (irrelevant)
+		actions2[3].should.have.property("type").equal(STORE_STORY_ITEM) // New child coming up
+		actions2[3].should.have.property("payload").deep.equal({id: "A_abcChild_1", owners: ["abcChild_2"]})
+		actions2[4].should.have.property("type").equal(DELETE_STORY_ITEM) // Remove of exiting child's visual
+		actions2[4].should.have.property("payload").deep.equal({id: "A1", owners: ["abcChild_1"]})
 	})
 })
