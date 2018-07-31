@@ -6,6 +6,7 @@ import { ROOT_STORY_ID } from "../../storyAnim/storySupport/rootStory";
 import { filterChildren } from "../../storyAnim/storySupport/filterChildren";
 import { IWorldMapProps } from "../components/story/WorldMap";
 import { StorySegmentCalculator } from "../../storyAnim/storySupport/StorySegmentCalculator";
+import { StoryComposer } from "../../storyAnim/storySupport/StoryComposer";
 
 export const rootStoryId = "ALMOST_ROOT"
 export const commonProps = {id: rootStoryId, parentId: ROOT_STORY_ID}
@@ -61,15 +62,29 @@ export const slideStory = (existenceCheck: (s: StoryAnim.IEventState) => boolean
 	}
 
 const calc = new StorySegmentCalculator()
-const mapsInitSeg = calc.addSegment(20)
-const mapsNorwaySeg = calc.addSegment(10)
-const slideDeckInitSeg = calc.addSegment(10, 10)
-const slideDeckNorwaySeg = calc.addSegment(10)
+const mangler = new StoryComposer()
+mangler.addStory(calc.addSegment(20), vf => <IStoryRunnerProvider>{
+	id: "MAPS_INIT",
+	getStory: mapFullscreenStory(vf),
+	getChildrenIterator: function*() {}
+})
+mangler.addStory(calc.addSegment(10), vf => <IStoryRunnerProvider>{
+	id: "MAPS_NORWAY",
+	getStory: mapFullscreenStory(vf, 1, {x: -35, scale: 0.40}),
+	getChildrenIterator: function*() {}
+})
+mangler.addStory(calc.addSegment(10, 10), vf => <IStoryRunnerProvider>{
+	id: "SLIDE_DECK_INIT",
+	getStory: slideStory(vf, "The world is full of industrial clusters, ...", {scale: 0.65}),
+	getChildrenIterator: function*() {}
+})
+mangler.addStory(calc.addSegment(10), vf => <IStoryRunnerProvider>{
+	id: "SLIDE_DECK_NORWAY",
+	getStory: slideStory(vf, "Norway is fortunate enough to have an ocean full of fish...", {x: 18, scale: 0.65}),
+	getChildrenIterator: function*() {}
+})
 
-const mapsInitFunc = mapsInitSeg.validFunc()
-const mapsNorwayFunc = mapsNorwaySeg.validFunc()
-const slideDeckInitFunc = slideDeckInitSeg.validFunc()
-const slideDeckNorwayFunc = slideDeckNorwaySeg.validFunc()
+const storySelector = mangler.getStorySelector()
 
 export const clusterStorySetup: IStoryRunnerProvider = {
 	id: rootStoryId,
@@ -78,26 +93,7 @@ export const clusterStorySetup: IStoryRunnerProvider = {
 		let state: IStoryRunnerChildrenStatus = yield null
 		while (true) {
 			const newStories =
-				filterChildren([
-					mapsInitFunc(state.eventState) ? <IStoryRunnerProvider>{
-						id: "MAPS_INIT",
-						getStory: mapFullscreenStory(mapsInitFunc),
-						getChildrenIterator: function*() {}
-					} : mapsNorwayFunc(state.eventState) ? <IStoryRunnerProvider>{
-						id: "MAPS_NORWAY",
-						getStory: mapFullscreenStory(mapsNorwayFunc, 1, {x: -35, scale: 0.40}),
-						getChildrenIterator: function*() {}
-					} : null,
-					slideDeckInitFunc(state.eventState) ? <IStoryRunnerProvider>{
-						id: "SLIDE_DECK_INIT",
-						getStory: slideStory(slideDeckInitFunc, "The world is full of industrial clusters, ...", {scale: 0.65}),
-						getChildrenIterator: function*() {}
-					} : slideDeckNorwayFunc(state.eventState) ? <IStoryRunnerProvider>{
-						id: "SLIDE_DECK_NORWAY",
-						getStory: slideStory(slideDeckNorwayFunc, "Norway is fortunate enough to have an ocean full of fish...", {x: 18, scale: 0.65}),
-						getChildrenIterator: function*() {}
-					} : null,
-				], state.running)
+				filterChildren(storySelector(state.eventState), state.running)
 			state = yield newStories
 		}
 	},
