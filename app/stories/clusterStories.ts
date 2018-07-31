@@ -73,17 +73,17 @@ export const clusterStorySetup: IStoryRunnerProvider = {
 						getChildrenIterator: function*() {}
 					} : state.eventState.pos < 30 ? <IStoryRunnerProvider>{
 						id: "MAPS_NORWAY",
-						getStory: mapFullscreenStory(s => s.pos >= 20 && s.pos < 30, 1, {x: -30, scale: 0.60}),
+						getStory: mapFullscreenStory(s => s.pos >= 20 && s.pos < 30, 1, {x: -35, scale: 0.40}),
 						getChildrenIterator: function*() {}
 					} : null,
 					state.eventState.pos < 10 ? null :
 					state.eventState.pos < 20 ? <IStoryRunnerProvider>{
 						id: "SLIDE_DECK_INIT",
-						getStory: slideStory(s => s.pos >= 10 && s.pos < 20, "Hei", {scale: 0.80}),
+						getStory: slideStory(s => s.pos >= 10 && s.pos < 20, "The world is full of industrial clusters, ...", {scale: 0.65}),
 						getChildrenIterator: function*() {}
 					} : state.eventState.pos < 30 ? <IStoryRunnerProvider>{
 						id: "SLIDE_DECK_NORWAY",
-						getStory: slideStory(s => s.pos >= 20 && s.pos < 30, "Hallo", {x: 18, scale: 0.65}),
+						getStory: slideStory(s => s.pos >= 20 && s.pos < 30, "Norway is fortunate enough to have an ocean full of fish...", {x: 18, scale: 0.65}),
 						getChildrenIterator: function*() {}
 					} : null,
 				], state.running)

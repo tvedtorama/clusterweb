@@ -27,7 +27,7 @@ const FactoryItem = (props: {component: string, factory: IItemFactory, props: an
 }
 
 const DivWrapper = props => <div className="story-anim-div">{props.children}</div>
-const SvgWrapper = props => <svg className="story-anim-svg" viewBox={`-400 -225 800 450`} style={{}}>{props.children}</svg>
+const SvgWrapper = props => <svg className="story-anim-svg" viewBox={`-200 -150 400 300`} style={{}}>{props.children}</svg>
 
 class StoryItemRaw extends React.Component<IProps & IMangledProps> {
 	render() {
