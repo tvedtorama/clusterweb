@@ -13,6 +13,7 @@ const worldData = feature(worldDataJson, worldDataJson.objects.countries as Geom
 
 export interface IWorldMapProps {
 	selectedHotspot?: number
+	closeness?: "CLOSE" | "VERY_CLOSE" | "FAR"
 }
 
 const cityCooridnates: [number, number][] = [
@@ -69,16 +70,15 @@ export class WorldMap extends React.Component<IWorldMapProps, {worldData: typeof
 			.translate([0, 0])
 		if (!center)
 			return base
-		// const translate = base(center)
 		return base.center(center).scale(scale) // translate([translate[0], translate[1]])
-// 			.scale(250)
 	}
 	render() {
 		const currentCity = isUndefined(this.props.selectedHotspot) ? null : cityCooridnates[this.props.selectedHotspot]
 		const animStyles: IAnimProps = currentCity ? {
-			long: mediumSpring(currentCity[0]),
-			lat: mediumSpring(currentCity[1]),
-			scale: slowSpring(1800),
+			long: slowSpring(currentCity[0]),
+			lat: slowSpring(currentCity[1]),
+			scale: slowSpring(this.props.closeness === "VERY_CLOSE" ?
+				3000 : this.props.closeness === "FAR" ? 600 : 1700),
 		} :
 			{
 				long: spring(0), lat: spring(0), scale: spring(100)
