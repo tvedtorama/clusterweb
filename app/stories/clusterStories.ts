@@ -5,6 +5,7 @@ import { CONTAINER_COMPONENT } from "../../storyAnim/components/Container";
 import { ROOT_STORY_ID } from "../../storyAnim/storySupport/rootStory";
 import { filterChildren } from "../../storyAnim/storySupport/filterChildren";
 import { IWorldMapProps } from "../components/story/WorldMap";
+import { StorySegmentCalculator } from "../../storyAnim/storySupport/StorySegmentCalculator";
 
 export const rootStoryId = "ALMOST_ROOT"
 export const commonProps = {id: rootStoryId, parentId: ROOT_STORY_ID}
@@ -59,6 +60,17 @@ export const slideStory = (existenceCheck: (s: StoryAnim.IEventState) => boolean
 		}
 	}
 
+const calc = new StorySegmentCalculator()
+const mapsInitSeg = calc.addSegment(20)
+const mapsNorwaySeg = calc.addSegment(10)
+const slideDeckInitSeg = calc.addSegment(10, 10)
+const slideDeckNorwaySeg = calc.addSegment(10)
+
+const mapsInitFunc = mapsInitSeg.validFunc()
+const mapsNorwayFunc = mapsNorwaySeg.validFunc()
+const slideDeckInitFunc = slideDeckInitSeg.validFunc()
+const slideDeckNorwayFunc = slideDeckNorwaySeg.validFunc()
+
 export const clusterStorySetup: IStoryRunnerProvider = {
 	id: rootStoryId,
 	getStory: clusterStories,
@@ -67,23 +79,22 @@ export const clusterStorySetup: IStoryRunnerProvider = {
 		while (true) {
 			const newStories =
 				filterChildren([
-					state.eventState.pos < 20 ? <IStoryRunnerProvider>{
+					mapsInitFunc(state.eventState) ? <IStoryRunnerProvider>{
 						id: "MAPS_INIT",
-						getStory: mapFullscreenStory(s => s.pos < 20),
+						getStory: mapFullscreenStory(mapsInitFunc),
 						getChildrenIterator: function*() {}
-					} : state.eventState.pos < 30 ? <IStoryRunnerProvider>{
+					} : mapsNorwayFunc(state.eventState) ? <IStoryRunnerProvider>{
 						id: "MAPS_NORWAY",
-						getStory: mapFullscreenStory(s => s.pos >= 20 && s.pos < 30, 1, {x: -35, scale: 0.40}),
+						getStory: mapFullscreenStory(mapsNorwayFunc, 1, {x: -35, scale: 0.40}),
 						getChildrenIterator: function*() {}
 					} : null,
-					state.eventState.pos < 10 ? null :
-					state.eventState.pos < 20 ? <IStoryRunnerProvider>{
+					slideDeckInitFunc(state.eventState) ? <IStoryRunnerProvider>{
 						id: "SLIDE_DECK_INIT",
-						getStory: slideStory(s => s.pos >= 10 && s.pos < 20, "The world is full of industrial clusters, ...", {scale: 0.65}),
+						getStory: slideStory(slideDeckInitFunc, "The world is full of industrial clusters, ...", {scale: 0.65}),
 						getChildrenIterator: function*() {}
-					} : state.eventState.pos < 30 ? <IStoryRunnerProvider>{
+					} : slideDeckNorwayFunc(state.eventState) ? <IStoryRunnerProvider>{
 						id: "SLIDE_DECK_NORWAY",
-						getStory: slideStory(s => s.pos >= 20 && s.pos < 30, "Norway is fortunate enough to have an ocean full of fish...", {x: 18, scale: 0.65}),
+						getStory: slideStory(slideDeckNorwayFunc, "Norway is fortunate enough to have an ocean full of fish...", {x: 18, scale: 0.65}),
 						getChildrenIterator: function*() {}
 					} : null,
 				], state.running)
