@@ -22,6 +22,20 @@ interface IMangledProps {
 }
 
 const dimensionDefs: StoryAnimGUI.IStyleDimensionDefs = {
+	rotateX: {
+		defaultValue: 0,
+		propOutput: "transform",
+		serialize: ang => `rotateX(${ang}deg)`,
+		srcData: (itemPos: StoryAnimDataSchema.IItemPosition) => {
+			return itemPos.rotateX
+		}
+	},
+	scale: {
+		defaultValue: 1,
+		propOutput: "transform",
+		serialize: scale => `scale(${scale})`,
+		srcData: (itemPos: StoryAnimDataSchema.IItemPosition) => itemPos.scale,
+	},
 	translateX: {
 		defaultValue: 0,
 		propOutput: "transform",
@@ -34,21 +48,6 @@ const dimensionDefs: StoryAnimGUI.IStyleDimensionDefs = {
 		serialize: ty => `translateY(${ty}%)`,
 		srcData: (itemPos: StoryAnimDataSchema.IItemPosition) => itemPos.y,
 	},
-	scale: {
-		defaultValue: 1,
-		propOutput: "transform",
-		serialize: scale => `scale(${scale})`,
-		srcData: (itemPos: StoryAnimDataSchema.IItemPosition) => itemPos.scale,
-	},
-	rotateX: {
-		defaultValue: 0,
-		propOutput: "transform",
-		serialize: ang => `rotateX(${ang}deg)`,
-		srcData: (itemPos: StoryAnimDataSchema.IItemPosition) => {
-			return itemPos.rotateX
-		}
-	}
-
 }
 const dimensionKeys = Object.keys(dimensionDefs)
 
