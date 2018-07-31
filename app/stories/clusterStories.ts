@@ -7,6 +7,8 @@ import { filterChildren } from "../../storyAnim/storySupport/filterChildren";
 import { IWorldMapProps } from "../components/story/WorldMap";
 import { StorySegmentCalculator } from "../../storyAnim/storySupport/StorySegmentCalculator";
 import { StoryComposer } from "../../storyAnim/storySupport/StoryComposer";
+import { ISlideKey } from "../components/slides";
+import { ISlideProps } from "../../storyAnim/components/Slide";
 
 export const rootStoryId = "ALMOST_ROOT"
 export const commonProps = {id: rootStoryId, parentId: ROOT_STORY_ID}
@@ -43,7 +45,7 @@ export const mapFullscreenStory = (existenceCheck: (s: StoryAnim.IEventState) =>
 	}
 }
 
-export const slideStory = (existenceCheck: (s: StoryAnim.IEventState) => boolean, slideText: string, position: StoryAnimDataSchema.IItemPosition = {}) =>
+export const slideStory = (existenceCheck: (s: StoryAnim.IEventState) => boolean, slideText: string | {s: ISlideKey}, position: StoryAnimDataSchema.IItemPosition = {}) =>
 	function*(initialState: StoryAnim.IEventState) {
 		console.log(`slide started ${initialState.pos}`)
 		yield storeStoryItem({
@@ -51,7 +53,7 @@ export const slideStory = (existenceCheck: (s: StoryAnim.IEventState) => boolean
 			...commonChildProps("THE_SLIDE"),
 			visual: {
 				component: "SLIDE",
-				props: {text: slideText},
+				props: (typeof slideText === "string" ? <ISlideProps>{text: slideText} : <ISlideProps>{slide: slideText.s}),
 			}
 		})
 		while (true) {
@@ -67,18 +69,20 @@ const fullscreenMapFunc = vf => <IStoryRunnerProvider>{
 	getChildrenIterator: function*() {}
 }
 
+const upcloseMapProps = {x: -95, scale: 0.40, rotateX: 0}
+
 const calc = new StorySegmentCalculator()
 const mangler = new StoryComposer()
 const intermessoLength = 5
 mangler.addStory(calc.addSegment(20), fullscreenMapFunc)
 mangler.addStory(calc.addSegment(10), vf => <IStoryRunnerProvider>{
 	id: "MAPS_NORWAY",
-	getStory: mapFullscreenStory(vf, {selectedHotspot: 1}, {x: -35, scale: 0.40}),
+	getStory: mapFullscreenStory(vf, {selectedHotspot: 1}, upcloseMapProps),
 	getChildrenIterator: function*() {}
 })
 mangler.addStory(calc.addSegment(10), vf => <IStoryRunnerProvider>{
 	id: "MAPS_NORWAY_VERY_CLOSE",
-	getStory: mapFullscreenStory(vf, {selectedHotspot: 1, closeness: "VERY_CLOSE"}, {x: -35, scale: 0.40}),
+	getStory: mapFullscreenStory(vf, {selectedHotspot: 1, closeness: "VERY_CLOSE"}, upcloseMapProps),
 	getChildrenIterator: function*() {}
 })
 mangler.addStory(calc.addSegment(10, 10), vf => <IStoryRunnerProvider>{
@@ -88,12 +92,12 @@ mangler.addStory(calc.addSegment(10, 10), vf => <IStoryRunnerProvider>{
 })
 mangler.addStory(calc.addSegment(10), vf => <IStoryRunnerProvider>{
 	id: "SLIDE_DECK_NORWAY",
-	getStory: slideStory(vf, "Norway is fortunate enough to have an ocean full of fish...", {x: 18, scale: 0.65}),
+	getStory: slideStory(vf, {s: "SLIDE_NORWAY_INTRO"}, {x: 25, scale: 0.65}),
 	getChildrenIterator: function*() {}
 })
 mangler.addStory(calc.addSegment(10), vf => <IStoryRunnerProvider>{
 	id: "SLIDE_DECK_NORWAY_2",
-	getStory: slideStory(vf, "Turns out the ocean is also full of oil...", {x: 18, scale: 0.65}),
+	getStory: slideStory(vf, "Turns out the ocean is also full of oil...", {x: 25, scale: 0.65}),
 	getChildrenIterator: function*() {}
 })
 
@@ -103,17 +107,17 @@ const detroitIntroSegment = calc.addSegment(10)
 const detroitDetailSegment = calc.addSegment(10)
 mangler.addStory(detroitIntroSegment, vf => <IStoryRunnerProvider>{
 	id: "MAPS_DETROIT",
-	getStory: mapFullscreenStory(vf, {selectedHotspot: 0, closeness: "FAR"}, {x: -35, scale: 0.40}),
+	getStory: mapFullscreenStory(vf, {selectedHotspot: 0, closeness: "FAR"}, upcloseMapProps),
 	getChildrenIterator: function*() {}
 })
 mangler.addStory(detroitDetailSegment, vf => <IStoryRunnerProvider>{
 	id: "MAPS_DETROIT_CLOSE",
-	getStory: mapFullscreenStory(vf, {selectedHotspot: 0, closeness: "CLOSE"}, {x: -35, scale: 0.40}),
+	getStory: mapFullscreenStory(vf, {selectedHotspot: 0, closeness: "CLOSE"}, upcloseMapProps),
 	getChildrenIterator: function*() {}
 })
 mangler.addStory(detroitIntroSegment, vf => <IStoryRunnerProvider>{
 	id: "SLIDE_DECK_DETROIT",
-	getStory: slideStory(vf, "The US in the 20'ies was full of car companies...", {x: 18, scale: 0.65}),
+	getStory: slideStory(vf, {s: "SLIDE_DETROIT_INTRO"}, {x: 18, scale: 0.65}),
 	getChildrenIterator: function*() {}
 })
 mangler.addStory(detroitDetailSegment, vf => <IStoryRunnerProvider>{

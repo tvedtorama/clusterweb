@@ -23,7 +23,7 @@ const FactoryItem = (props: {component: string, factory: IItemFactory, props: an
 			props.component === CONTAINER_COMPONENT ?
 				Container :
 				props.factory.createComponent(props.component)
-	return <Component {...props.props} />
+	return <Component {...{...props.props, factory: props.factory}} />
 }
 
 const DivWrapper = props => <div className="story-anim-div">{props.children}</div>
