@@ -36,7 +36,6 @@ class ScrollingContTestRaw extends React.Component {
 				<div className="sliding-container">
 					<ItemFactoryContext.Provider value={factory}>
 						<div className="sliding-content">
-							<span>Hello</span>
 							<StoryItem itemId={"ROOT"} />
 						</div>
 					</ItemFactoryContext.Provider>
