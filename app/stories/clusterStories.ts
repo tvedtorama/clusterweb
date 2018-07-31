@@ -70,6 +70,7 @@ const fullscreenMapFunc = vf => <IStoryRunnerProvider>{
 }
 
 const upcloseMapProps = {x: -95, scale: 0.40, rotateX: 0}
+const slideSideCommonProps = {x: 25, scale: 0.65}
 
 const calc = new StorySegmentCalculator()
 const mangler = new StoryComposer()
@@ -92,12 +93,12 @@ mangler.addStory(calc.addSegment(10, 10), vf => <IStoryRunnerProvider>{
 })
 mangler.addStory(calc.addSegment(10), vf => <IStoryRunnerProvider>{
 	id: "SLIDE_DECK_NORWAY",
-	getStory: slideStory(vf, {s: "SLIDE_NORWAY_INTRO"}, {x: 25, scale: 0.65}),
+	getStory: slideStory(vf, {s: "SLIDE_NORWAY_INTRO"}, slideSideCommonProps),
 	getChildrenIterator: function*() {}
 })
 mangler.addStory(calc.addSegment(10), vf => <IStoryRunnerProvider>{
 	id: "SLIDE_DECK_NORWAY_2",
-	getStory: slideStory(vf, "Turns out the ocean is also full of oil...", {x: 25, scale: 0.65}),
+	getStory: slideStory(vf, "Turns out the ocean is also full of oil...", slideSideCommonProps),
 	getChildrenIterator: function*() {}
 })
 
@@ -117,12 +118,12 @@ mangler.addStory(detroitDetailSegment, vf => <IStoryRunnerProvider>{
 })
 mangler.addStory(detroitIntroSegment, vf => <IStoryRunnerProvider>{
 	id: "SLIDE_DECK_DETROIT",
-	getStory: slideStory(vf, {s: "SLIDE_DETROIT_INTRO"}, {x: 18, scale: 0.65}),
+	getStory: slideStory(vf, {s: "SLIDE_DETROIT_INTRO"}, slideSideCommonProps),
 	getChildrenIterator: function*() {}
 })
 mangler.addStory(detroitDetailSegment, vf => <IStoryRunnerProvider>{
 	id: "SLIDE_DECK_DETROIT_2",
-	getStory: slideStory(vf, "The consolidation created a strong car culture...", {x: 18, scale: 0.65}),
+	getStory: slideStory(vf, "The consolidation created a strong car culture...", slideSideCommonProps),
 	getChildrenIterator: function*() {}
 })
 
