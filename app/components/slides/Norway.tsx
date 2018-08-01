@@ -8,7 +8,7 @@ export class NorwayIntro extends React.Component {
 			<ul key="ul">
 				<li>After WW2, fishing vessels was needed</li>
 				<li>The productive people of Ulsteinvik and Fosnavaag set out to fix this</li>
-				<li>With the fleets came strong ship owners</li>
+				<li>As the business and volumes grew, strong shipping companies developed.</li>
 			</ul>
 		]
 	}
