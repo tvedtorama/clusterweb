@@ -7,7 +7,7 @@ import { animationFrame } from "rxjs/internal/scheduler/animationFrame";
 const getClientHeight = (e: Element) =>
 	e.tagName === "BODY" ? e.parentElement.clientHeight : e.clientHeight
 
-const TIMER_INTERVAL = 1000
+const TIMER_INTERVAL = 500
 
 // TODO: Bring in the start and end position in the scroll percentage.  Should stay at 0% or 100% when the sliding box is not moving.
 // Note: Would really like to use something other than buffer, to preserve the observable nature.  `window` seems to be an option, but I think it will delay the input by a frame.

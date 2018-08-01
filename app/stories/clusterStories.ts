@@ -1,3 +1,4 @@
+import Ix from "ix";
 import { IStoryRunnerProvider, IStoryRunnerChildrenStatus, IStoryRunnerYieldFormat } from "../../storyAnim/storyRunner";
 import { NOP } from "../../storyAnim/actions/nop";
 import { storeStoryItem } from "../../storyAnim/actions/storyItem";
@@ -49,30 +50,35 @@ export const mapStory = (existenceCheck: (s: StoryAnim.IEventState) => boolean, 
 
 export const boatStory = (existenceCheck: (s: StoryAnim.IEventState) => boolean, position: StoryAnimDataSchema.IItemPosition = {}, startPosition?: StoryAnimDataSchema.IItemPosition) =>
 	function*(initialState: StoryAnim.IEventState) {
+		const rotateAngle = Math.random() * 2 - 1;
+		const delay = 500 + Math.random() * 5500
+		const rotatePosition = ({x, y}) => ({x: x * Math.cos(rotateAngle) - y * Math.sin(rotateAngle), y: y * Math.cos(rotateAngle) + x * Math.sin(rotateAngle)})
 		const startTime = initialState.frameTime
 		const boatComp: IImageKey = "HTML_BOAT"
-		const waitLoop = function*(startTime: number = -1) {
+		const waitLoop = function*(startTime: number = -1, exitTime = -1) {
 			while (true) {
 				const state: IStoryRunnerYieldFormat = yield {type: NOP}
 				if (!existenceCheck(state.eventState))
 					return false
-				if (startTime > 0 && state.eventState.frameTime - startTime > 4500)
+				if (startTime > 0 && state.eventState.frameTime - startTime > delay)
 					return existenceCheck((<IStoryRunnerYieldFormat>(yield storeStoryItem({
-						position,
+						position: {...position, ...rotatePosition({x: position.x || 0, y: position.y || 0})},
 						startPosition,
-						...commonChildProps("THE_BOAT"),
+						id: `THE_BOAT_${rotateAngle}`,
 						parentId: "THE_MAP",
 						visual: {
 							component: boatComp,
 							props: {}
 						}
 					}))).eventState)
+				if (exitTime > 0 && state.eventState.frameTime - exitTime > delay)
+					return false
 			}
 		}
 
-		// First wait for item to be added, then just wait for expiery
+		// First wait for item to be added, then wait for timeout
 		if (yield* waitLoop(startTime))
-			yield* waitLoop()
+			yield* waitLoop(undefined, startTime + delay + 2000)
 	}
 
 export const slideStory = (existenceCheck: (s: StoryAnim.IEventState) => boolean, slideText: string | {s: ISlideKey}, position: StoryAnimDataSchema.IItemPosition = {}) =>
@@ -117,11 +123,13 @@ mangler.addStory(calc.addSegment(10), vf => <IStoryRunnerProvider>{
 	getStory: mapStory(vf, {selectedHotspot: 1, closeness: "VERY_CLOSE"}, upcloseMapProps),
 	getChildrenIterator: function*() {}
 })
-mangler.addStory(norwayFirstStepSegment, vf => <IStoryRunnerProvider>{
-	id: "BOAT_TEST",
-	getStory: boatStory(vf, {x: -100, y: -100, scale: 0.2}, {x: -10, y: -10, scale: 0.3}),
-	getChildrenIterator: function*() {}
-})
+// Create boat animations - these time out and are recreated.  The stories have an inherent rotation and delay.
+for (const i of Ix.Iterable.range(0, 5))
+	mangler.addStory(norwayFirstStepSegment, vf => <IStoryRunnerProvider>{
+		id: `BOAT_ANIMATION_${i}`,
+		getStory: boatStory(vf, {x: -100, y: -100, scale: 0.2}, {x: -10, y: -10, scale: 0.2}),
+		getChildrenIterator: function*() {}
+	})
 
 mangler.addStory(calc.addSegment(10, 10), vf => <IStoryRunnerProvider>{
 	id: "SLIDE_DECK_INIT",
