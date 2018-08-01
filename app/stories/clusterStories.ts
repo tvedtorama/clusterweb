@@ -9,6 +9,7 @@ import { StorySegmentCalculator } from "../../storyAnim/storySupport/StorySegmen
 import { StoryComposer } from "../../storyAnim/storySupport/StoryComposer";
 import { ISlideKey } from "../components/slides";
 import { ISlideProps } from "../../storyAnim/components/Slide";
+import { IImageKey } from "../components/images";
 
 export const rootStoryId = "ALMOST_ROOT"
 export const commonProps = {id: rootStoryId, parentId: ROOT_STORY_ID}
@@ -45,9 +46,27 @@ export const mapFullscreenStory = (existenceCheck: (s: StoryAnim.IEventState) =>
 	}
 }
 
+export const boatStory = (existenceCheck: (s: StoryAnim.IEventState) => boolean, position: StoryAnimDataSchema.IItemPosition = {}) =>
+	function*() {
+		const boatComp: IImageKey = "HTML_BOAT"
+		yield storeStoryItem({
+			position,
+			...commonChildProps("THE_BOAT"),
+			parentId: "THE_MAP",
+			visual: {
+				component: boatComp,
+				props: {}
+			}
+		})
+		while (true) {
+			const state: IStoryRunnerYieldFormat = yield {type: NOP}
+			if (!existenceCheck(state.eventState))
+				return
+		}
+	}
+
 export const slideStory = (existenceCheck: (s: StoryAnim.IEventState) => boolean, slideText: string | {s: ISlideKey}, position: StoryAnimDataSchema.IItemPosition = {}) =>
-	function*(initialState: StoryAnim.IEventState) {
-		console.log(`slide started ${initialState.pos}`)
+	function*() {
 		yield storeStoryItem({
 			position,
 			...commonChildProps("THE_SLIDE"),
@@ -86,6 +105,12 @@ mangler.addStory(calc.addSegment(10), vf => <IStoryRunnerProvider>{
 	getStory: mapFullscreenStory(vf, {selectedHotspot: 1, closeness: "VERY_CLOSE"}, upcloseMapProps),
 	getChildrenIterator: function*() {}
 })
+mangler.addStory(calc.addSegment(10, 30), vf => <IStoryRunnerProvider>{
+	id: "BOAT_TEST",
+	getStory: boatStory(vf, {x: -50, y: -40, scale: 0.3}),
+	getChildrenIterator: function*() {}
+})
+
 mangler.addStory(calc.addSegment(10, 10), vf => <IStoryRunnerProvider>{
 	id: "SLIDE_DECK_INIT",
 	getStory: slideStory(vf, "The world is full of industrial clusters, ...", {scale: 0.65}),

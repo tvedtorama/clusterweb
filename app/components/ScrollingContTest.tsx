@@ -2,7 +2,8 @@ import * as React from 'react'
 import { StoryItem } from '../../storyAnim/components/StoryItem';
 import { ItemFactoryContext, IItemFactory } from '../../storyAnim/components/factoryContext';
 import { TestItemViz } from './TestItemVis';
-import { slideMap } from './slides';
+import { slideComponentMap } from './slides';
+import { imageComponentMap } from './images';
 
 // Why isn't this part of Typescript? Example fetched from documentation.
 type Unpacked<T> =
@@ -20,9 +21,10 @@ loadWorldMap.then(x => WorldMap = x.WorldMap)
 /** Sample factory, should be extended to return the visual components needed in the visualization */
 const factory: IItemFactory = {
 	createComponent: (component) => component === "MAP" ?
-		WorldMap :
-		component in slideMap ? slideMap[component] :
-		TestItemViz
+			WorldMap :
+		component in slideComponentMap ? slideComponentMap[component] :
+		component in imageComponentMap ? imageComponentMap[component] :
+			TestItemViz
 }
 
 class ScrollingContTestRaw extends React.Component {

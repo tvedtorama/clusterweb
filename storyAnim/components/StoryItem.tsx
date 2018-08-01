@@ -14,7 +14,8 @@ interface IMangledProps {
 	itemVisual: StoryAnimDataSchema.IStoryVisual
 }
 
-const isHtmlComponent = (comp) => [SLIDE_COMPONENT, CONTAINER_COMPONENT].indexOf(comp) > -1 ? true : false
+const isHtmlComponent = (comp) => [SLIDE_COMPONENT, CONTAINER_COMPONENT].indexOf(comp) > -1 ? true :
+	comp.indexOf("HTML_") === 0 ? true : false
 
 const FactoryItem = (props: {component: string, factory: IItemFactory, props: any}) => {
 	const Component = props.component === ROOT_STORY_COMPONENT ? (props => null) :

@@ -25,13 +25,18 @@ module.exports = {
         }
     },
 	rules: [{
-		test: /\.tsx?$/,
-		use: 'awesome-typescript-loader?configFileName=tsconfig_webpack.json&silent=true',
+			test: /\.tsx?$/,
+			use: 'awesome-typescript-loader?configFileName=tsconfig_webpack.json&silent=true',
 	  },
 	  {
-		// It would be nice to extract the styles (using the extract text plugin), but that would loose hot module replacement
-		test: /\.s?css$/,
-		use: ["style-loader", "css-loader", "sass-loader"]
+			// It would be nice to extract the styles (using the extract text plugin), but that would loose hot module replacement
+			test: /\.s?css$/,
+			use: ["style-loader", "css-loader", "sass-loader"]
+		},
+		{
+			// It would be nice to extract the styles (using the extract text plugin), but that would loose hot module replacement
+			test: /\.svg$/,
+			use: ["react-svg-loader"]
 	  },
 	]
 }
