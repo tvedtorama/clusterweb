@@ -14,6 +14,7 @@ interface IProps {
 
 interface IChildData {
 	itemId: string
+	itemStartPosition?: StoryAnimDataSchema.IItemPosition
 	itemPosition: StoryAnimDataSchema.IItemPosition
 }
 
@@ -53,16 +54,24 @@ const dimensionKeys = Object.keys(dimensionDefs)
 
 const buildStyles = createBuildStyles(dimensionDefs)
 
+const findValuesWidthDefault = (itemPosition: StoryAnimDataSchema.IItemPosition) =>
+	dimensionKeys.map(key => ({key, value: dimensionDefs[key].srcData(itemPosition)})).
+	map(({key, value}) => ({key, value: isUndefined(value) ? dimensionDefs[key].defaultValue : value}))
+
+
 const buildAnimationStyles = (item: IChildData) =>
-	dimensionKeys.map(key => ({key, value: dimensionDefs[key].srcData(item.itemPosition)})).
-	map(({key, value}) => ({key, value: isUndefined(value) ? dimensionDefs[key].defaultValue : value})).
+	findValuesWidthDefault(item.itemPosition).
 	reduce((x, {key, value}) => ({...x, [key]: slowSpring(value)}), {})
+
+const buildDefaultStyles = (item: IChildData) =>
+	findValuesWidthDefault(item.itemStartPosition || {}).
+	reduce((x, {key, value}) => ({...x, [key]: value}), {})
 
 class ChildrenRaw extends React.Component<IProps & IMangledProps> {
 	render() {
 		return this.props.itemChildren.map(item =>
 			<Motion key={item.itemId}
-				defaultStyle={dimensionKeys.reduce((x, key) => ({...x, [key]: dimensionDefs[key].defaultValue}), {})}
+				defaultStyle={buildDefaultStyles(item)}
 				style={buildAnimationStyles(item)}>
 				{
 					animState => {
@@ -76,5 +85,9 @@ class ChildrenRaw extends React.Component<IProps & IMangledProps> {
 }
 
 export const Children = connect((s: StoryAnimState.IState, p: IProps) => ({
-	itemChildren: s.items.filter(x => x.parentId === p.itemId).map(x => ({itemId: x.id, itemPosition: x.position}))
+	itemChildren: s.items.filter(x => x.parentId === p.itemId).map(x => ({
+		itemId: x.id,
+		itemPosition: x.position,
+		itemStartPosition: x.startPosition,
+	} as IChildData))
 } as IMangledProps))(ChildrenRaw)

@@ -29,10 +29,11 @@ export const clusterStories = function*(initialState: StoryAnim.IEventState) {
 		yield {type: NOP}
 }
 
-export const mapFullscreenStory = (existenceCheck: (s: StoryAnim.IEventState) => boolean, wmp?: IWorldMapProps, position: StoryAnimDataSchema.IItemPosition = {}) =>
+export const mapStory = (existenceCheck: (s: StoryAnim.IEventState) => boolean, wmp?: IWorldMapProps, position: StoryAnimDataSchema.IItemPosition = {}) =>
 	function*(initialState: StoryAnim.IEventState) {
 	yield storeStoryItem({
 		position,
+		startPosition: position,
 		...commonChildProps("THE_MAP"),
 		visual: {
 			component: "MAP",
@@ -46,7 +47,7 @@ export const mapFullscreenStory = (existenceCheck: (s: StoryAnim.IEventState) =>
 	}
 }
 
-export const boatStory = (existenceCheck: (s: StoryAnim.IEventState) => boolean, position: StoryAnimDataSchema.IItemPosition = {}) =>
+export const boatStory = (existenceCheck: (s: StoryAnim.IEventState) => boolean, position: StoryAnimDataSchema.IItemPosition = {}, startPosition?: StoryAnimDataSchema.IItemPosition) =>
 	function*(initialState: StoryAnim.IEventState) {
 		const startTime = initialState.frameTime
 		const boatComp: IImageKey = "HTML_BOAT"
@@ -55,9 +56,10 @@ export const boatStory = (existenceCheck: (s: StoryAnim.IEventState) => boolean,
 				const state: IStoryRunnerYieldFormat = yield {type: NOP}
 				if (!existenceCheck(state.eventState))
 					return false
-				if (startTime > 0 && state.eventState.frameTime - startTime > 1000)
+				if (startTime > 0 && state.eventState.frameTime - startTime > 4500)
 					return existenceCheck((<IStoryRunnerYieldFormat>(yield storeStoryItem({
 						position,
+						startPosition,
 						...commonChildProps("THE_BOAT"),
 						parentId: "THE_MAP",
 						visual: {
@@ -77,6 +79,7 @@ export const slideStory = (existenceCheck: (s: StoryAnim.IEventState) => boolean
 	function*() {
 		yield storeStoryItem({
 			position,
+			startPosition: position,
 			...commonChildProps("THE_SLIDE"),
 			visual: {
 				component: "SLIDE",
@@ -92,7 +95,7 @@ export const slideStory = (existenceCheck: (s: StoryAnim.IEventState) => boolean
 
 const fullscreenMapFunc = vf => <IStoryRunnerProvider>{
 	id: "MAPS_INIT",
-	getStory: mapFullscreenStory(vf),
+	getStory: mapStory(vf),
 	getChildrenIterator: function*() {}
 }
 
@@ -103,19 +106,20 @@ const calc = new StorySegmentCalculator()
 const mangler = new StoryComposer()
 const intermessoLength = 5
 mangler.addStory(calc.addSegment(20), fullscreenMapFunc)
-mangler.addStory(calc.addSegment(10), vf => <IStoryRunnerProvider>{
+const norwayFirstStepSegment = calc.addSegment(10)
+mangler.addStory(norwayFirstStepSegment, vf => <IStoryRunnerProvider>{
 	id: "MAPS_NORWAY",
-	getStory: mapFullscreenStory(vf, {selectedHotspot: 1}, upcloseMapProps),
+	getStory: mapStory(vf, {selectedHotspot: 1}, upcloseMapProps),
 	getChildrenIterator: function*() {}
 })
 mangler.addStory(calc.addSegment(10), vf => <IStoryRunnerProvider>{
 	id: "MAPS_NORWAY_VERY_CLOSE",
-	getStory: mapFullscreenStory(vf, {selectedHotspot: 1, closeness: "VERY_CLOSE"}, upcloseMapProps),
+	getStory: mapStory(vf, {selectedHotspot: 1, closeness: "VERY_CLOSE"}, upcloseMapProps),
 	getChildrenIterator: function*() {}
 })
-mangler.addStory(calc.addSegment(10, 30), vf => <IStoryRunnerProvider>{
+mangler.addStory(norwayFirstStepSegment, vf => <IStoryRunnerProvider>{
 	id: "BOAT_TEST",
-	getStory: boatStory(vf, {x: -50, y: -40, scale: 0.3}),
+	getStory: boatStory(vf, {x: -100, y: -100, scale: 0.2}, {x: -10, y: -10, scale: 0.3}),
 	getChildrenIterator: function*() {}
 })
 
@@ -141,12 +145,12 @@ const detroitIntroSegment = calc.addSegment(10)
 const detroitDetailSegment = calc.addSegment(10)
 mangler.addStory(detroitIntroSegment, vf => <IStoryRunnerProvider>{
 	id: "MAPS_DETROIT",
-	getStory: mapFullscreenStory(vf, {selectedHotspot: 0, closeness: "FAR"}, upcloseMapProps),
+	getStory: mapStory(vf, {selectedHotspot: 0, closeness: "FAR"}, upcloseMapProps),
 	getChildrenIterator: function*() {}
 })
 mangler.addStory(detroitDetailSegment, vf => <IStoryRunnerProvider>{
 	id: "MAPS_DETROIT_CLOSE",
-	getStory: mapFullscreenStory(vf, {selectedHotspot: 0, closeness: "CLOSE"}, upcloseMapProps),
+	getStory: mapStory(vf, {selectedHotspot: 0, closeness: "CLOSE"}, upcloseMapProps),
 	getChildrenIterator: function*() {}
 })
 mangler.addStory(detroitIntroSegment, vf => <IStoryRunnerProvider>{
