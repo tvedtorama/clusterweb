@@ -66,7 +66,14 @@ const isAction = (a: Partial<Action>): a is Action => a && a.type ? true : false
 const isStoreAction = (a: Action): a is IStoreStoryItemAction => a.type === STORE_STORY_ITEM
 const isDeleteAction = (a: Action): a is IStoreStoryItemAction => a.type === DELETE_STORY_ITEM
 
-/** Runs a story and its children. `put`s any actions it dispatches. */
+/** Runs a story and its children. `put`s any actions it dispatches.
+ *
+ * Issues:
+ *  * Stories have to filter children, move to storyRunner
+ *  * It's cumbersome to track state with the object yields (maybe two different yields, one for fetching state (wait) and one for adding objects?)
+ *  * Stories must keep track of their running time
+ *
+*/
 export const storyRunner = function*(storyData: IStoryRunnerProvider, eventData?: StoryAnim.IEventData, itemRegistryInput?: CreatedItemRegistry) {
 	const itemRegistry = itemRegistryInput || new CreatedItemRegistry()
 	const genIterator = getStoryWhenItsTime(storyData)
