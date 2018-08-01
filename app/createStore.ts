@@ -6,11 +6,11 @@ import {actionCreators} from './utils/devToolsActionCreators'
 
 import {mainLoop} from './sagas/mainLoop'
 import { countEpic } from './components/CountTest';
-import { scrollPosEpic } from './epics/scrollPos';
+import { createEventsEpic } from './epics/events';
 
 export const rootEpic = combineEpics(
 	countEpic,
-	scrollPosEpic,
+	createEventsEpic(() => +(new Date())),
 );
 
 export function createStore(loginFlow: boolean): Store<State.IState> {

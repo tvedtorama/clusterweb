@@ -47,22 +47,30 @@ export const mapFullscreenStory = (existenceCheck: (s: StoryAnim.IEventState) =>
 }
 
 export const boatStory = (existenceCheck: (s: StoryAnim.IEventState) => boolean, position: StoryAnimDataSchema.IItemPosition = {}) =>
-	function*() {
+	function*(initialState: StoryAnim.IEventState) {
+		const startTime = initialState.frameTime
 		const boatComp: IImageKey = "HTML_BOAT"
-		yield storeStoryItem({
-			position,
-			...commonChildProps("THE_BOAT"),
-			parentId: "THE_MAP",
-			visual: {
-				component: boatComp,
-				props: {}
+		const waitLoop = function*(startTime: number = -1) {
+			while (true) {
+				const state: IStoryRunnerYieldFormat = yield {type: NOP}
+				if (!existenceCheck(state.eventState))
+					return false
+				if (startTime > 0 && state.eventState.frameTime - startTime > 1000)
+					return existenceCheck((<IStoryRunnerYieldFormat>(yield storeStoryItem({
+						position,
+						...commonChildProps("THE_BOAT"),
+						parentId: "THE_MAP",
+						visual: {
+							component: boatComp,
+							props: {}
+						}
+					}))).eventState)
 			}
-		})
-		while (true) {
-			const state: IStoryRunnerYieldFormat = yield {type: NOP}
-			if (!existenceCheck(state.eventState))
-				return
 		}
+
+		// First wait for item to be added, then just wait for expiery
+		if (yield* waitLoop(startTime))
+			yield* waitLoop()
 	}
 
 export const slideStory = (existenceCheck: (s: StoryAnim.IEventState) => boolean, slideText: string | {s: ISlideKey}, position: StoryAnimDataSchema.IItemPosition = {}) =>
