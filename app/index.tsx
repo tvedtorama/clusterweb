@@ -19,5 +19,10 @@ if (module.hot) {
 		const NextApp = require("./components/WebMain").WebMain;
 		render(store, NextApp)
 	})
+	module.hot.accept('./createStore.ts', () => {
+		// This stupidness is needed to allow tsx modules to reload when first referenced by stories
+		console.warn('Store and stories reload not implemented')
+	})
+
 	// module.hot.accept() This could also work, but not as well...
 }
