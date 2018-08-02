@@ -24,6 +24,7 @@ export const PROGRESS_INDICATOR = "PROGRESS_INDICATOR"
 
 const circRad = 100
 const borderExtra = 1.25
+const interestWidth = 15
 
 const getScaleTranslate = (scale) =>
 	[{x: -svgCoords.x - circRad * scale * borderExtra, y: svgCoords.y + circRad * scale * borderExtra}].
@@ -32,7 +33,7 @@ const getScaleTranslate = (scale) =>
 
 interface IMangledProps {
 	pos: number
-	// interestPoints: number[]
+	interestPoints: number[]
 }
 
 /** Shows how far the user is in the full story, with interest points along the way.
@@ -40,7 +41,7 @@ interface IMangledProps {
  * Inspired by: https://codepen.io/icebob/pen/JYoQZg */
 export class ProgressIndicatorRaw extends React.Component<IMangledProps> {
 	render() {
-		const scale = 0.50
+		const scale = 1
 		return [
 			<defs key="defs">
 					<pattern id="dotPattern"
@@ -74,7 +75,21 @@ export class ProgressIndicatorRaw extends React.Component<IMangledProps> {
 					<g className="process-indicator" transform={getScaleTranslate(scale)} >
 						<circle cx="0" cy="0" r={circRad * borderExtra} fill="url(#backHoleBelowClock)"/>
 
-						<circle className="clockCircle hour" cx="0" cy="0" r={circRad} strokeWidth="6" />
+						<g className="process-circle-and-interest-points">
+							<circle className="clockCircle" cx="0" cy="0" r={circRad} strokeWidth="6" />
+							{
+								this.props.interestPoints.map((p, i) =>
+									[polarToCartesian(0, 0, circRad, p * 3.6)].
+										map(({x, y}) => ({o: {x, y}, r: {x: x - interestWidth / 2, y: y - interestWidth / 2.25, width: interestWidth, height: interestWidth / 1.12}})).
+										map(cr =>
+										<g key={i}>
+											<rect className="clocCircle interest" {...cr.r} rx={interestWidth / 10} ry={interestWidth / 12} />
+											<text className="caption interest" {...cr.o} dominantBaseline={"central"} textAnchor={"middle"}>i</text>
+										</g>
+									)[0]
+								)
+							}
+						</g>
 						<path className="clockArc hour" strokeWidth="6" strokeLinecap="round"  filter="url(#glow)" d={describeArc(0, 0, circRad, 0, end)} />
 						<circle className="clockDot hour" r="8" filter="url(#glow)" cx={polarToCartesian(0, 0, circRad, end).x} cy={polarToCartesian(0, 0, circRad, end).y} />
 					</g>
@@ -85,5 +100,6 @@ export class ProgressIndicatorRaw extends React.Component<IMangledProps> {
 }
 
 export const ProgressIndicator = connect((state: StoryAnimState.IState) => ({
-	pos: state.eventState.pos
+	pos: state.eventState.pos,
+	interestPoints: [10, 20, 30, 40, 90]
 } as IMangledProps))(ProgressIndicatorRaw)
