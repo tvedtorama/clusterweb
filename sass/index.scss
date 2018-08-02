@@ -101,11 +101,24 @@ body {
 					}
 				}
 
-				.process-indicator {					
+				.process-indicator {
+					.process-background {
+						opacity: 0;
+						transition: opacity 1s;
+					}
+					&.hot {
+						.process-background {
+							opacity: 1;
+						}
+					}
 					.clockCircle {
 						fill: none;
 						stroke: $progressGreyColor;
 					}
+					.clockCircle.interest {
+						fill: $progressGreyColor;
+					}
+
 					
 					.clockArc {
 						fill: none;
@@ -120,12 +133,14 @@ body {
 						font-family: $progressFontCaptions;
 						font-weight: 300;
 						fill: $progressTextColor;
+						font-size: 40px;
 					}
 					.caption.interest {
-						font-size: 10px;
+						font-size: 15px;
 						text-align: center;
-						font-weight: 600;
+						font-weight: 500;
 						stroke: $progressMainColor;
+						fill: $progressMainColor;
 					}
 				}
 

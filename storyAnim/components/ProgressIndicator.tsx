@@ -42,9 +42,35 @@ interface IMangledProps {
 /** Shows how far the user is in the full story, with interest points along the way.
  *
  * Inspired by: https://codepen.io/icebob/pen/JYoQZg */
-export class ProgressIndicatorRaw extends React.Component<IProgressIndicatorProps & IMangledProps> {
+export class ProgressIndicatorRaw extends React.Component<IProgressIndicatorProps & IMangledProps, {hot?: boolean}> {
+	hotTimer = null
+	constructor(props) {
+		super(props)
+		this.state = {}
+	}
+
+	setNewTimer(t) {
+		if (this.hotTimer) {
+			clearTimeout(this.hotTimer)
+		}
+		this.hotTimer = t
+	}
+
+	componentWillReceiveProps(props: IMangledProps) {
+		if (props.pos !== this.props.pos) {
+			this.setState({hot: true})
+			this.setNewTimer(setTimeout(() => this.setState({hot: false}), 2000))
+		}
+	}
+
+	componentWillUnmount() {
+		this.setNewTimer(null)
+	}
+
+
 	render() {
-		const scale = 1
+		const scale = this.state.hot ? 0.4 : 0.2;
+		const {interestPoints} = this.props
 		return [
 			<defs key="defs">
 					<pattern id="dotPattern"
@@ -75,25 +101,28 @@ export class ProgressIndicatorRaw extends React.Component<IProgressIndicatorProp
 				</defs>,
 			<Motion key="g" defaultStyle={{end: 0, scale: 0.5}} style={{end: spring(this.props.pos * 3.6), scale: spring(scale)}}>
 				{({scale, end}) => // can put this on g: style={{opacity: scale}}
-					<g className="process-indicator" transform={getScaleTranslate(scale)} >
+					<g className={`process-indicator ${this.state.hot ? "hot" : ""}`} transform={getScaleTranslate(scale)} >
 						<circle cx="0" cy="0" r={circRad * borderExtra} fill="url(#backHoleBelowClock)"/>
+						<g className="process-background">
+							<text className="caption" dominantBaseline={"central"} textAnchor={"middle"}>{`${interestPoints.filter(p => p <= this.props.pos).length} / ${interestPoints.length}`}</text>
+						</g>
 
 						<g className="process-circle-and-interest-points">
 							<circle className="clockCircle" cx="0" cy="0" r={circRad} strokeWidth="6" />
 							{
-								this.props.interestPoints.map((p, i) =>
+								interestPoints.map((p, i) =>
 									[polarToCartesian(0, 0, circRad, p * 3.6)].
 										map(({x, y}) => ({o: {x, y}, r: {x: x - interestWidth / 2, y: y - interestWidth / 2.25, width: interestWidth, height: interestWidth / 1.12}})).
 										map(cr =>
 										<g key={i}>
-											<rect className="clocCircle interest" {...cr.r} rx={interestWidth / 10} ry={interestWidth / 12} />
+											<rect className="clockCircle interest" {...cr.r} rx={interestWidth / 10} ry={interestWidth / 12} />
 											<text className="caption interest" {...cr.o} dominantBaseline={"central"} textAnchor={"middle"}>i</text>
 										</g>
 									)[0]
 								)
 							}
 						</g>
-						<path className="clockArc hour" strokeWidth="6" strokeLinecap="round"  filter="url(#glow)" d={describeArc(0, 0, circRad, 0, end)} />
+						<path className="clockArc hour" strokeWidth="6" strokeLinecap="round" filter="url(#glow)" d={describeArc(0, 0, circRad, 0, end)} />
 						<circle className="clockDot hour" r="8" filter="url(#glow)" cx={polarToCartesian(0, 0, circRad, end).x} cy={polarToCartesian(0, 0, circRad, end).y} />
 					</g>
 				}

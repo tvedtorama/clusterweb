@@ -192,9 +192,12 @@ mangler.addStory(detroitDetailSegment, vf => <IStoryRunnerProvider>{
 	getChildrenIterator: function*() {}
 })
 
+// Add the progress indicator, for this to work all segments must be added to the calculator.
 mangler.addStory(calc.addSegment(-1, 0), vf => <IStoryRunnerProvider>{
 	id: "PROGRESS_INDICATOR",
-	getStory: progressIndicator(mangler.getInterestPoints().map(x => x.startPos), {x: 0, y: 0, scale: 1}),
+	getStory: progressIndicator(mangler.getSegmentMetas().
+					map(x => x.startPos).
+					reduce((x, y) => x.find(z => z === y) ? x : [...x, y], []), {x: 0, y: 0, scale: 1}),
 	getChildrenIterator: function*() {}
 })
 

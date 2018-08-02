@@ -21,7 +21,7 @@ export class StoryComposer<
 	}
 
 	/** Returns the meta data for the start of all segments */
-	getInterestPoints() {
+	getSegmentMetas() {
 		return this.segDefs.map(x => x.segment.meta())
 	}
 }
