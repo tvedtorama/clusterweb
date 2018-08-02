@@ -2,6 +2,13 @@
 
 $break-small : 1000px; 
 
+$progressMainColor: #1bbccb; // Blue
+
+$progressGreyColor: #000000aa;
+$progressTextColor: White;
+
+$progressFontCaptions: "Source Sans Pro";
+
 body {
 	font-family: "Open Sans";
 	margin: 0px;
@@ -75,6 +82,7 @@ body {
 							width: 100%;
 							text-align: center;
 							color: gray;	
+							margin: 0.2em; // The spacing of items already provides a margin
 						}
 						p {
 							padding: 1.5em;
@@ -90,6 +98,28 @@ body {
 							flex-grow: 2;
 							margin: 1em 0em;
 						}
+					}
+				}
+
+				.process-indicator {					
+					.clockCircle {
+						fill: none;
+						stroke: $progressGreyColor;
+					}
+					
+					.clockArc {
+						fill: none;
+						stroke: $progressMainColor;
+					}
+					
+					.clockDot {
+						fill: lighten($progressMainColor, 50%);
+					}
+					
+					.caption {
+						font-family: $progressFontCaptions;
+						font-weight: 300;
+						fill: $progressTextColor;
 					}
 				}
 

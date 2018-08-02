@@ -5,6 +5,7 @@ import { IItemFactory, ItemFactoryContext } from './factoryContext';
 import { ROOT_STORY_COMPONENT } from '../storySupport/rootStory';
 import { SLIDE_COMPONENT, Slide } from './Slide';
 import { CONTAINER_COMPONENT, Container } from './Container';
+import { PROGRESS_INDICATOR, ProgressIndicator } from './ProgressIndicator';
 
 interface IProps {
 	itemId: string
@@ -21,14 +22,18 @@ const FactoryItem = (props: {component: string, factory: IItemFactory, props: an
 	const Component = props.component === ROOT_STORY_COMPONENT ? (props => null) :
 		props.component === SLIDE_COMPONENT ?
 			Slide :
+			props.component === PROGRESS_INDICATOR ?
+				ProgressIndicator :
 			props.component === CONTAINER_COMPONENT ?
 				Container :
 				props.factory.createComponent(props.component)
 	return <Component {...{...props.props, factory: props.factory}} />
 }
 
+export const svgCoords = {x: -350, y: -150, width: 700, height: 300}
+
 const DivWrapper = props => <div className="story-anim-div">{props.children}</div>
-const SvgWrapper = props => <svg className="story-anim-svg" viewBox={`-200 -150 400 300`} style={{}}>{props.children}</svg>
+const SvgWrapper = props => <svg className="story-anim-svg" viewBox={[svgCoords.x, svgCoords.y, svgCoords.width, svgCoords.height].join(' ')} style={{}}>{props.children}</svg>
 
 class StoryItemRaw extends React.Component<IProps & IMangledProps> {
 	render() {

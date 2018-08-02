@@ -11,6 +11,7 @@ import { StoryComposer } from "../../storyAnim/storySupport/StoryComposer";
 import { ISlideKey } from "../components/slides";
 import { ISlideProps } from "../../storyAnim/components/Slide";
 import { IImageKey } from "../components/images";
+import { PROGRESS_INDICATOR } from "../../storyAnim/components/ProgressIndicator";
 
 export const rootStoryId = "ALMOST_ROOT"
 export const commonProps = {id: rootStoryId, parentId: ROOT_STORY_ID}
@@ -50,7 +51,7 @@ export const mapStory = (existenceCheck: (s: StoryAnim.IEventState) => boolean, 
 
 export const boatStory = (existenceCheck: (s: StoryAnim.IEventState) => boolean, position: StoryAnimDataSchema.IItemPosition = {}, startPosition?: StoryAnimDataSchema.IItemPosition) =>
 	function*(initialState: StoryAnim.IEventState) {
-		const rotateAngle = Math.random() * 2 - 1;
+		const rotateAngle = Math.random() * 2  - 1;
 		const delay = 500 + Math.random() * 5500
 		const rotatePosition = ({x, y}) => ({x: x * Math.cos(rotateAngle) - y * Math.sin(rotateAngle), y: y * Math.cos(rotateAngle) + x * Math.sin(rotateAngle)})
 		const startTime = initialState.frameTime
@@ -98,6 +99,23 @@ export const slideStory = (existenceCheck: (s: StoryAnim.IEventState) => boolean
 				return
 		}
 	}
+
+export const progressIndicator = (position: StoryAnimDataSchema.IItemPosition = {}) =>
+	function*() {
+		yield storeStoryItem({
+			position,
+			startPosition: position,
+			...commonChildProps("PROGRESS_INDICATOR"),
+			visual: {
+				component: PROGRESS_INDICATOR,
+				props: {},
+			}
+		})
+		while (true) {
+			const state: IStoryRunnerYieldFormat = yield {type: NOP}
+		}
+	}
+
 
 const fullscreenMapFunc = vf => <IStoryRunnerProvider>{
 	id: "MAPS_INIT",
@@ -171,6 +189,13 @@ mangler.addStory(detroitDetailSegment, vf => <IStoryRunnerProvider>{
 	getStory: slideStory(vf, "The consolidation created a strong car culture...", slideSideCommonProps),
 	getChildrenIterator: function*() {}
 })
+
+mangler.addStory(calc.addSegment(60, 0), vf => <IStoryRunnerProvider>{
+	id: "PROGRESS_INDICATOR",
+	getStory: progressIndicator({x: 0, y: 0, scale: 1}),
+	getChildrenIterator: function*() {}
+})
+
 
 const storySelector = mangler.getStorySelector()
 
