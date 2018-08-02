@@ -5,8 +5,8 @@ import { connect } from 'react-redux';
 import { StoryItem } from './StoryItem';
 import { Motion } from 'react-motion';
 import { createBuildStyles } from '../utils/components/buildStyles';
-import { isUndefined } from 'util';
 import { slowSpring } from '../utils/springs';
+import { isUndefined } from '../utils/lowLevelUtils';
 
 interface IProps {
 	itemId: string
@@ -84,10 +84,14 @@ class ChildrenRaw extends React.Component<IProps & IMangledProps> {
 	}
 }
 
+const order = (x: StoryAnimDataSchema.IStoryItem) => isUndefined(x.order) ? 100 : x.order
+
 export const Children = connect((s: StoryAnimState.IState, p: IProps) => ({
-	itemChildren: s.items.filter(x => x.parentId === p.itemId).map(x => ({
-		itemId: x.id,
-		itemPosition: x.position,
-		itemStartPosition: x.startPosition,
-	} as IChildData))
+	itemChildren: s.items.filter(x => x.parentId === p.itemId).
+		sort((a, b) => order(a) - order(b)).
+		map(x => ({
+			itemId: x.id,
+			itemPosition: x.position,
+			itemStartPosition: x.startPosition,
+		} as IChildData))
 } as IMangledProps))(ChildrenRaw)

@@ -27,6 +27,7 @@ namespace StoryAnimDataSchema {
 	
 	export interface IStoryItem extends IItemBase, Partial<IItemOwners>, Partial<IHierarchicalItem> {
 		visual: IStoryVisual
+		order?: number
 		position: IItemPosition
 		startPosition?: IItemPosition
 	}

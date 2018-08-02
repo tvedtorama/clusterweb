@@ -88,6 +88,7 @@ export const slideStory = (existenceCheck: (s: StoryAnim.IEventState) => boolean
 			position,
 			startPosition: position,
 			...commonChildProps("THE_SLIDE"),
+			order: 200,
 			visual: {
 				component: "SLIDE",
 				props: (typeof slideText === "string" ? <ISlideProps>{text: slideText} : <ISlideProps>{slide: slideText.s}),
@@ -106,6 +107,7 @@ export const progressIndicator = (position: StoryAnimDataSchema.IItemPosition = 
 			position,
 			startPosition: position,
 			...commonChildProps("PROGRESS_INDICATOR"),
+			order: 1000,
 			visual: {
 				component: PROGRESS_INDICATOR,
 				props: {},
