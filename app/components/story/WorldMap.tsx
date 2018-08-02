@@ -1,11 +1,11 @@
 
 import * as React from 'react'
-import { Motion, spring, presets, OpaqueConfig } from 'react-motion';
+import { spring, OpaqueConfig, StaggeredMotion } from 'react-motion';
 import { feature } from "topojson-client"
 import { GeometryCollection } from "topojson-specification";
 import { geoNaturalEarth1, geoPath } from 'd3-geo';
 import { isUndefined } from '../../../storyAnim/utils/lowLevelUtils';
-import { slowSpring, mediumSpring } from '../../../storyAnim/utils/springs';
+import { slowSpring } from '../../../storyAnim/utils/springs';
 
 const worldDataJson = require('../../maps/110m.json')
 
@@ -83,11 +83,17 @@ export class WorldMap extends React.Component<IWorldMapProps, {worldData: typeof
 			{
 				long: spring(0), lat: spring(0), scale: spring(100)
 			}
-		return <Motion defaultStyle={animDefaults} style={animStyles}>{
-			({long, lat, scale}) =>
-				[this.projection([long, lat], scale)].
-				map(projection => <WorldMapContent {...{currentCity, projection, worldData: this.state.worldData, scale}} />)
-				[0]}</Motion>
+		// Uses Staggered to give the move a head start on the scale
+		return <StaggeredMotion defaultStyles={[animDefaults, animDefaults]} styles={vals =>
+			vals.map((_, i) => ({
+				...animStyles,
+				...(i > 0 ? {scale: slowSpring(vals[i - 1].scale)} : null)
+			})
+		)}>{
+			(motions: [{long, lat}, {scale}]) =>
+				[this.projection([motions[0].long, motions[0].lat], motions[1].scale)].
+				map(projection => <WorldMapContent {...{currentCity, projection, worldData: this.state.worldData, scale: motions[1].scale}} />)
+				[0]}</StaggeredMotion>
 	}
 }
 
