@@ -12,6 +12,7 @@ import { ISlideKey } from "../components/slides";
 import { ISlideProps } from "../../storyAnim/components/Slide";
 import { IImageKey } from "../components/images";
 import { PROGRESS_INDICATOR, IProgressIndicatorProps } from "../../storyAnim/components/ProgressIndicator";
+import { isUndefined } from "../../storyAnim/utils/lowLevelUtils";
 
 export const rootStoryId = "ALMOST_ROOT"
 export const commonProps = {id: rootStoryId, parentId: ROOT_STORY_ID}
@@ -169,6 +170,7 @@ mangler.addStory(calc.addSegment(10), vf => <IStoryRunnerProvider>{
 
 const intermesso1Segment = calc.addSegment(intermessoLength)
 mangler.addStory(intermesso1Segment, fullscreenMapFunc)
+
 const detroitIntroSegment = calc.addSegment(10)
 const detroitDetailSegment = calc.addSegment(10)
 mangler.addStory(detroitIntroSegment, vf => <IStoryRunnerProvider>{
@@ -192,12 +194,42 @@ mangler.addStory(detroitDetailSegment, vf => <IStoryRunnerProvider>{
 	getChildrenIterator: function*() {}
 })
 
+const intermesso2Segment = calc.addSegment(intermessoLength)
+mangler.addStory(intermesso2Segment, fullscreenMapFunc)
+
+const shenzhenIntroSegment = calc.addSegment(10)
+const shenzhenDetailSegment = calc.addSegment(10)
+
+mangler.addStory(shenzhenIntroSegment, vf => <IStoryRunnerProvider>{
+	id: "MAPS_SHENZHEN",
+	getStory: mapStory(vf, {selectedHotspot: 2, closeness: "FAR"}, upcloseMapProps),
+	getChildrenIterator: function*() {}
+})
+mangler.addStory(shenzhenDetailSegment, vf => <IStoryRunnerProvider>{
+	id: "MAPS_SHENZHEN_CLOSE",
+	getStory: mapStory(vf, {selectedHotspot: 2, closeness: "CLOSE"}, upcloseMapProps),
+	getChildrenIterator: function*() {}
+})
+mangler.addStory(shenzhenIntroSegment, vf => <IStoryRunnerProvider>{
+	id: "SLIDE_DECK_SHENZHEN",
+	getStory: slideStory(vf, {s: "SLIDE_SHENZHEN_INTRO"}, slideSideCommonProps),
+	getChildrenIterator: function*() {}
+})
+
+mangler.addStory(shenzhenDetailSegment, vf => <IStoryRunnerProvider>{
+	id: "SLIDE_DECK_SHENZHEN",
+	getStory: slideStory(vf, "Now everyone buys stuff from Shenzhen.", slideSideCommonProps),
+	getChildrenIterator: function*() {}
+})
+
+
+
 // Add the progress indicator, for this to work all segments must be added to the calculator.
 mangler.addStory(calc.addSegment(-1, 0), vf => <IStoryRunnerProvider>{
 	id: "PROGRESS_INDICATOR",
 	getStory: progressIndicator(mangler.getSegmentMetas().
 					map(x => x.startPos).
-					reduce((x, y) => x.find(z => z === y) ? x : [...x, y], []), {x: 0, y: 0, scale: 1}),
+					reduce((x, y) => x.findIndex(z => z === y) > -1 ? x : [...x, y], []), {x: 0, y: 0, scale: 1}),
 	getChildrenIterator: function*() {}
 })
 

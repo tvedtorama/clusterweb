@@ -39,6 +39,15 @@ interface IMangledProps {
 	pos: number
 }
 
+export const GlowFilter = (props = {id: "glow"}) => <filter id={props.id} x="-50%" y="-50%" width="200%" height="200%">
+	<feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+	<feMerge>
+			<feMergeNode in="coloredBlur"/>
+			<feMergeNode in="SourceGraphic"/>
+	</feMerge>
+</filter>
+
+
 /** Shows how far the user is in the full story, with interest points along the way.
  *
  * Inspired by: https://codepen.io/icebob/pen/JYoQZg */
@@ -82,22 +91,7 @@ export class ProgressIndicatorRaw extends React.Component<IProgressIndicatorProp
 						<stop offset="60%" style={{stopColor: "rgb(0,0,0)", stopOpacity: 0.8}}/>
 						<stop offset="100%" style={{stopColor: "rgb(0,0,0)", stopOpacity: 0.0}}/>
 					</radialGradient>
-
-					<filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-							<feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
-							<feMerge>
-									<feMergeNode in="coloredBlur"/>
-									<feMergeNode in="SourceGraphic"/>
-							</feMerge>
-					</filter>
-					<filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-						<feGaussianBlur in="SourceAlpha" stdDeviation="3" result="shadow"/>
-						<feOffset dx="1" dy="1"/>
-						<feMerge>
-							<feMergeNode/>
-							<feMergeNode in="SourceGraphic"/>
-						</feMerge>
-					</filter>
+					<GlowFilter id="glow"/>
 				</defs>,
 			<Motion key="g" defaultStyle={{end: 0, scale: 0.5}} style={{end: spring(this.props.pos * 3.6), scale: spring(scale)}}>
 				{({scale, end}) => // can put this on g: style={{opacity: scale}}

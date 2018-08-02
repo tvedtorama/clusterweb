@@ -28,7 +28,7 @@ body {
 		margin: 0em -0.5em;
 		width: calc(100vw - 1em); // No idea why these adjustments are needed, but they amounts to the negative margin of the paragaph we are in - and should be removed
 		display: flex;
-		height: 500vh;
+		height: 800vh;
 		
 		.sliding-container {
 			display: flex;
@@ -98,6 +98,12 @@ body {
 							flex-grow: 2;
 							margin: 1em 0em;
 						}
+					}
+				}
+
+				.world-map {
+					.marker {
+						fill: $progressMainColor;
 					}
 				}
 

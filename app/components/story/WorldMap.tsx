@@ -6,6 +6,7 @@ import { GeometryCollection } from "topojson-specification";
 import { geoNaturalEarth1, geoPath } from 'd3-geo';
 import { isUndefined } from '../../../storyAnim/utils/lowLevelUtils';
 import { slowSpring } from '../../../storyAnim/utils/springs';
+import { GlowFilter } from '../../../storyAnim/components/ProgressIndicator';
 
 const worldDataJson = require('../../maps/110m.json')
 
@@ -19,33 +20,34 @@ export interface IWorldMapProps {
 const cityCooridnates: [number, number][] = [
 	[-83.045754, 42.331427], // Detroit
 	[5.628929, 62.3317447], // Fosnavaag
-	[0, 0],
+	[114.1, 22.55], // Shenzhen
+	[-0.893753, 52.230375] // Northampton
 ]
 
 const WorldMapContent: React.StatelessComponent<{projection, currentCity, worldData, scale}> = ({projection, currentCity, worldData, scale}) => [
-	<g className="countries" key="countries">
+	<g className="world-map countries" key="countries">
 		{
 			worldData.map((d, i) => (
 				<path
 					key={`path-${i}`}
 					d={geoPath().projection(projection)(d)}
 					className="country"
-					fill={`rgba(38,50,56,${1 / worldData.length * i})`}
+					fill={`rgb(76,100,100)`}
 					stroke="#FFFFFF"
-					strokeWidth={currentCity ? 0.1 : 0.5}
+					strokeWidth={currentCity ? 0.4 : 0.5}
 				/>
 			))
 		}
 	</g>,
-	<g className="markers" key="markers">
+	<g className="world-map markers" key="markers">
 		{cityCooridnates.
 			map(city => ({city, proj: projection(city)})).
 			map(({city, proj}) =>
 			<circle key={proj[0].toString()}
 				cx={proj[0]}
 				cy={proj[1]}
-				r={6}
-				fill="#E91E63"
+				r={3 * Math.pow(scale / 100, 0.5)}
+				filter="url(#mapGlow)"
 				className="marker"
 		/>)}
 	</g>
@@ -84,16 +86,19 @@ export class WorldMap extends React.Component<IWorldMapProps, {worldData: typeof
 				long: spring(0), lat: spring(0), scale: spring(100)
 			}
 		// Uses Staggered to give the move a head start on the scale
-		return <StaggeredMotion defaultStyles={[animDefaults, animDefaults]} styles={vals =>
-			vals.map((_, i) => ({
-				...animStyles,
-				...(i > 0 ? {scale: slowSpring(vals[i - 1].scale)} : null)
-			})
-		)}>{
-			(motions: [{long, lat}, {scale}]) =>
-				[this.projection([motions[0].long, motions[0].lat], motions[1].scale)].
-				map(projection => <WorldMapContent {...{currentCity, projection, worldData: this.state.worldData, scale: motions[1].scale}} />)
-				[0]}</StaggeredMotion>
+		return [
+			<GlowFilter key="filter" id="mapGlow" />,
+			<StaggeredMotion key="gui" defaultStyles={[animDefaults, animDefaults]} styles={vals =>
+				vals.map((_, i) => ({
+					...animStyles,
+					...(i > 0 ? {scale: slowSpring(vals[i - 1].scale)} : null)
+				}))}>{
+					(motions: [{long, lat}, {scale}]) =>
+						[this.projection([motions[0].long, motions[0].lat], motions[1].scale)].
+						map(projection => <WorldMapContent {...{currentCity, projection, worldData: this.state.worldData, scale: motions[1].scale}} />)
+						[0]}
+			</StaggeredMotion>
+		]
 	}
 }
 
