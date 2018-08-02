@@ -31,15 +31,18 @@ const getScaleTranslate = (scale) =>
 	map(({x, y}) => `translate(${x} ${y}) scale(${scale})`)
 	[0]
 
+export interface IProgressIndicatorProps {
+	interestPoints: number[]
+}
+
 interface IMangledProps {
 	pos: number
-	interestPoints: number[]
 }
 
 /** Shows how far the user is in the full story, with interest points along the way.
  *
  * Inspired by: https://codepen.io/icebob/pen/JYoQZg */
-export class ProgressIndicatorRaw extends React.Component<IMangledProps> {
+export class ProgressIndicatorRaw extends React.Component<IProgressIndicatorProps & IMangledProps> {
 	render() {
 		const scale = 1
 		return [
@@ -101,5 +104,4 @@ export class ProgressIndicatorRaw extends React.Component<IMangledProps> {
 
 export const ProgressIndicator = connect((state: StoryAnimState.IState) => ({
 	pos: state.eventState.pos,
-	interestPoints: [10, 20, 30, 40, 90]
 } as IMangledProps))(ProgressIndicatorRaw)

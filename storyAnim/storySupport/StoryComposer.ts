@@ -3,7 +3,7 @@ import { IStoryRunnerProvider } from "../storyRunner";
 /** Given segments definitions and story functions, produces a method that generates a list of valid stories for a given state */
 export class StoryComposer<
 			TSegDef extends (v: (s: StoryAnim.IEventState) => boolean) => IStoryRunnerProvider,
-			TSeg extends {validFunc: () => ((s: StoryAnim.IEventState) => boolean)}> {
+			TSeg extends {validFunc: () => ((s: StoryAnim.IEventState) => boolean), meta: () => {startPos: number}}> {
 
 	segDefs: {segDef: TSegDef, segment: TSeg}[] = []
 	addStory(segment: TSeg, segDef: TSegDef) {
@@ -18,5 +18,10 @@ export class StoryComposer<
 				map(vf => (s: StoryAnim.IEventState) =>
 					vf(s) ? segDef(vf) : null)[0])
 		return (eventState: StoryAnim.IEventState) => testers.map(x => x(eventState)).filter(x => x)
+	}
+
+	/** Returns the meta data for the start of all segments */
+	getInterestPoints() {
+		return this.segDefs.map(x => x.segment.meta())
 	}
 }

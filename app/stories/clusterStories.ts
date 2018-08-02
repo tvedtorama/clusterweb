@@ -11,7 +11,7 @@ import { StoryComposer } from "../../storyAnim/storySupport/StoryComposer";
 import { ISlideKey } from "../components/slides";
 import { ISlideProps } from "../../storyAnim/components/Slide";
 import { IImageKey } from "../components/images";
-import { PROGRESS_INDICATOR } from "../../storyAnim/components/ProgressIndicator";
+import { PROGRESS_INDICATOR, IProgressIndicatorProps } from "../../storyAnim/components/ProgressIndicator";
 
 export const rootStoryId = "ALMOST_ROOT"
 export const commonProps = {id: rootStoryId, parentId: ROOT_STORY_ID}
@@ -101,7 +101,7 @@ export const slideStory = (existenceCheck: (s: StoryAnim.IEventState) => boolean
 		}
 	}
 
-export const progressIndicator = (position: StoryAnimDataSchema.IItemPosition = {}) =>
+export const progressIndicator = (interestPoints: number[], position: StoryAnimDataSchema.IItemPosition = {}) =>
 	function*() {
 		yield storeStoryItem({
 			position,
@@ -110,11 +110,11 @@ export const progressIndicator = (position: StoryAnimDataSchema.IItemPosition = 
 			order: 1000,
 			visual: {
 				component: PROGRESS_INDICATOR,
-				props: {},
+				props: <IProgressIndicatorProps>{interestPoints},
 			}
 		})
 		while (true) {
-			const state: IStoryRunnerYieldFormat = yield {type: NOP}
+			yield {type: NOP}
 		}
 	}
 
@@ -192,9 +192,9 @@ mangler.addStory(detroitDetailSegment, vf => <IStoryRunnerProvider>{
 	getChildrenIterator: function*() {}
 })
 
-mangler.addStory(calc.addSegment(60, 0), vf => <IStoryRunnerProvider>{
+mangler.addStory(calc.addSegment(-1, 0), vf => <IStoryRunnerProvider>{
 	id: "PROGRESS_INDICATOR",
-	getStory: progressIndicator({x: 0, y: 0, scale: 1}),
+	getStory: progressIndicator(mangler.getInterestPoints().map(x => x.startPos), {x: 0, y: 0, scale: 1}),
 	getChildrenIterator: function*() {}
 })
 
