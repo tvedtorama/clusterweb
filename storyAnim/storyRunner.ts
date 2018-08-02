@@ -72,7 +72,7 @@ const isDeleteAction = (a: Action): a is IStoreStoryItemAction => a.type === DEL
  *  * Stories have to filter children, move to storyRunner
  *  * It's cumbersome to track state with the object yields (maybe two different yields, one for fetching state (wait) and one for adding objects?)
  *  * Stories must keep track of their running time
- *
+ *  * Stories must yield `NOP`s to stay avake, should just `yield staylAlive()` or `yield hangAroundUntil(func)`
 */
 export const storyRunner = function*(storyData: IStoryRunnerProvider, eventData?: StoryAnim.IEventData, itemRegistryInput?: CreatedItemRegistry) {
 	const itemRegistry = itemRegistryInput || new CreatedItemRegistry()
