@@ -9,8 +9,12 @@ $progressTextColor: White;
 
 $progressFontCaptions: "Source Sans Pro";
 
+@mixin ABox {
+	border-radius: 0.5em;	
+}
+
 @mixin AShadowyBox {
-	border-radius: 0.5em;
+	@include ABox;
 	box-shadow: 0 2px 6px rgba(0, 0, 0, .1);
 }
 
@@ -113,8 +117,8 @@ body {
 				}
 
 				.world-map-root {
-					@include AShadowyBox();
-					border: 1px solid rgba(0, 0, 0, 0.3);
+					@include ABox();
+					// border: 1px solid rgba(0, 0, 0, 0.3);
 					.world-map {
 						.marker {
 							fill: $progressMainColor;
