@@ -9,6 +9,11 @@ $progressTextColor: White;
 
 $progressFontCaptions: "Source Sans Pro";
 
+@mixin AShadowyBox {
+	border-radius: 0.5em;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, .1);
+}
+
 body {
 	font-family: "Open Sans";
 	margin: 0px;
@@ -66,13 +71,12 @@ body {
 				.story-anim-div {
 					padding: 0.5em;
 					.slide {
+						@include AShadowyBox();
 						width: calc(100% - 7em);
 						height: calc(100% - 7em);
 						padding: 3em;
 						background: rgba(255, 255, 255, 0.9);
 						border: 1px solid rgba(0, 0, 0, .3);
-						border-radius: 0.5em;
-						box-shadow: 0 2px 6px rgba(0, 0, 0, .1);
 						display: flex;
 						flex-direction: column;
 						justify-content: space-around;
@@ -90,20 +94,31 @@ body {
 							color: white;
 							border: 2px solid rgba(255, 255, 255, 0.5);
 							border-radius: 1em;
+							code {
+								background: black;
+								padding: 0.1em 0.3em;
+								border-radius: 0.2em;
+							}
 						}
 						ul {
 							display: flex;
 							flex-direction: column;
 							justify-content: space-around;
-							flex-grow: 2;
 							margin: 1em 0em;
+							li {
+								height: 2em; // Seems "suggestive", as it does not blow up small-screen views.
+							}
 						}
 					}
 				}
 
-				.world-map {
-					.marker {
-						fill: $progressMainColor;
+				.world-map-root {
+					@include AShadowyBox();
+					border: 1px solid rgba(0, 0, 0, 0.3);
+					.world-map {
+						.marker {
+							fill: $progressMainColor;
+						}
 					}
 				}
 

@@ -40,7 +40,8 @@ export const mapStory = (existenceCheck: (s: StoryAnim.IEventState) => boolean, 
 		...commonChildProps("THE_MAP"),
 		visual: {
 			component: "MAP",
-			props: wmp || {}
+			props: wmp || {},
+			classNameAdd: "world-map-root",
 		}
 	})
 	while (true) {
@@ -154,7 +155,7 @@ for (const i of Ix.Iterable.range(0, 5))
 
 mangler.addStory(calc.addSegment(10, 10), vf => <IStoryRunnerProvider>{
 	id: "SLIDE_DECK_INIT",
-	getStory: slideStory(vf, "The world is full of industrial clusters, ...", {scale: 0.65}),
+	getStory: slideStory(vf, {s: "SLIDE_CLUSTERS_INTRO"}, {scale: 0.65}),
 	getChildrenIterator: function*() {}
 })
 mangler.addStory(calc.addSegment(10), vf => <IStoryRunnerProvider>{

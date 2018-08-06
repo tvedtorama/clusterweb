@@ -14,6 +14,7 @@ namespace StoryAnimDataSchema {
 	export interface IStoryVisual {
 		component: string
 		props: any
+		classNameAdd?: string
 	}
 	
 	export type IItemPosition = Partial<{
