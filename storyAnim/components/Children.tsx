@@ -58,7 +58,6 @@ const findValuesWidthDefault = (itemPosition: StoryAnimDataSchema.IItemPosition)
 	dimensionKeys.map(key => ({key, value: dimensionDefs[key].srcData(itemPosition)})).
 	map(({key, value}) => ({key, value: isUndefined(value) ? dimensionDefs[key].defaultValue : value}))
 
-
 const buildAnimationStyles = (item: IChildData) =>
 	findValuesWidthDefault(item.itemPosition).
 	reduce((x, {key, value}) => ({...x, [key]: slowSpring(value)}), {})
