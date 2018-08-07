@@ -125,48 +125,54 @@ body {
 						}
 					}
 				}
+				
+				.story-anim-item, .story-anim-child, .progress-indicator-root, .progress-background > svg {
+//					pointer-events: none;
+				}
 
-				.process-indicator {
-					.process-background {
-						opacity: 0;
-						transition: opacity 1s;
-					}
-					&.hot {
-						.process-background {
-							opacity: 1;
+				.progress-indicator-root {
+					.progress-indicator {
+						.progress-background {
+							opacity: 0;
+							transition: opacity 1s;
 						}
-					}
-					.clockCircle {
-						fill: none;
-						stroke: $progressGreyColor;
-					}
-					.clockCircle.interest {
-						fill: $progressGreyColor;
-					}
-
-					
-					.clockArc {
-						fill: none;
-						stroke: $progressMainColor;
-					}
-					
-					.clockDot {
-						fill: lighten($progressMainColor, 50%);
-					}
-					
-					.caption {
-						font-family: $progressFontCaptions;
-						font-weight: 300;
-						fill: $progressTextColor;
-						font-size: 40px;
-					}
-					.caption.interest {
-						font-size: 15px;
-						text-align: center;
-						font-weight: 500;
-						stroke: $progressMainColor;
-						fill: $progressMainColor;
-					}
+						&.hot {
+							.progress-background {
+								opacity: 1;
+							}
+						}
+						.clockCircle {
+							fill: none;
+							stroke: $progressGreyColor;
+						}
+						.clockCircle.interest {
+							fill: $progressGreyColor;
+						}
+	
+						
+						.clockArc {
+							fill: none;
+							stroke: $progressMainColor;
+						}
+						
+						.clockDot {
+							fill: lighten($progressMainColor, 50%);
+						}
+						
+						.caption {
+							font-family: $progressFontCaptions;
+							font-weight: 300;
+							fill: $progressTextColor;
+							font-size: 40px;
+						}
+						.caption.interest {
+							font-size: 15px;
+							text-align: center;
+							font-weight: 500;
+							stroke: $progressMainColor;
+							fill: $progressMainColor;
+						}
+					}	
 				}
 
 				@media screen and (max-width: $break-small) {

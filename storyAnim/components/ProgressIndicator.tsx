@@ -78,7 +78,7 @@ export class ProgressIndicatorRaw extends React.Component<IProgressIndicatorProp
 
 
 	render() {
-		const scale = this.state.hot ? 0.4 : 0.2;
+		const scale = this.state.hot ? 1.2 : 0.6;
 		const {interestPoints} = this.props
 		return [
 			<defs key="defs">
@@ -95,13 +95,13 @@ export class ProgressIndicatorRaw extends React.Component<IProgressIndicatorProp
 				</defs>,
 			<Motion key="g" defaultStyle={{end: 0, scale: 0.5}} style={{end: spring(this.props.pos * 3.6), scale: spring(scale)}}>
 				{({scale, end}) => // can put this on g: style={{opacity: scale}}
-					<g className={`process-indicator ${this.state.hot ? "hot" : ""}`} transform={getScaleTranslate(scale)} >
+					<g className={`progress-indicator ${this.state.hot ? "hot" : ""}`} transform={getScaleTranslate(scale)} >
 						<circle cx="0" cy="0" r={circRad * borderExtra} fill="url(#backHoleBelowClock)"/>
-						<g className="process-background">
+						<g className="progress-background">
 							<text className="caption" dominantBaseline={"central"} textAnchor={"middle"}>{`${interestPoints.filter(p => p <= this.props.pos).length} / ${interestPoints.length}`}</text>
 						</g>
 
-						<g className="process-circle-and-interest-points">
+						<g className="progress-circle-and-interest-points">
 							<circle className="clockCircle" cx="0" cy="0" r={circRad} strokeWidth="6" />
 							{
 								interestPoints.map((p, i) =>

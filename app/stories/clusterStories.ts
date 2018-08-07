@@ -13,6 +13,7 @@ import { ISlideProps } from "../../storyAnim/components/Slide";
 import { PROGRESS_INDICATOR, IProgressIndicatorProps } from "../../storyAnim/components/ProgressIndicator";
 import { boatStory } from "./boatStory";
 import { oilRigStory } from "./oilRigStory";
+import { progressIndicator } from "../../storyAnim/storySupport/progressIndicator";
 
 export const rootStoryId = "ALMOST_ROOT"
 export const commonProps = {id: rootStoryId, parentId: ROOT_STORY_ID}
@@ -67,23 +68,6 @@ export const slideStory = (existenceCheck: (s: StoryAnim.IEventState) => boolean
 			const state: IStoryRunnerYieldFormat = yield {type: NOP}
 			if (!existenceCheck(state.eventState))
 				return
-		}
-	}
-
-export const progressIndicator = (interestPoints: number[], position: StoryAnimDataSchema.IItemPosition = {}) =>
-	function*() {
-		yield storeStoryItem({
-			position,
-			startPosition: position,
-			...commonChildProps("PROGRESS_INDICATOR"),
-			order: 1000,
-			visual: {
-				component: PROGRESS_INDICATOR,
-				props: <IProgressIndicatorProps>{interestPoints},
-			}
-		})
-		while (true) {
-			yield {type: NOP}
 		}
 	}
 
@@ -198,17 +182,17 @@ mangler.addStory(shenzhenDetailSegment, vf => <IStoryRunnerProvider>{
 	getChildrenIterator: function*() {}
 })
 
-
+const intermesso3Segment = calc.addSegment(intermessoLength)
+mangler.addStory(intermesso3Segment, fullscreenMapFunc)
 
 // Add the progress indicator, for this to work all segments must be added to the calculator.
 mangler.addStory(calc.addSegment(-1, 0), vf => <IStoryRunnerProvider>{
 	id: "PROGRESS_INDICATOR",
 	getStory: progressIndicator(mangler.getSegmentMetas().
 					map(x => x.startPos).
-					reduce((x, y) => x.findIndex(z => z === y) > -1 ? x : [...x, y], []), {x: 0, y: 0, scale: 1}),
+					reduce((x, y) => x.findIndex(z => z === y) > -1 ? x : [...x, y], []), {x: 130, y: -110, scale: 0.25}),
 	getChildrenIterator: function*() {}
 })
-
 
 const storySelector = mangler.getStorySelector()
 
