@@ -166,7 +166,7 @@ mangler.addStory(detroitIntroSegment, vf => <IStoryRunnerProvider>{
 })
 mangler.addStory(detroitDetailSegment, vf => <IStoryRunnerProvider>{
 	id: "SLIDE_DECK_DETROIT_2",
-	getStory: slideStory(vf, "The consolidation created a strong car culture...", slideSideCommonProps),
+	getStory: slideStory(vf, {s: "SLIDE_DETROIT_DETAIL"}, slideSideCommonProps),
 	getChildrenIterator: function*() {}
 })
 
