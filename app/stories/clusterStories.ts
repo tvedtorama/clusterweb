@@ -133,7 +133,7 @@ mangler.addStory(calc.addSegment(10), vf => <IStoryRunnerProvider>{
 const norwaySecondStepSegment = calc.addSegment(10)
 mangler.addStory(norwaySecondStepSegment, vf => <IStoryRunnerProvider>{
 	id: "SLIDE_DECK_NORWAY_2",
-	getStory: slideStory(vf, "Turns out the ocean is also full of oil...", slideSideCommonProps),
+	getStory: slideStory(vf, {s: "SLIDE_NORWAY_OIL"}, slideSideCommonProps),
 	getChildrenIterator: function*() {}
 })
 for (const i of Ix.Iterable.range(0, 5))
