@@ -9,6 +9,7 @@ import { slowSpring } from '../../../storyAnim/utils/springs';
 import { GlowFilter } from '../../../storyAnim/components/ProgressIndicator';
 
 const worldDataJson = require('../../maps/110m.json')
+const lakesDataJson = require('../../maps/110m_lakes.json').features
 
 const worldData = feature(worldDataJson, worldDataJson.objects.countries as GeometryCollection).features
 
@@ -33,6 +34,20 @@ const WorldMapContent: React.StatelessComponent<{projection, currentCity, worldD
 					d={geoPath().projection(projection)(d)}
 					className="country"
 					fill={`rgb(76,100,100)`}
+					strokeWidth={0}
+				/>
+			))
+		}
+	</g>,
+		<g className="world-map lakes" key="lakes">
+		{
+			lakesDataJson.map((d, i) => (
+				<path
+					key={`path-${i}`}
+					d={geoPath().projection(projection)(d)}
+					className="lake"
+					fill={`rgb(220,220,255)`}
+					opacity={0.5}
 					stroke="#FFFFFF"
 					strokeWidth={currentCity ? 0.4 : 0.5}
 				/>
