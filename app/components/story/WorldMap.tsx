@@ -34,7 +34,8 @@ const WorldMapContent: React.StatelessComponent<{projection, currentCity, worldD
 					d={geoPath().projection(projection)(d)}
 					className="country"
 					fill={`rgb(76,100,100)`}
-					strokeWidth={0}
+					stroke="#FFFFFF"
+					strokeWidth={currentCity ? 0.4 : 0.5}
 				/>
 			))
 		}
@@ -48,8 +49,7 @@ const WorldMapContent: React.StatelessComponent<{projection, currentCity, worldD
 					className="lake"
 					fill={`rgb(220,220,255)`}
 					opacity={0.5}
-					stroke="#FFFFFF"
-					strokeWidth={currentCity ? 0.4 : 0.5}
+					strokeWidth={0}
 				/>
 			))
 		}
