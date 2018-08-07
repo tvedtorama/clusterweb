@@ -32,14 +32,14 @@ const FactoryItem = (props: {component: string, factory: IItemFactory, props: an
 
 export const svgCoords = {x: -350, y: -150, width: 700, height: 300}
 
-const DivWrapper = (classNameAdd: string) => props => <div className={`story-anim-div ${classNameAdd}`}>{props.children}</div>
-const SvgWrapper = (classNameAdd: string) => props => <svg className={`story-anim-svg ${classNameAdd}`} viewBox={[svgCoords.x, svgCoords.y, svgCoords.width, svgCoords.height].join(' ')} style={{}}>{props.children}</svg>
+const DivWrapper = props => <div className={`story-anim-div ${""}`}>{props.children}</div>
+const SvgWrapper = props => <svg className={`story-anim-svg ${""}`} viewBox={[svgCoords.x, svgCoords.y, svgCoords.width, svgCoords.height].join(' ')} style={{}}>{props.children}</svg>
 
 class StoryItemRaw extends React.Component<IProps & IMangledProps> {
 	render() {
 		if (!this.props.itemVisual)
 			return <div className="story-item-loading" />
-		const ContainerVisual = (isHtmlComponent(this.props.itemVisual.component) ? DivWrapper : SvgWrapper)("")
+		const ContainerVisual = (isHtmlComponent(this.props.itemVisual.component) ? DivWrapper : SvgWrapper)
 		return <div className={`story-anim-item ${this.props.itemVisual.classNameAdd || ""}`} style={{}}>
 			<ContainerVisual>
 				<ItemFactoryContext.Consumer>
