@@ -18,11 +18,11 @@ class WebMainRaw extends React.Component<{store: any}> {
 			<Router>
 				<div>
 					<div className={"paragraph"} style={{display: "flex", flexDirection: "column" }}>
-						<Route exact path="/" component={(p) => <span>This is the <Link to="/scrollTest">Scroll Test</Link></span>} />
+						<Route exact path="/" component={ScrollingContTest} />
+						<Route path="/scrollTest" component={(p) => <span>This is the <Link to="/">Scroll Test</Link></span>} />
 						<Route path="/hei" component={HeiComp} />
 						<Route path="/hallo" component={HalloComp} />
 						<Route path="/countTest" component={CountTest} />
-						<Route path="/scrollTest" component={ScrollingContTest} />
 					</div>
 				</div>
 			</Router>
