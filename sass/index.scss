@@ -4,7 +4,7 @@ $break-small : 1000px;
 
 $progressMainColor: #1bbccb; // Blue
 
-$progressGreyColor: #000000aa;
+$progressGreyColor: rgba(00, 00, 00, 0.7);
 $progressTextColor: White;
 
 $progressFontCaptions: "Source Sans Pro";
@@ -177,7 +177,7 @@ body {
 							border: 2px solid rgba(255, 255, 255, 0.5);
 							border-radius: 1em;
 							code {
-								background: black;
+								background: $progressMainColor;
 								padding: 0.1em 0.3em;
 								border-radius: 0.2em;
 							}
@@ -204,10 +204,6 @@ body {
 					}
 				}
 				
-				.story-anim-item, .story-anim-child, .progress-indicator-root, .progress-background > svg {
-//					pointer-events: none;
-				}
-
 				.value-network {
 					&.credits {
 						position: absolute;
