@@ -10,7 +10,7 @@ class HeadingRaw extends React.Component {
 						<span className="produc-name">Phil Network</span>
 					</div>
 					<div className="subtitle-row row">
-						<span className="subtitle">The industrial cluster enabler</span>
+						<span className="subtitle">The Industrial Cluster Accelerator</span>
 					</div>
 				</div>
 				<div className="scroll-text">
