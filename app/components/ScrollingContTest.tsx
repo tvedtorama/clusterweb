@@ -4,6 +4,7 @@ import { ItemFactoryContext, IItemFactory } from '../../storyAnim/components/fac
 import { TestItemViz } from './TestItemVis';
 import { slideComponentMap } from './slides';
 import { imageComponentMap } from './images';
+import { Heading } from './Heading';
 
 // Why isn't this part of Typescript? Example fetched from documentation.
 type Unpacked<T> =
@@ -38,6 +39,7 @@ class ScrollingContTestRaw extends React.Component {
 			return <div className="loading" />
 		}
 		return <div className="scroll-test">
+			<Heading />
 			<div className="scrolling-container">
 				<div className="sliding-container">
 					<ItemFactoryContext.Provider value={factory}>

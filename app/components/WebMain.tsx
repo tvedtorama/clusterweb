@@ -18,10 +18,7 @@ class WebMainRaw extends React.Component<{store: any}> {
 			<Router>
 				<div>
 					<div className={"paragraph"} style={{display: "flex", flexDirection: "column" }}>
-						<span>This is the <Link to="/scrollTest">Scroll Test</Link></span>
-					</div>
-					<div className={"paragraph"} style={{display: "flex", flexDirection: "column" }}>
-						<Route exact path="/" component={(p) => <span>Rootish!</span>} />
+						<Route exact path="/" component={(p) => <span>This is the <Link to="/scrollTest">Scroll Test</Link></span>} />
 						<Route path="/hei" component={HeiComp} />
 						<Route path="/hallo" component={HalloComp} />
 						<Route path="/countTest" component={CountTest} />

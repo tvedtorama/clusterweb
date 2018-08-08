@@ -9,6 +9,23 @@ $progressTextColor: White;
 
 $progressFontCaptions: "Source Sans Pro";
 
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes pulse {
+	0% {
+		box-shadow: 0 0 0 0px rgba(204, 169, 44, 0.6);
+	}
+	30% {
+		box-shadow: 0 0 0 15px rgba(204, 169, 44, 0.0);
+	}
+	100% {
+		box-shadow: 0 0 0 0px rgba(204, 169, 44, 0.0);
+	}
+}
+
 @mixin ABox {
 	border-radius: 0.5em;	
 }
@@ -32,6 +49,66 @@ body {
 }
 
 .scroll-test {
+	.heading {
+		width: 100%;
+		height: 100vh;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-around;
+		background: radial-gradient(rgb(220, 220, 220), rgb(100, 100, 100));
+		color: rgb(20, 20, 20);
+
+		:not(.background) {
+			z-index: 1;
+		}
+
+		.background {
+			width: 48%;
+			height: 115%;
+			background-image: url(/img/dvnLogo.svg);
+			background-size: 100%;
+			background-repeat: no-repeat;
+			position: absolute;
+			right: -17%;
+			top: -9%;
+			z-index: 0;
+			opacity: 0.5;
+		}
+
+		.logo-row {
+			font-size: 48px;
+			margin: 1em 0;
+			.logo {
+				margin-right: 1em;
+				width: 1.5em;
+				height: 1.5em;
+				background-image: url(/img/dvnLogo.png);
+				background-size: 102%;
+			}
+		}
+		.subtitle-row {
+			font-size: 32px;
+		}
+		.scroll-text {
+			animation: pulse 2s infinite;
+			border-radius: 0.5em;
+			padding: 0.5em;
+			float: rigth;
+			right: 2em;
+			position: absolute;
+			bottom: 2em;
+			color: whitesmoke;
+		}
+
+		.row {
+			width: 100%;
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
+			align-items: center;
+		}
+	}
+
 	.scrolling-container {
 		background: radial-gradient(rgb(240, 240, 240), rgb(190, 190, 190));
 		margin: 0em -0.5em;
@@ -76,6 +153,7 @@ body {
 					padding: 0.5em;
 					.slide {
 						@include AShadowyBox();
+						animation: fadein 2s;
 						width: calc(100% - 7em);
 						height: calc(100% - 7em);
 						padding: 3em;
