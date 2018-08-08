@@ -84,7 +84,7 @@ const slideSideCommonProps = {x: 25, scale: 0.65}
 const calc = new StorySegmentCalculator()
 const mangler = new StoryComposer()
 const intermessoLength = 5
-mangler.addStory(calc.addSegment(20), fullscreenMapFunc)
+mangler.addStory(calc.addSegment(30), fullscreenMapFunc)
 const norwayFirstStepSegment = calc.addSegment(10)
 mangler.addStory(norwayFirstStepSegment, vf => <IStoryRunnerProvider>{
 	id: "MAPS_NORWAY",
@@ -109,6 +109,13 @@ mangler.addStory(calc.addSegment(10, 10), vf => <IStoryRunnerProvider>{
 	getStory: slideStory(vf, {s: "SLIDE_CLUSTERS_INTRO"}, {scale: 0.65}),
 	getChildrenIterator: function*() {}
 })
+
+mangler.addStory(calc.addSegment(10, 20), vf => <IStoryRunnerProvider>{
+	id: "VALUE_NETWORK_INIT",
+	getStory: slideStory(vf, {s: "SLIDE_VALUE_NETWORK"}, {scale: 0.65}),
+	getChildrenIterator: function*() {}
+})
+
 mangler.addStory(calc.addSegment(10), vf => <IStoryRunnerProvider>{
 	id: "SLIDE_DECK_NORWAY",
 	getStory: slideStory(vf, {s: "SLIDE_NORWAY_INTRO"}, slideSideCommonProps),

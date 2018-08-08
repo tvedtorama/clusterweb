@@ -208,6 +208,34 @@ body {
 //					pointer-events: none;
 				}
 
+				.value-network {
+					&.credits {
+						position: absolute;
+						right: 2em;
+						bottom: 2em;
+
+						.credits-enabler {
+							opacity: 1;
+							transition: height, opacity 1s ease-in-out;
+						}
+						.actual-credits {
+							height: 0em;
+
+							opacity: 0;
+							transition: height, width, opacity 1s ease-in-out;
+						}
+						&:hover {
+							.credits-enabler {
+								opacity: 1;
+							}
+							.actual-credits {
+								height: 1em;
+								opacity: 1;
+							}
+						}
+					}
+				}
+
 				.progress-indicator-root {
 					.progress-indicator {
 						.progress-background {
