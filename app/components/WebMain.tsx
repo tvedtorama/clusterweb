@@ -8,8 +8,6 @@ require('../../sass/index.scss')
 const HeiComp: React.StatelessComponent<{match: match<any>}> = ({match}) =>
 	<span>We got hit {match.isExact ? "exactly" : "approximately"}</span>
 
-// class HeiComp
-
 const HalloComp = (props) => <span>You got hallo</span>
 
 class WebMainRaw extends React.Component<{store: any}> {

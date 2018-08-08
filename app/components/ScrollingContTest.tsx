@@ -50,7 +50,7 @@ class ScrollingContTestRaw extends React.Component {
 				</div>
 			</div>
 			<div className="non-scrolling-footer">
-				<span>Non-scrolling</span>
+				<span>Thank you!</span>
 			</div>
 		</div>
 	}
