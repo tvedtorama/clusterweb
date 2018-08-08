@@ -1,7 +1,7 @@
 /// <reference path="../../svg.d.ts" />
 import * as React from 'react'
 import Boat from '../../img/fishingboat.svg'
-import OilRig from '../../img/oilRig.svg'
+import OilRig from '../../img/oilrig.svg'
 
 // Note: Could introduce a generic wrapping here, to allow fade out and different kinds of motion.
 export const imageComponentMap = {
