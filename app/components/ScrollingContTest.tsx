@@ -40,6 +40,14 @@ class ScrollingContTestRaw extends React.Component {
 		}
 		return <div className="scroll-test">
 			<Heading />
+			<div className="overlay">
+				<div className="iconContainer">
+					<div className="phone">
+						<i className="fa fa-repeat" />
+					</div>
+					<p>Please rotate!</p>
+				</div>
+			</div>
 			<div className="scrolling-container">
 				<div className="sliding-container">
 					<ItemFactoryContext.Provider value={factory}>
