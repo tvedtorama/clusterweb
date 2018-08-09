@@ -24,7 +24,7 @@ export class ValueNetwork extends React.Component {
 			</svg>,
 			<div key="credits" className="value-network credits">
 				<span className="credits-enabler">Credits</span>
-				<div className="actual-credits">Icons made by <a href="https://www.flaticon.com/authors/geotatah" title="geotatah">geotatah</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+				<div className="actual-credits">Icons made by <a href="https://www.flaticon.com/authors/geotatah" title="geotatah" target="_blank">geotatah</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
 			</div>
 		]
 	}
