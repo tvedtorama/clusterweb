@@ -6,6 +6,7 @@ import { ClustersIntro } from './ClustersIntro';
 import { NorwayOil } from './NorwayOil';
 import { DetroitDetail } from './DetroitDetail';
 import { ValueNetwork } from './ValueNetwork';
+import { EnterPhil } from './EnterPhil';
 
 export const slideComponentMap = {
 	SLIDE_CLUSTERS_INTRO: ClustersIntro,
@@ -15,6 +16,7 @@ export const slideComponentMap = {
 	SLIDE_DETROIT_DETAIL: DetroitDetail,
 	SLIDE_SHENZHEN_INTRO: ShenzhenIntro,
 	SLIDE_VALUE_NETWORK: ValueNetwork,
+	SLIDE_ENTER_PHIL: EnterPhil,
 }
 
 export type ISlideKey = keyof typeof slideComponentMap

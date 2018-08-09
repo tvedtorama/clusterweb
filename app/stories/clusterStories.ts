@@ -192,6 +192,22 @@ mangler.addStory(shenzhenDetailSegment, vf => <IStoryRunnerProvider>{
 const intermesso3Segment = calc.addSegment(intermessoLength)
 mangler.addStory(intermesso3Segment, fullscreenMapFunc)
 
+const enterPhilSegment = calc.addSegment(10)
+// const EnterPhilDetailSegment = calc.addSegment(10)
+
+mangler.addStory(enterPhilSegment, vf => <IStoryRunnerProvider>{
+	id: "MAPS_PHIL",
+	getStory: mapStory(vf, {}, upcloseMapProps),
+	getChildrenIterator: function*() {}
+})
+
+mangler.addStory(enterPhilSegment, vf => <IStoryRunnerProvider>{
+	id: "SLIDE_DECK_PHIL",
+	getStory: slideStory(vf, {s: "SLIDE_ENTER_PHIL"}, slideSideCommonProps),
+	getChildrenIterator: function*() {}
+})
+
+
 // Add the progress indicator, for this to work all segments must be added to the calculator.
 mangler.addStory(calc.addSegment(-1, 0), vf => <IStoryRunnerProvider>{
 	id: "PROGRESS_INDICATOR",

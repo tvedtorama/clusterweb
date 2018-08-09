@@ -192,6 +192,20 @@ body {
 								height: 2em; // Seems "suggestive", as it does not blow up small-screen views.
 							}
 						}
+						.aligned-row {
+							display: flex;
+							flex-direction: row;
+							align-items: center;
+
+							img {
+								height: 1.3em;
+    							margin: 0.2em;
+							}
+						}
+						.tone-down {
+							color: rgba(0, 0, 0, 0.8);
+							font-size: 0.8em;
+						}
 					}
 				}
 
@@ -290,7 +304,7 @@ body {
 							padding: 1em;
 							h1 {
 								font-size: 1.5em;
-							}	
+							}
 						}
 						.story-anim-div {
 							.slide {
