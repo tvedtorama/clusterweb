@@ -1,7 +1,7 @@
 FROM node:8.3-alpine
 ARG PORT=3000
 ENV PORT $PORT
-ENV buildTarget adminGuiServer
+ENV serverApp adminGuiServer
 EXPOSE $PORT
 ADD ./index.js /code/
 ADD ./build/ /code/build/
