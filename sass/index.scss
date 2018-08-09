@@ -26,6 +26,25 @@ $progressFontCaptions: "Source Sans Pro";
 	}
 }
 
+@keyframes animate-down {
+	0% {
+		top: -0.3em;
+		opacity: 1;
+	}
+	50% {
+		top: 0.3em;
+		opacity: 1;
+	}
+	75% {
+		top: 0.3em;
+		opacity: 0;
+	}
+	100% {
+		opacity: 0;
+	}
+}
+
+
 @mixin ABox {
 	border-radius: 0.5em;	
 }
@@ -90,14 +109,20 @@ body {
 			font-size: 32px;
 		}
 		.scroll-text {
-			animation: pulse 2s infinite;
+			animation: pulse 3s infinite;
 			border-radius: 0.5em;
 			padding: 0.5em;
 			float: rigth;
 			right: 2em;
 			position: absolute;
-			bottom: 2em;
+			bottom: 1em;
 			color: whitesmoke;
+			i {
+				font-size: 1.2em;
+				margin: 0.5em;
+				position: relative;
+				animation: animate-down 2s infinite;
+			}
 		}
 
 		.row {

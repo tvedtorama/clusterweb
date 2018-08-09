@@ -14,6 +14,7 @@ class HeadingRaw extends React.Component {
 					</div>
 				</div>
 				<div className="scroll-text">
+					<i className="fa fa-hand-o-down" />
 					<span>Scroll down to learn more about industrial clusters!</span>
 				</div>
 			</div>
