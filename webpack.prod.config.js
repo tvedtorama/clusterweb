@@ -1,6 +1,5 @@
 const path = require('path');
 const webpack = require('webpack');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 const commons = require("./webpack_common")
 
@@ -24,7 +23,6 @@ module.exports = env => ({
         'NODE_ENV': JSON.stringify('production')
       }
     }),
-    new UglifyJsPlugin(),
   ],
   resolve: commons.resolve,
   module: {
