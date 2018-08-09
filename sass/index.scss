@@ -68,31 +68,39 @@ body {
 }
 
 .scroll-test {
-	.heading {
+	.heading, .footing {
 		width: 100%;
-		height: 100vh;
+		position: relative;
 		display: flex;
+		overflow: hidden;
 		flex-direction: column;
 		justify-content: space-around;
 		background: radial-gradient(rgb(220, 220, 220), rgb(100, 100, 100));
 		color: rgb(20, 20, 20);
 
-		:not(.background) {
-			z-index: 1;
-		}
-
 		.background {
-			width: 48%;
-			height: 115%;
+			width: 100vh;
+			height: 100vh;
 			background-image: url(/img/dvnLogo.svg);
 			background-size: 100%;
 			background-repeat: no-repeat;
 			position: absolute;
-			right: -17%;
-			top: -9%;
-			z-index: 0;
+			right: -40vh;
+			top: -10vh;
 			opacity: 0.5;
 		}
+
+		.row {
+			width: 100%;
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
+			align-items: center;
+		}
+
+	}
+	.heading {
+		height: 100vh;
 
 		.logo-row {
 			font-size: 48px;
@@ -115,7 +123,7 @@ body {
 			float: rigth;
 			right: 2em;
 			position: absolute;
-			bottom: 1em;
+			bottom: 1.5em;
 			color: whitesmoke;
 			i {
 				font-size: 1.2em;
@@ -124,20 +132,18 @@ body {
 				animation: animate-down 2s infinite;
 			}
 		}
-
-		.row {
-			width: 100%;
-			display: flex;
-			flex-direction: row;
-			justify-content: center;
-			align-items: center;
+	}
+	.footing {
+		height: 80vh;
+		.links {
+			flex-direction: column;
 		}
 	}
 
 	.scrolling-container {
 		background: radial-gradient(rgb(240, 240, 240), rgb(190, 190, 190));
-		margin: 0em -0.5em;
-		width: calc(100vw - 1em); // No idea why these adjustments are needed, but they amounts to the negative margin of the paragaph we are in - and should be removed
+		margin: 0em;
+		width: 100%; // calc(100vw - 1em); // No idea why these adjustments are needed, but they amounts to the negative margin of the paragaph we are in - and should be removed
 		display: flex;
 		height: 800vh;
 		
@@ -358,9 +364,6 @@ body {
 			}
 		}
 
-	}
-	.non-scrolling-footer {
-		height: 50vh;
 	}
 
 	

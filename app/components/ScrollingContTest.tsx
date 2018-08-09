@@ -5,6 +5,7 @@ import { TestItemViz } from './TestItemVis';
 import { slideComponentMap } from './slides';
 import { imageComponentMap } from './images';
 import { Heading } from './Heading';
+import { Footing } from './Footing';
 
 // Why isn't this part of Typescript? Example fetched from documentation.
 type Unpacked<T> =
@@ -57,9 +58,7 @@ class ScrollingContTestRaw extends React.Component {
 					</ItemFactoryContext.Provider>
 				</div>
 			</div>
-			<div className="non-scrolling-footer">
-				<span>Thank you!</span>
-			</div>
+			<Footing />
 		</div>
 	}
 }
