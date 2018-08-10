@@ -14,6 +14,8 @@ import { PROGRESS_INDICATOR, IProgressIndicatorProps } from "../../storyAnim/com
 import { boatStory } from "./boatStory";
 import { oilRigStory } from "./oilRigStory";
 import { progressIndicator } from "../../storyAnim/storySupport/progressIndicator";
+import { slideStoryImpl } from "../../storyAnim/storySupport/slideStory";
+import { valueNetworkStoryImpl } from "./valueNetworkStory";
 
 export const rootStoryId = "ALMOST_ROOT"
 export const commonProps = {id: rootStoryId, parentId: ROOT_STORY_ID}
@@ -52,26 +54,8 @@ export const mapStory = (existenceCheck: (s: StoryAnim.IEventState) => boolean, 
 	}
 }
 
-export const slideStory = (existenceCheck: (s: StoryAnim.IEventState) => boolean, slideText: string | {s: ISlideKey}, position: StoryAnimDataSchema.IItemPosition = {}) =>
-	function*() {
-		yield storeStoryItem({
-			position,
-			startPosition: position,
-			...commonChildProps("THE_SLIDE"),
-			order: 200,
-			visual: {
-				component: "SLIDE",
-				classNameAdd: "taller-on-mobile",
-				props: (typeof slideText === "string" ? <ISlideProps>{text: slideText} : <ISlideProps>{slide: slideText.s}),
-			}
-		})
-		while (true) {
-			const state: IStoryRunnerYieldFormat = yield {type: NOP}
-			if (!existenceCheck(state.eventState))
-				return
-		}
-	}
-
+export const slideStory = slideStoryImpl(commonChildProps("THE_SLIDE"))
+export const valueNetworkStory = valueNetworkStoryImpl(commonChildProps("THE_VALUE_NETWORK"))
 
 const fullscreenMapFunc = vf => <IStoryRunnerProvider>{
 	id: "MAPS_INIT",
@@ -113,7 +97,7 @@ mangler.addStory(calc.addSegment(10, 10), vf => <IStoryRunnerProvider>{
 
 mangler.addStory(calc.addSegment(10, 20), vf => <IStoryRunnerProvider>{
 	id: "VALUE_NETWORK_INIT",
-	getStory: slideStory(vf, {s: "SLIDE_VALUE_NETWORK"}, {scale: 0.65}),
+	getStory: valueNetworkStory(vf, {scale: 0.65}),
 	getChildrenIterator: function*() {}
 })
 

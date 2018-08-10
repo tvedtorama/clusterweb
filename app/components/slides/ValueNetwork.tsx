@@ -1,12 +1,17 @@
 import * as React from 'react'
 
-export class ValueNetwork extends React.Component {
+export interface IValueNetworkProps {
+	cnt: number
+}
+
+export class ValueNetwork extends React.Component<IValueNetworkProps> {
 	render() {
+		const trans = 20 + this.props.cnt
 		return [
 			<h1 key="h">Clusters - Overview</h1>,
 			<svg key="chart" viewBox="0 0 250 100" className={"value-network chart"}>
 
-				<g transform={`translate(20, 35)`}>
+				<g transform={`translate(${trans}, 35)`}>
 					<path d={"M 0 0 C -5 10, 5 10, 0 30"} stroke={"black"} fill={"none"}/>
 				</g>
 
@@ -19,8 +24,6 @@ export class ValueNetwork extends React.Component {
 					<circle cx={0} cy={0} r={15} fill={"white"} />
 					<image xlinkHref={"/img/manufacture.svg"} x={-7.5} y={-7.5} width={"15"} height={"15"} />
 				</g>
-
-
 			</svg>,
 			<div key="credits" className="value-network credits">
 				<span className="credits-enabler">Credits</span>

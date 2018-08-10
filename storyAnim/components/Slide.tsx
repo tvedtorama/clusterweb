@@ -3,7 +3,7 @@ import { IItemFactory } from './factoryContext';
 
 export const SLIDE_COMPONENT = "SLIDE"
 
-export type ISlideProps = {text: string} | {slide: string, factory: IItemFactory}
+export type ISlideProps = {text: string} | {slide: string, factory: IItemFactory, props?: any}
 
 /** Hosts a html slide.
  *
@@ -15,7 +15,9 @@ export class Slide extends React.Component<ISlideProps> {
 			{
 				"text" in this.props ?
 					<span>{this.props.text}</span> :
-					[this.props.factory.createComponent(this.props.slide)].map(Comp => <Comp />)[0]
+					[this.props].
+						map(({factory, slide, props}) => ({Comp: factory.createComponent(slide), props})).
+						map(({Comp, props}) => <Comp {...{...props}} />)[0]
 			}
 		</div>
 	}
