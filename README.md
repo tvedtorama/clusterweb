@@ -3,7 +3,7 @@
 ### Deployment
 
     git pull
-	... do that copy files and npm install thing.
+	npm install --production --prefix build_node_modules/
 	tsc
 	webpack --config webpack.prod.config.js
 	docker build -t tvedtorama/clusterweb .
