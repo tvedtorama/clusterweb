@@ -175,7 +175,7 @@ body {
 					width: 100%;
 					height: 100%;
 				}
-
+				
 				.story-anim-svg, .story-anim-div {
 					font-size: 22px;
 				}
@@ -236,6 +236,57 @@ body {
 						.tone-down {
 							color: rgba(0, 0, 0, 0.8);
 							font-size: 0.8em;
+						}
+
+						.phil-features-header {
+							font-size: 1.5em;
+						}
+
+						.phil-features {
+							display: flex;
+							flex-direction: row;
+							flex-wrap: wrap;
+							background: whitesmoke;
+							padding: 1em 0.5em;
+							// margin: -1em 0;
+							flex-grow: 2;
+							justify-content: space-around;
+
+							li {
+								padding: 0 0.5em;
+								display: flex;
+								flex-direction: column;
+								align-items: center;
+								width: calc(50% - 2em);
+								// height: 10em;
+								* {
+									margin-bottom: 0.5em;
+									text-align: center
+								}
+								.fa {
+									width: 1em;
+									border: 1px solid rgba(0, 0, 0, 0.5);
+									padding: 1em;
+									color: $progressMainColor;
+									border-radius: 1.5em;
+									background: white;
+								}
+
+								span:nth-child(2) {
+									text-transform: uppercase;
+								}
+							}
+							overflow: scroll;
+							@media screen and (max-width: $break-small) {
+								padding: 0em;
+								li {
+									padding: 0.2em;
+								}
+								li .fa {
+									width: 0.9em;
+									padding: 0.5em;
+								}
+							}
 						}
 					}
 				}
@@ -348,6 +399,11 @@ body {
 				.story-anim-item {
 					position: relative;
 					overflow: hidden; // Prevent translated objects to move outside their container
+					&.taller-on-mobile {
+						height: 110%;
+						margin-top: -2%;
+					}
+	
 					> * {
 						position: absolute;
 					}

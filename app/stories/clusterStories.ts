@@ -61,6 +61,7 @@ export const slideStory = (existenceCheck: (s: StoryAnim.IEventState) => boolean
 			order: 200,
 			visual: {
 				component: "SLIDE",
+				classNameAdd: "taller-on-mobile",
 				props: (typeof slideText === "string" ? <ISlideProps>{text: slideText} : <ISlideProps>{slide: slideText.s}),
 			}
 		})
@@ -184,7 +185,7 @@ mangler.addStory(shenzhenIntroSegment, vf => <IStoryRunnerProvider>{
 })
 
 mangler.addStory(shenzhenDetailSegment, vf => <IStoryRunnerProvider>{
-	id: "SLIDE_DECK_SHENZHEN",
+	id: "SLIDE_DECK_SHENZHEN_DETAILS",
 	getStory: slideStory(vf, "Now everyone buys stuff from Shenzhen.", slideSideCommonProps),
 	getChildrenIterator: function*() {}
 })
@@ -193,7 +194,7 @@ const intermesso3Segment = calc.addSegment(intermessoLength)
 mangler.addStory(intermesso3Segment, fullscreenMapFunc)
 
 const enterPhilSegment = calc.addSegment(10)
-// const EnterPhilDetailSegment = calc.addSegment(10)
+const philDetailSegment = calc.addSegment(10)
 
 mangler.addStory(enterPhilSegment, vf => <IStoryRunnerProvider>{
 	id: "MAPS_PHIL",
@@ -207,6 +208,11 @@ mangler.addStory(enterPhilSegment, vf => <IStoryRunnerProvider>{
 	getChildrenIterator: function*() {}
 })
 
+mangler.addStory(philDetailSegment, vf => <IStoryRunnerProvider>{
+	id: "SLIDE_DECK_FEATURES",
+	getStory: slideStory(vf, {s: "SLIDE_PHIL_FETAURES"}, slideSideCommonProps),
+	getChildrenIterator: function*() {}
+})
 
 // Add the progress indicator, for this to work all segments must be added to the calculator.
 mangler.addStory(calc.addSegment(-1, 0), vf => <IStoryRunnerProvider>{
