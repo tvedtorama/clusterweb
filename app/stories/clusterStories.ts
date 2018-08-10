@@ -55,7 +55,7 @@ export const mapStory = (existenceCheck: (s: StoryAnim.IEventState) => boolean, 
 }
 
 export const slideStory = slideStoryImpl(commonChildProps("THE_SLIDE"))
-export const valueNetworkStory = valueNetworkStoryImpl(commonChildProps("THE_VALUE_NETWORK"))
+export const valueNetworkStory = valueNetworkStoryImpl(commonChildProps("THE_SLIDE"))
 
 const fullscreenMapFunc = vf => <IStoryRunnerProvider>{
 	id: "MAPS_INIT",

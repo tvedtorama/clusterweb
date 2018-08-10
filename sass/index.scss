@@ -302,6 +302,22 @@ body {
 				}
 				
 				.value-network {
+					.vn-org {
+						stroke: orange;
+					
+						&.C1 {
+							stroke: $progressMainColor;
+						}
+
+						&.S2 {
+							stroke: lightgreen;
+						}
+						&.C2 {
+							stroke: lightskyblue;
+						}
+
+					}
+
 					&.credits {
 						position: absolute;
 						right: 2em;

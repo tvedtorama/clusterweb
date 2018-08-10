@@ -1,34 +1,85 @@
 import * as React from 'react'
+import { Motion, spring, presets } from 'react-motion';
+
+// This terrible, mutation-loving, library has a typings, but they don't really work
+const Victor = require('victor')
+const {fromArray} = Victor
+
+interface IAnchor {id: string, point: [number, number]}
+
+interface IOrg extends IAnchor {
+	className: string
+	icon: number
+}
+
+interface IConnector {
+	from: string
+	to: string
+	swing?: number
+	transfer?: {
+		id: string
+		icon: string
+		direction: 1 | -1
+	}
+}
 
 export interface IValueNetworkProps {
-	cnt: number
+	orgs: IOrg[]
+	connectors: IConnector[]
 }
+
+const orgRad = 15
+const strokeWidth = 2
+const orgRadActual = orgRad + strokeWidth
+const coords = [0 - orgRadActual, 0 - orgRadActual, 400 + orgRadActual * 2, 100 + orgRadActual * 2]
+
+const Connector = (props: {conn: IConnector, coords: [[number, number], [number, number]]}) =>
+	<Motion defaultStyle={{swing: 150}} style={{swing: spring(180 + (props.conn.swing || 0), {damping: 4})}} >
+	{({swing}) =>
+	[{start: fromArray(props.coords[0]), end: fromArray(props.coords[1])}].
+	map(({start, end}) =>
+	({
+			start,
+			end,
+			endLocal: end.clone().subtract(start),
+	})).
+	map(d => ({
+		...d,
+		normal: d.endLocal.clone().normalize(),
+		endLocalHalf: d.endLocal.clone().multiply(new Victor(0.5, 0.5)),
+	})).
+	map(d => ({
+			...d,
+			normalRot: d.normal.clone().rotateDeg(90),
+			normalOp: d.normal.clone().rotateDeg(180),
+			backPointing: d.endLocal.clone().add(d.endLocalHalf.clone().rotateDeg(swing))
+	})).
+	map(({start, endLocal, normalRot, backPointing, endLocalHalf, normal}) =>
+		<g transform={`translate(${start.x}, ${start.y})`}>
+			<path d={`M 0 0 C ${endLocalHalf.x} ${endLocalHalf.y}, ${backPointing.x} ${backPointing.y}, ${endLocal.x} ${endLocal.y}`} stroke={"rgba(0, 0, 0, 0.5)"} fill={"none"}/>
+		</g>
+	)[0]
+}</Motion>
+
+const findConnCords = (conn: IConnector, anchors: IAnchor[]) =>
+	[conn.from, conn.to].map(cId => anchors.find(({id}) => id === cId).point) as [[number, number], [number, number]]
 
 export class ValueNetwork extends React.Component<IValueNetworkProps> {
 	render() {
-		const trans = 20 + this.props.cnt
 		return [
-			<h1 key="h">Clusters - Overview</h1>,
-			<svg key="chart" viewBox="0 0 250 100" className={"value-network chart"}>
-
-				<g transform={`translate(${trans}, 35)`}>
-					<path d={"M 0 0 C -5 10, 5 10, 0 30"} stroke={"black"} fill={"none"}/>
-				</g>
-
-				<g transform={`translate(20, 20)`} stroke={"orange"}>
-					<circle cx={0} cy={0} r={15} fill={"white"} />
-					<image xlinkHref={"/img/company.svg"} x={-7.5} y={-7.5} width={"15"} height={"15"} />
-				</g>
-
-				<g transform={`translate(20, 80)`} stroke={"blue"} opacity={0.5}>
-					<circle cx={0} cy={0} r={15} fill={"white"} />
-					<image xlinkHref={"/img/manufacture.svg"} x={-7.5} y={-7.5} width={"15"} height={"15"} />
-				</g>
+			<h1 key="h">Clusters - Value Flow</h1>,
+			<svg key="chart" viewBox={coords.join(" ")} className={"value-network chart"}>
+				{
+					this.props.connectors.map(conn =>
+						<Connector conn={conn} coords={findConnCords(conn, this.props.orgs)} />)
+				}
+				{
+					this.props.orgs.map(org => <g key={org.id} transform={`translate(${org.point[0]}, ${org.point[1]})`} className={`vn-org ${org.className || org.id}`}>
+						<circle r={orgRad} fill={"white"} />
+						<text style={{font: "normal normal normal 14px/1 FontAwesome"}} dominantBaseline={"central"} textAnchor={"middle"} fill="none">{String.fromCharCode(org.icon)}</text>
+					</g>)
+				}
 			</svg>,
-			<div key="credits" className="value-network credits">
-				<span className="credits-enabler">Credits</span>
-				<div className="actual-credits">Icons made by <a href="https://www.flaticon.com/authors/geotatah" title="geotatah" target="_blank">geotatah</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
-			</div>
 		]
 	}
 }
