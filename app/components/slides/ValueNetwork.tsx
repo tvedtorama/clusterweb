@@ -71,7 +71,7 @@ export class ValueNetwork extends React.Component<IValueNetworkProps> {
 			<svg key="chart" viewBox={coords.join(" ")} className={"value-network chart"}>
 				{
 					this.props.connectors.map(conn =>
-						<Connector conn={conn} coords={findConnCords(conn, this.props.orgs)} />)
+						<Connector conn={conn} coords={findConnCords(conn, this.props.orgs)} key={conn.from + conn.to} />)
 				}
 				{
 					this.props.orgs.map(org => <g key={org.id} transform={`translate(${org.point[0]}, ${org.point[1]})`} className={`vn-org ${org.className || org.id}`}>
