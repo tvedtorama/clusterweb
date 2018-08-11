@@ -50,11 +50,10 @@ const Connector = (props: {conn: IConnector, coords: [[number, number], [number,
 	})).
 	map(d => ({
 			...d,
-			normalRot: d.normal.clone().rotateDeg(90),
 			normalOp: d.normal.clone().rotateDeg(180),
 			backPointing: d.endLocal.clone().add(d.endLocalHalf.clone().rotateDeg(swing))
 	})).
-	map(({start, endLocal, normalRot, backPointing, endLocalHalf, normal}) =>
+	map(({start, endLocal, backPointing, endLocalHalf}) =>
 		<g transform={`translate(${start.x}, ${start.y})`}>
 			<path d={`M 0 0 C ${endLocalHalf.x} ${endLocalHalf.y}, ${backPointing.x} ${backPointing.y}, ${endLocal.x} ${endLocal.y}`} stroke={"rgba(0, 0, 0, 0.5)"} fill={"none"}/>
 		</g>
