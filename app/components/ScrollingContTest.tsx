@@ -46,7 +46,7 @@ class ScrollingContTestRaw extends React.Component {
 					<div className="phone">
 						<i className="fa fa-repeat" />
 					</div>
-					<p>Please rotate!</p>
+					<p>Please rotate phone!</p>
 				</div>
 			</div>
 			<div className="scrolling-container">
