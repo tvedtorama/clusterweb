@@ -1,10 +1,16 @@
 import { slideStoryImpl } from "../../storyAnim/storySupport/slideStory";
 import { IValueNetworkProps } from "../components/slides/ValueNetwork";
+import { IStoryRunnerYieldFormat } from "../../storyAnim/storyRunner";
 
+// Note: Icon codes deduced from FA 4.7 website.  Sure there must be an import available somewhere.
 const industry = 0xf275
 const cogs = 0xf085
 const flask = 0xf0c3
 const gavel = 0xf0e3
+const coctail = 0xf000
+const gift = 0xf06b
+const dollarSign = 0xf155
+const gem = 0xf219
 
 const generateState = () => <IValueNetworkProps>{
 	orgs: [
@@ -64,8 +70,29 @@ const generateState = () => <IValueNetworkProps>{
 }
 
 const valueNetworkPropsProvider = function*() {
+	let state = generateState()
 	while (true) {
-		yield generateState()
+		const storyState: IStoryRunnerYieldFormat = yield state
+		const rand = Math.random()
+		if (rand < 0.5) {
+			const activate = Math.round(Math.random() * 100) % state.connectors.length
+			const isReturn = rand < 0.1
+			state = <IValueNetworkProps>{
+				...state,
+				connectors:
+					[
+						...state.connectors.filter((x, i) => i !== activate),
+						{
+							...state.connectors[activate],
+							transfer: {
+								direction: isReturn ? -1 : 1,
+								icon: isReturn ? dollarSign : [coctail, gem, gift][Math.round(rand * 100) % 3],
+								id: rand.toString()
+							}
+						}
+					]
+			}
+		}
 	}
 }
 
