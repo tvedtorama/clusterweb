@@ -9,8 +9,11 @@ const flask = 0xf0c3
 const gavel = 0xf0e3
 const coctail = 0xf000
 const gift = 0xf06b
+const user = 0xf007
 const dollarSign = 0xf155
 const gem = 0xf219
+
+const valueIcons = [coctail, gem, gift, user]
 
 const generateState = () => <IValueNetworkProps>{
 	orgs: [
@@ -75,8 +78,13 @@ const valueNetworkPropsProvider = function*() {
 		const storyState: IStoryRunnerYieldFormat = yield state
 		const rand = Math.random()
 		if (rand < 0.5) {
-			const activate = Math.round(Math.random() * 100) % state.connectors.length
-			const isReturn = rand < 0.1
+			const inactive = state.connectors.
+					map((c, i) => ({c, i})).
+					filter(x => !x.c.transfer || x.c.transfer.started < storyState.eventState.frameTime - 2000)
+			if (inactive.length === 0)
+				continue
+			const activate = inactive[Math.round(Math.random() * 100) % inactive.length].i
+			const isPayment = rand < 0.20
 			state = <IValueNetworkProps>{
 				...state,
 				connectors:
@@ -85,9 +93,10 @@ const valueNetworkPropsProvider = function*() {
 						{
 							...state.connectors[activate],
 							transfer: {
-								direction: isReturn ? -1 : 1,
-								icon: isReturn ? dollarSign : [coctail, gem, gift][Math.round(rand * 100) % 3],
-								id: rand.toString()
+								direction: isPayment ? -1 : 1,
+								icon: isPayment ? dollarSign : valueIcons[Math.round(rand * 100) % valueIcons.length],
+								id: rand.toString(),
+								started: storyState.eventState.frameTime,
 							}
 						}
 					]
