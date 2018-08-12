@@ -16,6 +16,7 @@ interface IConnectorTransfer {
 	id: string
 	icon: number
 	direction: 1 | -1
+	started: number
 }
 
 interface IConnector {
@@ -74,7 +75,10 @@ const Connector = (props: {id: string, conn: IConnector, refSvg?: SVGPathElement
 				props.conn.transfer && props.refSvg &&
 						<Motion defaultStyle={{p: 0}} style={{p: spring(100, {damping: 10, stiffness: 6})}} key={props.conn.transfer.id}>
 						{({p}) =>
-							[props.refSvg.getPointAtLength(p * props.refSvg.getTotalLength() / 100)].map(point =>
+							[props.conn.transfer.direction > 0 ? p : 100 - p].
+							map(p =>
+								props.refSvg.getPointAtLength(p * props.refSvg.getTotalLength() / 100)).
+							map(point =>
 								<ConnectorTransfer {...{point, transfer: props.conn.transfer, opacity: Math.min(1, 1.25 - Math.abs(p - 50) / 40)}} />
 							)[0]
 						}</Motion>
