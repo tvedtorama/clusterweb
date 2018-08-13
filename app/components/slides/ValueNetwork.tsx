@@ -1,5 +1,7 @@
 import * as React from 'react'
 import { Motion, spring, presets } from 'react-motion';
+import { GlowFilter } from '../../../storyAnim/components/ProgressIndicator';
+import { ProjectionWrapper, IProjectionProps } from '../story/WorldMap';
 
 // This terrible, mutation-loving, library has a typings, but they don't really work
 const Victor = require('victor')
@@ -34,15 +36,16 @@ export interface IValueNetworkProps {
 const connectorClass = "connector"
 const idPrefix = "id-"
 
-const orgRad = 15
-const strokeWidth = 2
+const orgRad = 8
+const strokeWidth = 0.5
 const orgRadActual = orgRad + strokeWidth
-const coords = [0 - orgRadActual, 0 - orgRadActual, 400 + orgRadActual * 2, 100 + orgRadActual * 2]
+const coords = [0 - orgRadActual, 0 - orgRadActual, 200 + orgRadActual * 2, 50 + orgRadActual * 2]
+const transferRad = 4.5
 
 const ConnectorTransfer = ({point, transfer, opacity}: {point: SVGPoint, transfer: IConnectorTransfer, opacity: number}) =>
-	<g transform={`translate(${point.x}, ${point.y})`} style={{opacity}}>
-		<circle r={7} fill="white" stroke="black" />
-		<text style={{font: "normal normal normal 8px/1 FontAwesome"}}
+	<g transform={`translate(${point.x}, ${point.y})`} style={{opacity}} className="connector">
+		<circle r={transferRad} fill="white" filter={"url(#connectorGlow)"}/>
+		<text style={{font: "normal normal normal 5px/1 FontAwesome"}}
 			dominantBaseline={"central"} textAnchor={"middle"} fill="black">
 				{String.fromCharCode(transfer.icon)}
 			</text>
@@ -90,14 +93,14 @@ const Connector = (props: {id: string, conn: IConnector, refSvg?: SVGPathElement
 const findConnCords = (conn: IConnector, anchors: IAnchor[]) =>
 	[conn.from, conn.to].map(cId => anchors.find(({id}) => id === cId).point) as [[number, number], [number, number]]
 
-export class ValueNetwork extends React.Component<IValueNetworkProps> {
-	svg: SVGSVGElement;
+export class ValueNetworkGraphics extends React.Component<IValueNetworkProps> {
+	rootElm: SVGGElement;
 
 	getRefMap() {
-		if (!this.svg)
+		if (!this.rootElm)
 			return {}
 
-		const connectors = this.svg.getElementsByClassName(connectorClass)
+		const connectors = this.rootElm.getElementsByClassName(connectorClass)
 		let refMap = {}
 		for (const x of connectors)
 			for (const c of x.classList)
@@ -108,9 +111,8 @@ export class ValueNetwork extends React.Component<IValueNetworkProps> {
 
 	render() {
 		const refMap = this.getRefMap()
-		return [
-			<h1 key="h">Clusters - Value Flow</h1>,
-			<svg key="chart" ref={r => this.svg = r} viewBox={coords.join(" ")} className={"value-network chart"}>
+		return <g ref={r => this.rootElm = r} strokeWidth={strokeWidth}>
+				<GlowFilter key="filter" id="connectorGlow" />
 				{
 					this.props.connectors.
 						map(conn => ({conn, id: conn.from + conn.to})).
@@ -122,13 +124,25 @@ export class ValueNetwork extends React.Component<IValueNetworkProps> {
 				{
 					this.props.orgs.map(org => <g key={org.id} transform={`translate(${org.point[0]}, ${org.point[1]})`} className={`vn-org ${org.className || org.id}`}>
 						<circle r={orgRad} fill={"white"} />
-						<text style={{font: "normal normal normal 14px/1 FontAwesome"}} dominantBaseline={"central"} textAnchor={"middle"} fill="none">{String.fromCharCode(org.icon)}</text>
+						<text style={{font: "normal normal normal 8px/1 FontAwesome"}} dominantBaseline={"central"} textAnchor={"middle"} fill="none">{String.fromCharCode(org.icon)}</text>
 					</g>)
 				}
-			</svg>,
-		]
+			</g>
 	}
 }
+
+export const MappedValueNetworkGraphics = ProjectionWrapper((props: IValueNetworkProps & IProjectionProps) =>
+	[props.createProjection([0, 0])].map(projection =>
+		<ValueNetworkGraphics {...{...{...props, orgs: props.orgs.map(o => ({...o, point: projection(o.point)}))}}} />
+	)[0])
+
+export const ValueNetwork = (props: IValueNetworkProps) =>
+		[
+			<h1 key="h">Clusters - Value Flow</h1>,
+			<svg key="chart" viewBox={coords.join(" ")} className={"value-network chart"}>
+				<ValueNetworkGraphics {...props} />
+			</svg>,
+		]
 
 
 
