@@ -1,5 +1,6 @@
 
 import * as React from 'react'
+import {Subtract} from 'utility-types'
 import { spring, OpaqueConfig, StaggeredMotion } from 'react-motion';
 import { feature } from "topojson-client"
 import { GeometryCollection } from "topojson-specification";
@@ -7,6 +8,7 @@ import { geoNaturalEarth1, geoPath } from 'd3-geo';
 import { isUndefined } from '../../../storyAnim/utils/lowLevelUtils';
 import { slowSpring } from '../../../storyAnim/utils/springs';
 import { GlowFilter } from '../../../storyAnim/components/ProgressIndicator';
+import { cityCooridnates } from '../../interestPoints';
 
 const worldDataJson = require('../../maps/110m.json')
 const lakesDataJson = require('../../maps/110m_lakes.json').features
@@ -17,14 +19,6 @@ export interface IWorldMapProps {
 	selectedHotspot?: number
 	closeness?: "CLOSE" | "VERY_CLOSE" | "FAR"
 }
-
-const cityCooridnates: [number, number][] = [
-	[-83.045754, 42.331427], // Detroit
-	[5.628929, 62.3317447], // Fosnavaag
-	[114.1, 22.55], // Shenzhen
-	[-0.893753, 52.230375], // Northampton
-	[8.55, 47.366667], // Zürich
-]
 
 const WorldMapContent: React.StatelessComponent<{projection, currentCity, worldData, scale}> = ({projection, currentCity, worldData, scale}) => [
 	<g className="world-map countries" key="countries">
@@ -72,25 +66,39 @@ const WorldMapContent: React.StatelessComponent<{projection, currentCity, worldD
 const animDefaults = {long: 0, lat: 0, scale: 100}
 type IAnimProps = {[index in keyof typeof animDefaults]: OpaqueConfig}
 
+interface IProjectionProps {
+	createProjection(center?: [number, number], scale?: number)
+}
+
+const ProjectionWrapper = <P extends IProjectionProps>(Component: React.ComponentType<P>) =>
+	class ProjectionWrapperClass extends React.Component<Subtract<P, IProjectionProps>> {
+		createProjection(center?: [number, number], scale: number = 100) {
+			const base = geoNaturalEarth1()
+				.translate([0, 0])
+			if (!center)
+				return base
+			return base.center(center).scale(scale) // translate([translate[0], translate[1]])
+		}
+
+		render() {
+			return <Component {...this.props} createProjection={(a, b) => this.createProjection(a, b)} />
+		}
+	}
+
+
 /** Renders a map of the world.
  *
  * Inspired by: https://medium.com/@zimrick/how-to-create-pure-react-svg-maps-with-topojson-and-d3-geo-e4a6b6848a98
   */
-export class WorldMap extends React.Component<IWorldMapProps, {worldData: typeof worldData}> {
+export class WorldMapRaw extends React.Component<IWorldMapProps & IProjectionProps, {worldData: typeof worldData}> {
 	constructor(props) {
 		super(props)
 		this.state = {
 			worldData,
 		}
 	}
-	projection(center?: [number, number], scale: number = 100) {
-		const base = geoNaturalEarth1()
-			.translate([0, 0])
-		if (!center)
-			return base
-		return base.center(center).scale(scale) // translate([translate[0], translate[1]])
-	}
 	render() {
+		const {createProjection} = this.props
 		const currentCity = isUndefined(this.props.selectedHotspot) ? null : cityCooridnates[this.props.selectedHotspot]
 		const animStyles: IAnimProps = currentCity ? {
 			long: slowSpring(currentCity[0]),
@@ -110,7 +118,7 @@ export class WorldMap extends React.Component<IWorldMapProps, {worldData: typeof
 					...(i > 0 ? {scale: slowSpring(vals[i - 1].scale)} : null)
 				}))}>{
 					(motions: [{long, lat}, {scale}]) =>
-						[this.projection([motions[0].long, motions[0].lat], motions[1].scale)].
+						[createProjection([motions[0].long, motions[0].lat], motions[1].scale)].
 						map(projection => <WorldMapContent {...{currentCity, projection, worldData: this.state.worldData, scale: motions[1].scale}} />)
 						[0]}
 			</StaggeredMotion>
@@ -118,4 +126,4 @@ export class WorldMap extends React.Component<IWorldMapProps, {worldData: typeof
 	}
 }
 
-
+export const WorldMap = ProjectionWrapper(WorldMapRaw)
