@@ -14,10 +14,9 @@ export const slideStoryInnerDefault = function*() {
  *
  * Returns a method that can be called to generate the actual story.
  */
-export const slideStoryImpl = (idAndParent: {id: string, parentId: string}, internal = slideStoryInnerDefault) =>
+export const slideStoryImpl = (idAndParent: {id: string, parentId: string}, internalGen = slideStoryInnerDefault()) =>
 	(existenceCheck: (s: StoryAnim.IEventState) => boolean, slideText: string | {s: ISlideKey}, position: StoryAnimDataSchema.IItemPosition = {}) =>
 	function*() {
-		const internalGen = internal()
 		const internalGenProps = internalGen.next().value
 		const getStoryItemToStore = (internalGenProps) => storeStoryItem({
 			position,

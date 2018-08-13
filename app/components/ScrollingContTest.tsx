@@ -6,6 +6,7 @@ import { slideComponentMap } from './slides';
 import { imageComponentMap } from './images';
 import { Heading } from './Heading';
 import { Footing } from './Footing';
+import { MappedValueNetworkGraphics } from './slides/ValueNetwork';
 
 // Why isn't this part of Typescript? Example fetched from documentation.
 type Unpacked<T> =
@@ -24,6 +25,8 @@ loadWorldMap.then(x => WorldMap = x.WorldMap)
 const factory: IItemFactory = {
 	createComponent: (component) => component === "MAP" ?
 			WorldMap :
+		component === "VALUE_NETWORK_GRAPHICS" ?
+			MappedValueNetworkGraphics :
 		component in slideComponentMap ? slideComponentMap[component] :
 		component in imageComponentMap ? imageComponentMap[component] :
 			TestItemViz

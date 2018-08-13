@@ -5,17 +5,14 @@ import { storeStoryItem } from "../../storyAnim/actions/storyItem";
 import { CONTAINER_COMPONENT } from "../../storyAnim/components/Container";
 import { ROOT_STORY_ID } from "../../storyAnim/storySupport/rootStory";
 import { filterChildren } from "../../storyAnim/storySupport/filterChildren";
-import { IWorldMapProps } from "../components/story/WorldMap";
 import { StorySegmentCalculator } from "../../storyAnim/storySupport/StorySegmentCalculator";
 import { StoryComposer } from "../../storyAnim/storySupport/StoryComposer";
-import { ISlideKey } from "../components/slides";
-import { ISlideProps } from "../../storyAnim/components/Slide";
-import { PROGRESS_INDICATOR, IProgressIndicatorProps } from "../../storyAnim/components/ProgressIndicator";
 import { boatStory } from "./boatStory";
 import { oilRigStory } from "./oilRigStory";
 import { progressIndicator } from "../../storyAnim/storySupport/progressIndicator";
 import { slideStoryImpl } from "../../storyAnim/storySupport/slideStory";
-import { valueNetworkStoryImpl } from "./valueNetworkStory";
+import { valueNetworkStoryImpl, valueNetworkWorldMapStoryProvider } from "./valueNetworkStory";
+import { mapStoryImpl } from "./worldMapStory";
 
 export const rootStoryId = "ALMOST_ROOT"
 export const commonProps = {id: rootStoryId, parentId: ROOT_STORY_ID}
@@ -35,27 +32,10 @@ export const clusterStories = function*(initialState: StoryAnim.IEventState) {
 		yield {type: NOP}
 }
 
-export const mapStory = (existenceCheck: (s: StoryAnim.IEventState) => boolean, wmp?: IWorldMapProps, position: StoryAnimDataSchema.IItemPosition = {}) =>
-	function*(initialState: StoryAnim.IEventState) {
-	yield storeStoryItem({
-		position,
-		startPosition: position,
-		...commonChildProps("THE_MAP"),
-		visual: {
-			component: "MAP",
-			props: wmp || {},
-			classNameAdd: "world-map-root",
-		}
-	})
-	while (true) {
-		const state: IStoryRunnerYieldFormat = yield {type: NOP}
-		if (!existenceCheck(state.eventState))
-			return
-	}
-}
 
 export const slideStory = slideStoryImpl(commonChildProps("THE_SLIDE"))
 export const valueNetworkStory = valueNetworkStoryImpl(commonChildProps("THE_SLIDE"))
+export const mapStory = mapStoryImpl(commonChildProps("THE_MAP"))
 
 const fullscreenMapFunc = vf => <IStoryRunnerProvider>{
 	id: "MAPS_INIT",
@@ -178,7 +158,8 @@ const intermesso3Segment = calc.addSegment(intermessoLength)
 mangler.addStory(intermesso3Segment, fullscreenMapFunc)
 
 const enterPhilSegment = calc.addSegment(10)
-const philDetailSegment = calc.addSegment(10)
+const enterPhilWorldMapSegment = calc.addSegment(10)
+const philFeaturesSegment = calc.addSegment(15)
 
 mangler.addStory(enterPhilSegment, vf => <IStoryRunnerProvider>{
 	id: "MAPS_PHIL",
@@ -192,9 +173,12 @@ mangler.addStory(enterPhilSegment, vf => <IStoryRunnerProvider>{
 	getChildrenIterator: function*() {}
 })
 
-mangler.addStory(philDetailSegment, vf => <IStoryRunnerProvider>{
+mangler.addStory(enterPhilWorldMapSegment, vf =>
+	valueNetworkWorldMapStoryProvider(() => mapStory(vf)))
+
+mangler.addStory(philFeaturesSegment, vf => <IStoryRunnerProvider>{
 	id: "SLIDE_DECK_FEATURES",
-	getStory: slideStory(vf, {s: "SLIDE_PHIL_FETAURES"}, slideSideCommonProps),
+	getStory: slideStory(vf, {s: "SLIDE_PHIL_FETAURES"}, {scale: 0.65}),
 	getChildrenIterator: function*() {}
 })
 

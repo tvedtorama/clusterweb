@@ -301,7 +301,7 @@ body {
 					}
 				}
 				
-				.value-network {
+				.value-network, .world-map-root {
 					.vn-org {
 						stroke: orange;
 					
@@ -319,7 +319,7 @@ body {
 					.connector {
 						circle {
 							stroke: orange;
-							stroke-width: 0.7px;
+							stroke-width: 0.3px;
 						}
 					}
 				}
