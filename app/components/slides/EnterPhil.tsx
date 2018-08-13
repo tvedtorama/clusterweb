@@ -4,7 +4,7 @@ export class EnterPhil extends React.Component {
 	render() {
 		return [
 			<h1 key="h">Enter: The Phil Network</h1>,
-			<p key="p">The Phil Network is a cloud based cluster management system.  It can help accellerate your organization's network building.  It lessens dependendencies on key contacts and monitors relations with customers and suppliers.</p>,
+			<p key="p">The Phil Network is a cloud based cluster management system.  It can help accellerate your organization's network building.  Dependendencies on key contacts are reduced and while Phil monitors relations with customers and suppliers.</p>,
 			<ul key="ul">
 				<li>Track organizations and resources in long and short term relations</li>
 				<li>Leverage digital trust throgh identity certificates and ratings</li>
