@@ -66,11 +66,11 @@ const WorldMapContent: React.StatelessComponent<{projection, currentCity, worldD
 const animDefaults = {long: 0, lat: 0, scale: 100}
 type IAnimProps = {[index in keyof typeof animDefaults]: OpaqueConfig}
 
-interface IProjectionProps {
+export interface IProjectionProps {
 	createProjection(center?: [number, number], scale?: number)
 }
 
-const ProjectionWrapper = <P extends IProjectionProps>(Component: React.ComponentType<P>) =>
+export const ProjectionWrapper = <P extends IProjectionProps>(Component: React.ComponentType<P>) =>
 	class ProjectionWrapperClass extends React.Component<Subtract<P, IProjectionProps>> {
 		createProjection(center?: [number, number], scale: number = 100) {
 			const base = geoNaturalEarth1()
