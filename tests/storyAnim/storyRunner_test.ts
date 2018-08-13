@@ -113,10 +113,10 @@ describe("storyRunner", () => {
 		actions[4].should.have.property("payload").deep.equal({id: "B"})
 
 		// Remove all the created items...
-		actions[6].should.have.property("type").equal(DELETE_STORY_ITEM)
-		actions[7].should.have.property("type").equal(DELETE_STORY_ITEM)
-		actions[8].should.have.property("type").equal(DELETE_STORY_ITEM)
-		actions[9].should.have.property("type").equal(DELETE_STORY_ITEM)
+		actions[6].should.deep.equal({type: DELETE_STORY_ITEM, payload: {id: "A", owners: ["abc123"]}})
+		actions[7].should.deep.equal({type: DELETE_STORY_ITEM, payload: {id: "A1", owners: ["abcChild_1"]}})
+		actions[8].should.deep.equal({type: DELETE_STORY_ITEM, payload: {id: "A_abcChild_1", owners: ["abcChild_2"]}})
+		actions[9].should.deep.equal({type: DELETE_STORY_ITEM, payload: {id: "A_abcChild_1", owners: ["abcChild_50"]}})
 	})
 
 	it("must provide smooth transitions", async () => {

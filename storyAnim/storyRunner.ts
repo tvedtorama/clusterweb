@@ -119,6 +119,6 @@ export const storyRunner = function*(storyData: IStoryRunnerProvider, eventData?
 	yield delay(0)
 
 	// Remove any items crated by this story, and any cancelled child stories
-	for (const itemId of itemRegistry.getAllActive())
-		yield put(deleteStoryItem({id: itemId, ...actionOwners}))
+	for (const activeItem of itemRegistry.getAllActive(storyData.id))
+		yield put(deleteStoryItem({id: activeItem.itemId, owners: [activeItem.storyId]}))
 }

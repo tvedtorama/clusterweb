@@ -30,9 +30,10 @@ export class CreatedItemRegistry {
 		this.childRegistry.set(childId, newChild)
 		return newChild
 	}
-	getAllActive() {
-		const items = [...this.activeItems, ...Ix.Iterable.from(this.childRegistry.values()).reduce((x, y) => [...x, ...y.getAllActive()], [])]
-		return items
+	getAllActive(storyId: string): {storyId, itemId}[] {
+		return [
+			...this.activeItems.map(itemId => ({storyId: storyId, itemId})),
+			...Ix.Iterable.from(this.childRegistry).reduce((x, [id, reg]) => [...x, ...reg.getAllActive(id)], [])]
 	}
 	unregister() {
 		if (this._parent) {
