@@ -2,12 +2,15 @@ import * as React from 'react'
 import { Motion, spring, presets } from 'react-motion';
 import { GlowFilter } from '../../../storyAnim/components/ProgressIndicator';
 import { ProjectionWrapper, IProjectionProps } from '../story/WorldMap';
+import { Maybe } from '../../../storyAnim/utils/monad';
 
 // This terrible, mutation-loving, library has a typings, but they don't really work
 const Victor = require('victor')
 const {fromArray} = Victor
 
-interface IAnchor {id: string, point: [number, number]}
+type IPoint = [number, number]
+
+interface IAnchor {id: string, point: IPoint}
 
 interface IOrg extends IAnchor {
 	className: string
@@ -28,9 +31,15 @@ interface IConnector {
 	transfer?: IConnectorTransfer
 }
 
+interface IProject {
+	members: string[]
+}
+
+
 export interface IValueNetworkProps {
 	orgs: IOrg[]
 	connectors: IConnector[]
+	projects: IProject[]
 }
 
 const connectorClass = "connector"
@@ -39,9 +48,62 @@ const idPrefix = "id-"
 const orgRad = 8
 const strokeWidth = 0.5
 const orgRadActual = orgRad + strokeWidth
-const coords = [0 - orgRadActual, 0 - orgRadActual, 200 + orgRadActual * 2, 50 + orgRadActual * 2]
+const svgCoords = [0 - orgRadActual, -10 - orgRadActual, 200 + orgRadActual * 2, 70 + orgRadActual * 2]
 const transferRad = 4.5
 
+/** Project border, as a path with curves between two points, and caption text.
+ *
+ * Sets up spline points to corner the organizations at the start and end.
+*/
+const ProjectBorder = ({points, center, text}: {points: [IPoint, IPoint], center: IPoint, text: string}) =>
+	Maybe.some({
+			start: fromArray(points[1]),
+			end: fromArray(points[0]),
+			center: fromArray(center),
+			orgRadScale: new Victor(orgRad * 1.6, orgRad * 1.6),
+		})
+		.map(({start, end, center, orgRadScale}) => ({
+			start, end, center, orgRadScale,
+			startVect: start.clone().subtract(center).normalize().multiply(orgRadScale),
+			endVect: end.clone().subtract(center).normalize().multiply(orgRadScale),
+			id: points.map(x => x.join('')).join('')
+		})).map(prev => ({
+			...prev,
+			start: prev.start.add(prev.startVect),
+			end: prev.end.add(prev.endVect),
+			cpointScale: new Victor(1.3, 1.3)
+		})).map(prev => ({
+			...prev,
+			startDirPoint: prev.startVect.clone().rotateDeg(90).multiply(prev.cpointScale).add(prev.start),
+			endDirPoint: prev.endVect.clone().rotateDeg(-90).multiply(prev.cpointScale).add(prev.end),
+		})).map(({start: s, end: e, startDirPoint: sdp, endDirPoint: edp, id}) =>
+			<g className="project-border">
+				<path d={`M ${s.x} ${s.y} C ${sdp.x} ${sdp.y} ${edp.x} ${edp.y} ${e.x} ${e.y}`} id={id} />
+				<text className={"project-border-text"} x={20} y={10}>
+					<textPath xlinkHref={`#${id}`}>
+						{text}
+					</textPath>
+				</text>
+			</g>
+		)
+		.getOrElse(null)
+
+/** Encircling of orgs */
+const Project = ({id, project, coords}: {id: string, project: IProject, coords: IPoint[]}) =>
+	Maybe.some(coords.reduce((a, b) => [a[0] + b[0], a[1] + b[1]], [0, 0]))
+		.map(z => z.map(x => x / coords.length))
+		.map((center: IPoint) => coords
+			.map((c, i) => [c, coords[(i + 1) % coords.length]] as [IPoint, IPoint])
+			.map((cPair, i) =>
+				<ProjectBorder key={i} points={cPair} center={center} text="Project" />
+			))
+		.map(arr =>
+			<g>{arr}</g>
+		)
+		.getOrElse(null)
+
+
+/** The transfer of value along the parent path */
 const ConnectorTransfer = ({point, transfer, opacity}: {point: SVGPoint, transfer: IConnectorTransfer, opacity: number}) =>
 	<g transform={`translate(${point.x}, ${point.y})`} style={{opacity}} className="connector">
 		<circle r={transferRad} fill="white" filter={"url(#connectorGlow)"}/>
@@ -51,7 +113,8 @@ const ConnectorTransfer = ({point, transfer, opacity}: {point: SVGPoint, transfe
 			</text>
 	</g>
 
-const Connector = (props: {id: string, conn: IConnector, refSvg?: SVGPathElement, coords: [[number, number], [number, number]]}) =>
+/** Draws a path between two org(-anisation)s.  Uses the previous render as a path reference for value transfers. */
+const Connector = (props: {id: string, conn: IConnector, refSvg?: SVGPathElement, coords: [IPoint, IPoint]}) =>
 	<Motion defaultStyle={{swing: 150}} style={{swing: spring(180 + (props.conn.swing || 0), {damping: 2, stiffness: 10})}} >
 	{({swing}) =>
 	[{start: fromArray(props.coords[0]), end: fromArray(props.coords[1])}].
@@ -73,7 +136,8 @@ const Connector = (props: {id: string, conn: IConnector, refSvg?: SVGPathElement
 	})).
 	map(({start, endLocal, backPointing, endLocalHalf}) =>
 		<g transform={`translate(${start.x}, ${start.y})`}>
-			<path className={`${connectorClass} ${idPrefix}${props.id}`} d={`M 0 0 C ${endLocalHalf.x} ${endLocalHalf.y}, ${backPointing.x} ${backPointing.y}, ${endLocal.x} ${endLocal.y}`} stroke={"rgba(0, 0, 0, 0.5)"} fill={"none"}/>
+			<path className={`${connectorClass} ${idPrefix}${props.id}`} 
+				d={`M 0 0 C ${endLocalHalf.x} ${endLocalHalf.y}, ${backPointing.x} ${backPointing.y}, ${endLocal.x} ${endLocal.y}`} stroke={"rgba(0, 0, 0, 0.5)"} fill={"none"}/>
 			{
 				props.conn.transfer && props.refSvg &&
 						<Motion defaultStyle={{p: 0}} style={{p: spring(100, {damping: 10, stiffness: 6})}} key={props.conn.transfer.id}>
@@ -90,8 +154,11 @@ const Connector = (props: {id: string, conn: IConnector, refSvg?: SVGPathElement
 	)[0]
 }</Motion>
 
+const findProjectCords = (conn: {members: string[]}, anchors: IAnchor[]) =>
+	conn.members.map(cId => anchors.find(({id}) => id === cId).point) as [IPoint, IPoint]
+
 const findConnCords = (conn: IConnector, anchors: IAnchor[]) =>
-	[conn.from, conn.to].map(cId => anchors.find(({id}) => id === cId).point) as [[number, number], [number, number]]
+	findProjectCords({members: [conn.from, conn.to]}, anchors)
 
 export class ValueNetworkGraphics extends React.Component<IValueNetworkProps> {
 	rootElm: SVGGElement;
@@ -127,6 +194,11 @@ export class ValueNetworkGraphics extends React.Component<IValueNetworkProps> {
 						<text style={{font: "normal normal normal 8px/1 FontAwesome"}} dominantBaseline={"central"} textAnchor={"middle"} fill="none">{String.fromCharCode(org.icon)}</text>
 					</g>)
 				}
+				{
+					this.props.projects.map(p =>
+						<Project id="n/a" key={p.members.join(' ')} project={p} coords={findProjectCords(p, this.props.orgs)} />
+					)
+				}
 			</g>
 	}
 }
@@ -139,7 +211,7 @@ export const MappedValueNetworkGraphics = ProjectionWrapper((props: IValueNetwor
 export const ValueNetwork = (props: IValueNetworkProps) =>
 		[
 			<h1 key="h">Clusters - Value Flow</h1>,
-			<svg key="chart" viewBox={coords.join(" ")} className={"value-network chart"}>
+			<svg key="chart" viewBox={svgCoords.join(" ")} className={"value-network chart"}>
 				<ValueNetworkGraphics {...props} />
 			</svg>,
 		]

@@ -52,6 +52,9 @@ const generateState = () => <IValueNetworkProps>{
 			point: [175, 47],
 		},
 	],
+	projects: [{
+		members: ["C1", "S2", "S3"]
+	}],
 	connectors: [{
 		from: "S1",
 		to: "C1",

@@ -322,6 +322,22 @@ body {
 							stroke-width: 0.3px;
 						}
 					}
+					.project-border {
+						path {
+							stroke: gray;
+							fill: none;
+							stroke-dasharray: 2, 2;
+						}
+						text {
+							opacity: 0;
+						}				
+						&:nth-child(3) text {
+							font-size: 5px;
+							fill: gray;
+							opacity: 1;
+							transform: translate(2px, -2px);
+						}								
+					}
 				}
 
 				.progress-indicator-root {
