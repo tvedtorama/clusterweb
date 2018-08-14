@@ -29,18 +29,22 @@ interface IConnector {
 	to: string
 	swing?: number
 	transfer?: IConnectorTransfer
+	classNameAdd?: string
+	text: string
 }
 
 interface IProject {
+	id: string
 	members: string[]
 }
-
 
 export interface IValueNetworkProps {
 	orgs: IOrg[]
 	connectors: IConnector[]
 	projects: IProject[]
 }
+
+export const getConnId = (conn: IConnector) => conn.from + conn.to
 
 const connectorClass = "connector"
 const idPrefix = "id-"
@@ -98,7 +102,7 @@ const Project = ({id, project, coords}: {id: string, project: IProject, coords: 
 				<ProjectBorder key={i} points={cPair} center={center} text="Project" />
 			))
 		.map(arr =>
-			<g>{arr}</g>
+			<g className="project-related">{arr}</g>
 		)
 		.getOrElse(null)
 
@@ -132,12 +136,17 @@ const Connector = (props: {id: string, conn: IConnector, refSvg?: SVGPathElement
 	map(d => ({
 			...d,
 			normalOp: d.normal.clone().rotateDeg(180),
-			backPointing: d.endLocal.clone().add(d.endLocalHalf.clone().rotateDeg(swing))
+			backPointing: d.endLocal.clone().add(d.endLocalHalf.clone().rotateDeg(swing)),
+			id: `${idPrefix}${props.id}`,
 	})).
-	map(({start, endLocal, backPointing, endLocalHalf}) =>
-		<g transform={`translate(${start.x}, ${start.y})`}>
-			<path className={`${connectorClass} ${idPrefix}${props.id}`} 
-				d={`M 0 0 C ${endLocalHalf.x} ${endLocalHalf.y}, ${backPointing.x} ${backPointing.y}, ${endLocal.x} ${endLocal.y}`} stroke={"rgba(0, 0, 0, 0.5)"} fill={"none"}/>
+	map(({start, endLocal, backPointing, endLocalHalf, id}) =>
+		<g transform={`translate(${start.x}, ${start.y})`} className={`${props.conn.classNameAdd || ""}`} >
+			<path className={`${connectorClass} ${id}`}
+				d={`M 0 0 C ${endLocalHalf.x} ${endLocalHalf.y}, ${backPointing.x} ${backPointing.y}, ${endLocal.x} ${endLocal.y}`}
+				stroke={"rgba(0, 0, 0, 0.5)"} fill={"none"} id={`${id}`}/>
+			<text x={15} className="connector-text">
+				<textPath xlinkHref={`#${id}`}>{props.conn.text || ""}</textPath>
+			</text>
 			{
 				props.conn.transfer && props.refSvg &&
 						<Motion defaultStyle={{p: 0}} style={{p: spring(100, {damping: 10, stiffness: 6})}} key={props.conn.transfer.id}>
@@ -182,7 +191,7 @@ export class ValueNetworkGraphics extends React.Component<IValueNetworkProps> {
 				<GlowFilter key="filter" id="connectorGlow" />
 				{
 					this.props.connectors.
-						map(conn => ({conn, id: conn.from + conn.to})).
+						map(conn => ({conn, id: getConnId(conn)})).
 						map(x => ({...x, refSvg: refMap[x.id]})).
 						sort((x, y) => x.id > y.id ? 1 : -1).
 						map(({conn, id, refSvg}) =>

@@ -322,6 +322,15 @@ body {
 							stroke-width: 0.3px;
 						}
 					}
+					.connector-text {
+						font-size: 5px;
+						transform: translate(0px, -2px);
+						fill: rgba(0, 200, 0, 0.5);
+					}
+
+					.project-related {
+						animation: fadein 3s;
+					}
 					.project-border {
 						path {
 							stroke: gray;

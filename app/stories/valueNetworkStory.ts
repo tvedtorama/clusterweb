@@ -1,5 +1,5 @@
 import { slideStoryImpl } from "../../storyAnim/storySupport/slideStory";
-import { IValueNetworkProps } from "../components/slides/ValueNetwork";
+import { IValueNetworkProps, getConnId } from "../components/slides/ValueNetwork";
 import { IStoryRunnerYieldFormat, IStoryRunnerProvider, IStoryRunnerChildrenStatus } from "../../storyAnim/storyRunner";
 import { filterChildren } from "../../storyAnim/storySupport/filterChildren";
 import { storeStoryItem } from "../../storyAnim/actions/storyItem";
@@ -52,9 +52,7 @@ const generateState = () => <IValueNetworkProps>{
 			point: [175, 47],
 		},
 	],
-	projects: [{
-		members: ["C1", "S2", "S3"]
-	}],
+	projects: [],
 	connectors: [{
 		from: "S1",
 		to: "C1",
@@ -77,6 +75,20 @@ const generateState = () => <IValueNetworkProps>{
 		to: "C2",
 	}
 	]
+}
+
+const projectState: Partial<IValueNetworkProps> = {
+	projects: [{
+		members: ["C1", "S2", "S3"],
+		id: "yes, this is it",
+	}],
+	connectors: [{
+		from: "S2",
+		to: "S3",
+		swing: -10,
+		classNameAdd: "project-related",
+		text: "Collaboration",
+	}]
 }
 
 const generatePhilWorld = () => <IValueNetworkProps>{
@@ -127,11 +139,52 @@ const generatePhilWorld = () => <IValueNetworkProps>{
 	]
 }
 
+type IPassAroundData = {state: IValueNetworkProps, storyState: IStoryRunnerYieldFormat}
+
+const projectToggler = function*(stateInput: IValueNetworkProps, storyState: IStoryRunnerYieldFormat) {
+	let state: IValueNetworkProps = stateInput
+	const startTime = storyState.eventState.frameTime + 3000
+	const endTime = storyState.eventState.frameTime + 19000
+	const mjau = function*(action: (stateInput: IValueNetworkProps, storyState: IStoryRunnerYieldFormat) => IValueNetworkProps) {
+		while (true) {
+			const {state: newState, storyState: newStoryState}: IPassAroundData = yield state
+			state = action(newState, newStoryState)
+			if (state !== newState)
+				return newStoryState
+		}
+	}
+	yield* mjau((state, newStoryState) => {
+		if (newStoryState.eventState.frameTime > startTime) {
+			return {
+				...state,
+				projects: [...state.projects, ...projectState.projects],
+				connectors: [...state.connectors, ...projectState.connectors]
+			}
+		}
+		return state
+	})
+	const newStoryState = yield* mjau((state, newStoryState) => {
+		if (newStoryState.eventState.frameTime > endTime) {
+			const removeProjects = projectState.projects.map(x => x.id)
+			const removeConnectors = projectState.connectors.map(getConnId)
+			return {
+				...state,
+				projects: state.projects.filter(p => removeProjects.indexOf(p.id) === -1),
+				connectors: state.connectors.filter(c => removeConnectors.indexOf(getConnId(c)) === -1),
+			}
+		}
+		return state
+	})
+
+	yield* projectToggler(state, newStoryState)
+}
 
 const valueNetworkPropsProvider = function*(generateState: () => IValueNetworkProps) {
 	let state = generateState()
+	let projectGen: IterableIterator<IValueNetworkProps> = null
 	while (true) {
 		const storyState: IStoryRunnerYieldFormat = yield state
+		projectGen = projectGen || projectToggler(state, storyState)
 		const rand = Math.random()
 		if (rand < 0.5) {
 			const inactive = state.connectors.
@@ -157,6 +210,7 @@ const valueNetworkPropsProvider = function*(generateState: () => IValueNetworkPr
 						}
 					]
 			}
+			state = projectGen.next(<IPassAroundData>{state, storyState}).value
 		}
 	}
 }
