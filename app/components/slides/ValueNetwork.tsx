@@ -144,7 +144,7 @@ const Connector = (props: {id: string, conn: IConnector, refSvg?: SVGPathElement
 			<path className={`${connectorClass} ${id}`}
 				d={`M 0 0 C ${endLocalHalf.x} ${endLocalHalf.y}, ${backPointing.x} ${backPointing.y}, ${endLocal.x} ${endLocal.y}`}
 				stroke={"rgba(0, 0, 0, 0.5)"} fill={"none"} id={`${id}`}/>
-			<text x={15} className="connector-text">
+			<text x={12} className="connector-text">
 				<textPath xlinkHref={`#${id}`}>{props.conn.text || ""}</textPath>
 			</text>
 			{
