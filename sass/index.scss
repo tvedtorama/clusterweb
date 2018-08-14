@@ -365,10 +365,9 @@ body {
 							stroke: $progressGreyColor;
 						}
 						.clockCircle.interest {
-							fill: $progressGreyColor;
+							fill: gray;
 						}
 	
-						
 						.clockArc {
 							fill: none;
 							stroke: $progressMainColor;
@@ -385,7 +384,7 @@ body {
 							font-size: 40px;
 						}
 						.caption.interest {
-							font-size: 15px;
+							font-size: 13px;
 							text-align: center;
 							font-weight: 500;
 							stroke: $progressMainColor;
