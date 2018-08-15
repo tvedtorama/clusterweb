@@ -179,12 +179,20 @@ const projectToggler = function*(stateInput: IValueNetworkProps, storyState: ISt
 	yield* projectToggler(state, newStoryState)
 }
 
-const valueNetworkPropsProvider = function*(generateState: () => IValueNetworkProps) {
+const nullGenerator: typeof projectToggler = function*(s) {
+	let state = s
+	while (true) {
+		const {state: newState} = yield state
+		state = newState
+	}
+}
+
+const valueNetworkPropsProvider = function*(generateState: () => IValueNetworkProps, projectFunc = nullGenerator) {
 	let state = generateState()
 	let projectGen: IterableIterator<IValueNetworkProps> = null
 	while (true) {
 		const storyState: IStoryRunnerYieldFormat = yield state
-		projectGen = projectGen || projectToggler(state, storyState)
+		projectGen = projectGen || projectFunc(state, storyState)
 		const rand = Math.random()
 		if (rand < 0.5) {
 			const inactive = state.connectors.
@@ -216,7 +224,7 @@ const valueNetworkPropsProvider = function*(generateState: () => IValueNetworkPr
 }
 
 export const valueNetworkStoryImpl = (idAndParent: {id: string, parentId: string}) =>
-	(existenceCheck, pos) => slideStoryImpl(idAndParent, valueNetworkPropsProvider(generateState))
+	(existenceCheck, pos) => slideStoryImpl(idAndParent, valueNetworkPropsProvider(generateState, projectToggler))
 				(existenceCheck, {s: "SLIDE_VALUE_NETWORK"}, pos)
 
 export const valueNetworkWorldMapStoryProvider = (mapStory: () => any) => <IStoryRunnerProvider>{
