@@ -4,12 +4,11 @@ export class ShenzhenIntro extends React.Component {
 	render() {
 		return [
 			<h1 key="h">China, Shenzhen</h1>,
-			<p key="p">The rules was relaxed and creativity let loose in what would become the Silicon Valley of hardware</p>,
+			<p key="p">After the communist takeover in China, the country's economic performance was less than impressive. The government decided to carefully test marked reforms, in limited areas they called <em>special economic zones</em>. Shenzhen was among the selected, the rules relaxed and creativity let loose in what would become the <code>Silicon Valley of hardware.</code></p>,
 			<ul key="ul">
-				<li>Domestic and international customers shopping for suppliers</li>
-				<li>Dubious IP enforcment and copying leads to competition and innovation</li>
-				<li>Skilled workforce, competitive salaries</li>
-				<li>Access to world marked through shipping and air</li>
+				<li>Strong international and domstic demand for electronics</li>
+				<li>A skilled workforce with competitive salaries</li>
+				<li>Dubious IP enforcment and copying lead to competition and innovation</li>
 			</ul>
 		]
 	}

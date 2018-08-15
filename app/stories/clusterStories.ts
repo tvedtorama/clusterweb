@@ -150,7 +150,7 @@ mangler.addStory(shenzhenIntroSegment, vf => <IStoryRunnerProvider>{
 
 mangler.addStory(shenzhenDetailSegment, vf => <IStoryRunnerProvider>{
 	id: "SLIDE_DECK_SHENZHEN_DETAILS",
-	getStory: slideStory(vf, "Now everyone buys stuff from Shenzhen.", slideSideCommonProps),
+	getStory: slideStory(vf, {s: "SLIDE_SHENZHEN_DETAIL"}, slideSideCommonProps),
 	getChildrenIterator: function*() {}
 })
 
