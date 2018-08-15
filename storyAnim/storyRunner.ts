@@ -41,7 +41,7 @@ const getActualRunningChildren = (runningIterators: {[id: string]: Task}) =>
 	Object.keys(runningIterators).filter(k => runningIterators[k].isRunning())
 
 /** This is used around the place since generators don't receive anything until they yield,
- * hence we have to call the twice on first iteration. **Bad stuff** */
+ * hence we have to call it twice on first iteration. **Bad stuff!** */
 const takeTwoOnFirst = (isFirst) => Ix.Iterable.range(0, isFirst ? 2 : 1)
 
 /** Calls the children iteratior, two times the first time, to initialize it.
