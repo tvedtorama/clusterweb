@@ -16,8 +16,10 @@ const gift = 0xf06b
 const user = 0xf007
 const dollarSign = 0xf155
 const gem = 0xf219
+const heart = 0xf004
+const lightbulb = 0xf0eb
 
-const valueIcons = [coctail, gem, gift, user]
+const valueIcons = [coctail, gem, gift, user, heart, lightbulb]
 
 const generateState = () => <IValueNetworkProps>{
 	orgs: [
@@ -143,8 +145,8 @@ type IPassAroundData = {state: IValueNetworkProps, storyState: IStoryRunnerYield
 
 const projectToggler = function*(stateInput: IValueNetworkProps, storyState: IStoryRunnerYieldFormat) {
 	let state: IValueNetworkProps = stateInput
-	const startTime = storyState.eventState.frameTime + 3000
-	const endTime = storyState.eventState.frameTime + 19000
+	const startTime = storyState.eventState.frameTime + 4000
+	const endTime = storyState.eventState.frameTime + 10000
 	const mjau = function*(action: (stateInput: IValueNetworkProps, storyState: IStoryRunnerYieldFormat) => IValueNetworkProps) {
 		while (true) {
 			const {state: newState, storyState: newStoryState}: IPassAroundData = yield state
@@ -201,7 +203,7 @@ const valueNetworkPropsProvider = function*(generateState: () => IValueNetworkPr
 			if (inactive.length === 0)
 				continue
 			const activate = inactive[Math.round(Math.random() * 100) % inactive.length].i
-			const isPayment = rand < 0.20
+			const isPayment = rand < 0.1   // The flying dollars might be giving a wrong impression around the place
 			state = <IValueNetworkProps>{
 				...state,
 				connectors:

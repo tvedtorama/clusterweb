@@ -111,7 +111,7 @@ const Project = ({id, project, coords}: {id: string, project: IProject, coords: 
 const ConnectorTransfer = ({point, transfer, opacity}: {point: SVGPoint, transfer: IConnectorTransfer, opacity: number}) =>
 	<g transform={`translate(${point.x}, ${point.y})`} style={{opacity}} className="connector">
 		<circle r={transferRad} fill="white" filter={"url(#connectorGlow)"}/>
-		<text style={{font: "normal normal normal 5px/1 FontAwesome"}}
+		<text style={{font: "normal normal normal 5px/1 FontAwesome"}} x={0.05} y={0.2}
 			dominantBaseline={"central"} textAnchor={"middle"} fill="black">
 				{String.fromCharCode(transfer.icon)}
 			</text>
