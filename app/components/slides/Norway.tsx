@@ -4,11 +4,11 @@ export class NorwayIntro extends React.Component {
 	render() {
 		return [
 			<h1 key="h">Norway, Northern West Coast</h1>,
-			<p key="p">The oceans on the west coast of Norway is packed with swimming proteins. The Norwegians has utilized this stroke of luck since before the vikings</p>,
+			<p key="p">The oceans surrounding Norway is packed with swimming proteins. The locals has utilized this stroke of luck since before the vikings. Not only for local consumption, but also exports - in the form of dried fish.  Today, traditional fishing has been accompanied and surpassed by fish farming.</p>,
 			<ul key="ul">
-				<li>After WW2, fishing vessels was needed</li>
-				<li>The productive people of Ulsteinvik and Fosnavaag set out to fix this</li>
-				<li>As the business and volumes grew, strong shipping companies developed.</li>
+				<li>In the early 50ies, after the war, fishing vessels were in strong demand</li>
+				<li>The productive people of <b>small villages Ulsteinvik and Fosnavåg</b> tok the job</li>
+				<li>As the business and volumes grew, a strong shipping culture developed</li>
 			</ul>
 		]
 	}
