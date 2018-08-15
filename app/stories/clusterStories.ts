@@ -40,7 +40,6 @@ export const mapStory = mapStoryImpl(commonChildProps("THE_MAP"))
 const fullscreenMapFunc = vf => <IStoryRunnerProvider>{
 	id: "MAPS_INIT",
 	getStory: mapStory(vf),
-	getChildrenIterator: function*() {}
 }
 
 const upcloseMapProps = {x: -95, scale: 0.40, rotateX: 0}
@@ -54,49 +53,41 @@ const norwayFirstStepSegment = calc.addSegment(10)
 mangler.addStory(norwayFirstStepSegment, vf => <IStoryRunnerProvider>{
 	id: "MAPS_NORWAY",
 	getStory: mapStory(vf, {selectedHotspot: 1}, upcloseMapProps),
-	getChildrenIterator: function*() {}
 })
 mangler.addStory(calc.addSegment(10), vf => <IStoryRunnerProvider>{
 	id: "MAPS_NORWAY_VERY_CLOSE",
 	getStory: mapStory(vf, {selectedHotspot: 1, closeness: "VERY_CLOSE"}, upcloseMapProps),
-	getChildrenIterator: function*() {}
 })
 // Create boat animations - these time out and are recreated.  The stories have an inherent rotation and delay.
 for (const i of Ix.Iterable.range(0, 5))
 	mangler.addStory(norwayFirstStepSegment, vf => <IStoryRunnerProvider>{
 		id: `BOAT_ANIMATION_${i}`,
 		getStory: boatStory(vf, {x: -100, y: -100, scale: 0.2}, {x: -10, y: -10, scale: 0.2}),
-		getChildrenIterator: function*() {}
 	})
 
 mangler.addStory(calc.addSegment(10, 10), vf => <IStoryRunnerProvider>{
 	id: "SLIDE_DECK_INIT",
 	getStory: slideStory(vf, {s: "SLIDE_CLUSTERS_INTRO"}, {scale: 0.65}),
-	getChildrenIterator: function*() {}
 })
 
 mangler.addStory(calc.addSegment(10, 20), vf => <IStoryRunnerProvider>{
 	id: "VALUE_NETWORK_INIT",
 	getStory: valueNetworkStory(vf, {scale: 0.65}),
-	getChildrenIterator: function*() {}
 })
 
 mangler.addStory(calc.addSegment(10), vf => <IStoryRunnerProvider>{
 	id: "SLIDE_DECK_NORWAY",
 	getStory: slideStory(vf, {s: "SLIDE_NORWAY_INTRO"}, slideSideCommonProps),
-	getChildrenIterator: function*() {}
 })
 const norwaySecondStepSegment = calc.addSegment(10)
 mangler.addStory(norwaySecondStepSegment, vf => <IStoryRunnerProvider>{
 	id: "SLIDE_DECK_NORWAY_2",
 	getStory: slideStory(vf, {s: "SLIDE_NORWAY_OIL"}, slideSideCommonProps),
-	getChildrenIterator: function*() {}
 })
 for (const i of Ix.Iterable.range(0, 5))
 	mangler.addStory(norwaySecondStepSegment, vf => <IStoryRunnerProvider>{
 		id: `RIG_ANIMATION_${i}`,
 		getStory: oilRigStory(vf, {x: -100, y: -100, scale: 0.2}, {x: -10, y: -10, scale: 0.2}),
-		getChildrenIterator: function*() {}
 	})
 
 
@@ -108,22 +99,18 @@ const detroitDetailSegment = calc.addSegment(10)
 mangler.addStory(detroitIntroSegment, vf => <IStoryRunnerProvider>{
 	id: "MAPS_DETROIT",
 	getStory: mapStory(vf, {selectedHotspot: 0, closeness: "FAR"}, upcloseMapProps),
-	getChildrenIterator: function*() {}
 })
 mangler.addStory(detroitDetailSegment, vf => <IStoryRunnerProvider>{
 	id: "MAPS_DETROIT_CLOSE",
 	getStory: mapStory(vf, {selectedHotspot: 0, closeness: "CLOSE"}, upcloseMapProps),
-	getChildrenIterator: function*() {}
 })
 mangler.addStory(detroitIntroSegment, vf => <IStoryRunnerProvider>{
 	id: "SLIDE_DECK_DETROIT",
 	getStory: slideStory(vf, {s: "SLIDE_DETROIT_INTRO"}, slideSideCommonProps),
-	getChildrenIterator: function*() {}
 })
 mangler.addStory(detroitDetailSegment, vf => <IStoryRunnerProvider>{
 	id: "SLIDE_DECK_DETROIT_2",
 	getStory: slideStory(vf, {s: "SLIDE_DETROIT_DETAIL"}, slideSideCommonProps),
-	getChildrenIterator: function*() {}
 })
 
 const intermesso2Segment = calc.addSegment(intermessoLength)
@@ -135,23 +122,19 @@ const shenzhenDetailSegment = calc.addSegment(10)
 mangler.addStory(shenzhenIntroSegment, vf => <IStoryRunnerProvider>{
 	id: "MAPS_SHENZHEN",
 	getStory: mapStory(vf, {selectedHotspot: 2, closeness: "FAR"}, upcloseMapProps),
-	getChildrenIterator: function*() {}
 })
 mangler.addStory(shenzhenDetailSegment, vf => <IStoryRunnerProvider>{
 	id: "MAPS_SHENZHEN_CLOSE",
 	getStory: mapStory(vf, {selectedHotspot: 2, closeness: "CLOSE"}, upcloseMapProps),
-	getChildrenIterator: function*() {}
 })
 mangler.addStory(shenzhenIntroSegment, vf => <IStoryRunnerProvider>{
 	id: "SLIDE_DECK_SHENZHEN",
 	getStory: slideStory(vf, {s: "SLIDE_SHENZHEN_INTRO"}, slideSideCommonProps),
-	getChildrenIterator: function*() {}
 })
 
 mangler.addStory(shenzhenDetailSegment, vf => <IStoryRunnerProvider>{
 	id: "SLIDE_DECK_SHENZHEN_DETAILS",
 	getStory: slideStory(vf, {s: "SLIDE_SHENZHEN_DETAIL"}, slideSideCommonProps),
-	getChildrenIterator: function*() {}
 })
 
 const intermesso3Segment = calc.addSegment(intermessoLength)
@@ -164,13 +147,11 @@ const philFeaturesSegment = calc.addSegment(15)
 mangler.addStory(enterPhilSegment, vf => <IStoryRunnerProvider>{
 	id: "MAPS_PHIL",
 	getStory: mapStory(vf, {}, upcloseMapProps),
-	getChildrenIterator: function*() {}
 })
 
 mangler.addStory(enterPhilSegment, vf => <IStoryRunnerProvider>{
 	id: "SLIDE_DECK_PHIL",
 	getStory: slideStory(vf, {s: "SLIDE_ENTER_PHIL"}, slideSideCommonProps),
-	getChildrenIterator: function*() {}
 })
 
 mangler.addStory(enterPhilWorldMapSegment, vf =>
@@ -179,12 +160,10 @@ mangler.addStory(enterPhilWorldMapSegment, vf =>
 mangler.addStory(enterPhilWorldMapSegment, vf => <IStoryRunnerProvider>{
 	id: "SLIDE_DECK_EXTEND_NETWORK",
 	getStory: slideStory(vf, {s: "SLIDE_EXTEND_YOUR_NETWORK"}, {...slideSideCommonProps, x: 50, y: 40}, true),
-	getChildrenIterator: function*() {}
 })
 mangler.addStory(philFeaturesSegment, vf => <IStoryRunnerProvider>{
 	id: "SLIDE_DECK_FEATURES",
 	getStory: slideStory(vf, {s: "SLIDE_PHIL_FETAURES"}, {scale: 0.65}),
-	getChildrenIterator: function*() {}
 })
 
 // Add the progress indicator, for this to work all segments must be added to the calculator.
@@ -193,7 +172,6 @@ mangler.addStory(calc.addSegment(-1, 0), vf => <IStoryRunnerProvider>{
 	getStory: progressIndicator(mangler.getSegmentMetas().
 					map(x => x.startPos).
 					reduce((x, y) => x.findIndex(z => z === y) > -1 ? x : [...x, y], []), {x: 90, y: -95, scale: 0.35}),
-	getChildrenIterator: function*() {}
 })
 
 const storySelector = mangler.getStorySelector()

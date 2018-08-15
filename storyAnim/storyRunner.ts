@@ -21,7 +21,7 @@ export interface IStoryRunnerProvider {
 	getStory: (es: StoryAnim.IEventState) => IStoryIterator
 	/** Returns missing children for the given status, taking a `IStoryRunnerChildrenStatus`.  Should perhps be a
 	 * regular function, unless we want to make sure some children are created only once. */
-	getChildrenIterator: () => IChildrenIterator
+	getChildrenIterator?: () => IChildrenIterator
 }
 export interface IStoryRunnerChildrenStatus {
 	running: string[]
@@ -77,7 +77,7 @@ const isDeleteAction = (a: Action): a is IStoreStoryItemAction => a.type === DEL
 export const storyRunner = function*(storyData: IStoryRunnerProvider, eventData?: StoryAnim.IEventData, itemRegistryInput?: CreatedItemRegistry) {
 	const itemRegistry = itemRegistryInput || new CreatedItemRegistry()
 	const genIterator = getStoryWhenItsTime(storyData)
-	const childIterator = storyData.getChildrenIterator()
+	const childIterator = storyData.getChildrenIterator ? storyData.getChildrenIterator() : (function*() {})()
 	const eventDataGenerator = produceYieldableEventData(eventData)
 	const actionOwners = {owners: [storyData.id]}
 	let runningChildren: {[id: string]: Task} = {}
