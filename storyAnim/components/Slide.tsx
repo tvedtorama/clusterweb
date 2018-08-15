@@ -19,6 +19,7 @@ export class Slide extends React.Component<ISlideProps> {
 						map(({factory, slide, props}) => ({Comp: factory.createComponent(slide), props})).
 						map(({Comp, props}) => <Comp {...{...props}} />)[0]
 			}
+			<div className="footer-line" />
 		</div>
 	}
 }
