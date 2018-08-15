@@ -118,8 +118,8 @@ const generatePhilWorld = () => <IValueNetworkProps>{
 			icon: gavel,
 			point: cityCooridnates[0],
 		},
-
 	],
+	projects: [],
 	connectors: [{
 		from: "S1",
 		to: "C1",
