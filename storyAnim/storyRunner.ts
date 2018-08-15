@@ -1,4 +1,4 @@
-import { take, fork, cancel, put, select, actionChannel } from "redux-saga/effects";
+import { take, fork, cancel, put, select } from "redux-saga/effects";
 import { SET_EVENT_DATA } from "./actions/eventData";
 import { Task, delay } from "redux-saga";
 import * as Ix from 'ix'
