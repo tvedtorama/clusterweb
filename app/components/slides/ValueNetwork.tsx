@@ -52,7 +52,7 @@ const idPrefix = "id-"
 const orgRad = 8
 const strokeWidth = 0.5
 const orgRadActual = orgRad + strokeWidth
-const svgCoords = [0 - orgRadActual, -10 - orgRadActual, 200 + orgRadActual * 2, 70 + orgRadActual * 2]
+const svgCoords = [0 - orgRadActual, -5 - orgRadActual, 200 + orgRadActual * 2, 65 + orgRadActual * 2]
 const transferRad = 4.5
 
 /** Project border, as a path with curves between two points, and caption text.
@@ -219,7 +219,7 @@ export const MappedValueNetworkGraphics = ProjectionWrapper((props: IValueNetwor
 
 export const ValueNetwork = (props: IValueNetworkProps) =>
 		[
-			<h1 key="h">Clusters - Value Flow</h1>,
+			<h1 key="h">Value Flow in Clusters</h1>,
 			<svg key="chart" viewBox={svgCoords.join(" ")} className={"value-network chart"}>
 				<ValueNetworkGraphics {...props} />
 			</svg>,
