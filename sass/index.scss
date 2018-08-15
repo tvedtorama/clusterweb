@@ -195,6 +195,7 @@ body {
 						display: flex;
 						flex-direction: column;
 						justify-content: space-between;
+						align-items: center;
 
 						h1 {
 							font-size: 3rem;
@@ -203,8 +204,7 @@ body {
 							text-align: right;
 							color: white;
 							padding: 0.3em 1em;
-							// margin: 0.2em; // The spacing of items already provides a margin
-							margin: 0em -3rem 1rem -3rem;
+							margin: 0em -3rem 1rem -3rem; // Stretch to the border, must be carefully aligned with the size of the box.
 						}
 						.footer-line {
 							width: 100%;
@@ -218,6 +218,7 @@ body {
 							color: white;
 							border: 2px solid rgba(255, 255, 255, 0.5);
 							border-radius: 1em;
+							margin: 0em;
 							code {
 								background: $progressMainColor;
 								padding: 0.1em 0.3em;
@@ -229,7 +230,7 @@ body {
 							display: flex;
 							flex-direction: column;
 							justify-content: space-around;
-							margin: 1em 0em;
+							margin: 0em -1.1em;
 							li {
 								height: 2em; // Seems "suggestive", as it does not blow up small-screen views.
 							}
