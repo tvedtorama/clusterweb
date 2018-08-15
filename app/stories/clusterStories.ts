@@ -176,6 +176,7 @@ mangler.addStory(calc.addSegment(-1, 0), vf => <IStoryRunnerProvider>{
 
 const storySelector = mangler.getStorySelector()
 
+/** Root story for the cluster stories, launches the main story elements as children.  */
 export const clusterStorySetup: IStoryRunnerProvider = {
 	id: rootStoryId,
 	getStory: clusterStories,
@@ -188,8 +189,3 @@ export const clusterStorySetup: IStoryRunnerProvider = {
 		}
 	},
 }
-
-
-// Use the same method to trigger the stories, as is passed to the story (start / end)
-// Refactor to get optimal layout.
-// Still needs to make sure objects are not whiped out when they are still present in the scene (ref counter in redux)
