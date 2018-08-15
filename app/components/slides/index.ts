@@ -9,6 +9,7 @@ import { ValueNetwork } from './ValueNetwork';
 import { EnterPhil } from './EnterPhil';
 import { PhilFeatures } from './PhilFeatures';
 import { ShenzhenDetail } from './ShenzhenDetail';
+import { ExtendYourNetwork } from './ExtendsYourNetwork';
 
 export const slideComponentMap = {
 	SLIDE_CLUSTERS_INTRO: ClustersIntro,
@@ -20,6 +21,7 @@ export const slideComponentMap = {
 	SLIDE_SHENZHEN_DETAIL: ShenzhenDetail,
 	SLIDE_VALUE_NETWORK: ValueNetwork,
 	SLIDE_ENTER_PHIL: EnterPhil,
+	SLIDE_EXTEND_YOUR_NETWORK: ExtendYourNetwork,
 	SLIDE_PHIL_FETAURES: PhilFeatures,
 }
 

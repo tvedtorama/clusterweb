@@ -176,6 +176,11 @@ mangler.addStory(enterPhilSegment, vf => <IStoryRunnerProvider>{
 mangler.addStory(enterPhilWorldMapSegment, vf =>
 	valueNetworkWorldMapStoryProvider(() => mapStory(vf)))
 
+mangler.addStory(enterPhilWorldMapSegment, vf => <IStoryRunnerProvider>{
+	id: "SLIDE_DECK_EXTEND_NETWORK",
+	getStory: slideStory(vf, {s: "SLIDE_EXTEND_YOUR_NETWORK"}, {...slideSideCommonProps, x: 50, y: 40}, true),
+	getChildrenIterator: function*() {}
+})
 mangler.addStory(philFeaturesSegment, vf => <IStoryRunnerProvider>{
 	id: "SLIDE_DECK_FEATURES",
 	getStory: slideStory(vf, {s: "SLIDE_PHIL_FETAURES"}, {scale: 0.65}),

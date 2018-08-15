@@ -15,7 +15,7 @@ export const slideStoryInnerDefault = function*() {
  * Returns a method that can be called to generate the actual story.
  */
 export const slideStoryImpl = (idAndParent: {id: string, parentId: string}, internalGen = slideStoryInnerDefault()) =>
-	(existenceCheck: (s: StoryAnim.IEventState) => boolean, slideText: string | {s: ISlideKey}, position: StoryAnimDataSchema.IItemPosition = {}) =>
+	(existenceCheck: (s: StoryAnim.IEventState) => boolean, slideText: string | {s: ISlideKey}, position: StoryAnimDataSchema.IItemPosition = {}, small = false) =>
 	function*() {
 		const internalGenProps = internalGen.next().value
 		const getStoryItemToStore = (internalGenProps) => storeStoryItem({
@@ -25,7 +25,7 @@ export const slideStoryImpl = (idAndParent: {id: string, parentId: string}, inte
 			order: 200,
 			visual: {
 				component: "SLIDE",
-				classNameAdd: "taller-on-mobile",
+				classNameAdd: `taller-on-mobile ${small ? " small-slide" : ""}` ,
 				props: (typeof slideText === "string" ? <ISlideProps>{text: slideText} : <ISlideProps>{slide: slideText.s, props: internalGenProps}),
 			}
 		})
