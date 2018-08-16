@@ -1,18 +1,13 @@
-import Ix from "ix";
-import { IStoryRunnerProvider, IStoryRunnerChildrenStatus, IStoryRunnerYieldFormat } from "../../storyAnim/storyRunner";
-import { NOP } from "../../storyAnim/actions/nop";
-import { storeStoryItem } from "../../storyAnim/actions/storyItem";
-import { CONTAINER_COMPONENT } from "../../storyAnim/components/Container";
-import { ROOT_STORY_ID } from "../../storyAnim/storySupport/rootStory";
-import { filterChildren } from "../../storyAnim/storySupport/filterChildren";
-import { StorySegmentCalculator } from "../../storyAnim/storySupport/StorySegmentCalculator";
-import { StoryComposer } from "../../storyAnim/storySupport/StoryComposer";
+// Note: For some reason, when targeting the ts ix package, it went for the one in saga-stories.
+import Ix from "@reactivex/ix-es2015-esm/Ix";
+import { IStoryRunnerProvider, IStoryRunnerChildrenStatus,
+	NOP, storeStoryItem, CONTAINER_COMPONENT, ROOT_STORY_ID, slideStoryImpl,
+	StorySegmentCalculator, StoryComposer, filterChildren, progressIndicator } from "saga-stories";
 import { boatStory } from "./boatStory";
 import { oilRigStory } from "./oilRigStory";
-import { progressIndicator } from "../../storyAnim/storySupport/progressIndicator";
-import { slideStoryImpl } from "../../storyAnim/storySupport/slideStory";
 import { valueNetworkStoryImpl, valueNetworkWorldMapStoryProvider } from "./valueNetworkStory";
 import { mapStoryImpl } from "./worldMapStory";
+import { ISlideKey } from "../components/slides";
 
 export const rootStoryId = "ALMOST_ROOT"
 export const commonProps = {id: rootStoryId, parentId: ROOT_STORY_ID}
@@ -33,7 +28,7 @@ export const clusterStories = function*(initialState: StoryAnim.IEventState) {
 }
 
 
-export const slideStory = slideStoryImpl(commonChildProps("THE_SLIDE"))
+export const slideStory = slideStoryImpl<ISlideKey>(commonChildProps("THE_SLIDE"))
 export const valueNetworkStory = valueNetworkStoryImpl(commonChildProps("THE_SLIDE"))
 export const mapStory = mapStoryImpl(commonChildProps("THE_MAP"))
 
@@ -84,12 +79,12 @@ mangler.addStory(norwaySecondStepSegment, vf => <IStoryRunnerProvider>{
 	id: "SLIDE_DECK_NORWAY_2",
 	getStory: slideStory(vf, {s: "SLIDE_NORWAY_OIL"}, slideSideCommonProps),
 })
+
 for (const i of Ix.Iterable.range(0, 5))
 	mangler.addStory(norwaySecondStepSegment, vf => <IStoryRunnerProvider>{
 		id: `RIG_ANIMATION_${i}`,
 		getStory: oilRigStory(vf, {x: -100, y: -100, scale: 0.2}, {x: -10, y: -10, scale: 0.2}),
 	})
-
 
 const intermesso1Segment = calc.addSegment(intermessoLength)
 mangler.addStory(intermesso1Segment, fullscreenMapFunc)

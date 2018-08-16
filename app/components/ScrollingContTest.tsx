@@ -1,6 +1,5 @@
 import * as React from 'react'
-import { StoryItem } from '../../storyAnim/components/StoryItem';
-import { ItemFactoryContext, IItemFactory } from '../../storyAnim/components/factoryContext';
+import { StoryItem, ItemFactoryContext, IItemFactory } from 'saga-stories';
 import { TestItemViz } from './TestItemVis';
 import { slideComponentMap } from './slides';
 import { imageComponentMap } from './images';

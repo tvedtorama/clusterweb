@@ -1,7 +1,5 @@
 import { IImageKey } from "../components/images";
-import { IStoryRunnerYieldFormat } from "../../storyAnim/storyRunner";
-import { storeStoryItem } from "../../storyAnim/actions/storyItem";
-import { NOP } from "../../storyAnim/actions/nop";
+import { IStoryRunnerYieldFormat, storeStoryItem, NOP } from "saga-stories";
 
 // TODO: Refactor this with boatStory
 export const oilRigStory = (existenceCheck: (s: StoryAnim.IEventState) => boolean, rootPosition: StoryAnimDataSchema.IItemPosition = {}, startPosition?: StoryAnimDataSchema.IItemPosition) =>

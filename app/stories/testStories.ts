@@ -1,10 +1,6 @@
-import { STORE_STORY_ITEM, storeStoryItem } from "../../storyAnim/actions/storyItem";
-import { NOP } from "../../storyAnim/actions/nop";
-import { storyMainLoop } from "../../storyAnim/storySupport/storyMainLoop";
-import { IStoryRunnerYieldFormat, IStoryRunnerProvider, IStoryRunnerChildrenStatus } from "../../storyAnim/storyRunner";
-import { ROOT_STORY_ID } from "../../storyAnim/storySupport/rootStory";
+import { storeStoryItem, ROOT_STORY_ID, IStoryRunnerYieldFormat, NOP, IStoryRunnerChildrenStatus, IStoryRunnerProvider, filterChildren } from "saga-stories";
 import { IWorldMapProps } from "../components/story/WorldMap";
-import { filterChildren } from "../../storyAnim/storySupport/filterChildren";
+import { storyMainLoop } from "../../build/storyAnim/storySupport/storyMainLoop";
 
 export interface ITestStoryProps {
 	propText: string

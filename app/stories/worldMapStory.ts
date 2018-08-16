@@ -1,8 +1,6 @@
 import { IWorldMapProps } from "../components/story/WorldMap";
-import { storeStoryItem } from "../../storyAnim/actions/storyItem";
-import { IStoryRunnerYieldFormat } from "../../storyAnim/storyRunner";
-import { NOP } from "../../storyAnim/actions/nop";
-import { slideStoryInnerDefault } from "../../storyAnim/storySupport/slideStory";
+import { storeStoryItem, IStoryRunnerYieldFormat, NOP } from "saga-stories";
+import { slideStoryInnerDefault } from "saga-stories/storyAnim/storySupport/slideStory";
 
 const mapStoryInnerDefault = slideStoryInnerDefault
 

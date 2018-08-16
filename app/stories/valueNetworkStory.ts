@@ -1,9 +1,6 @@
-import { slideStoryImpl } from "../../storyAnim/storySupport/slideStory";
+import { slideStoryImpl, IStoryRunnerYieldFormat, IStoryRunnerProvider,
+	IStoryRunnerChildrenStatus, filterChildren, storeStoryItem, NOP } from "saga-stories";
 import { IValueNetworkProps, getConnId } from "../components/slides/ValueNetwork";
-import { IStoryRunnerYieldFormat, IStoryRunnerProvider, IStoryRunnerChildrenStatus } from "../../storyAnim/storyRunner";
-import { filterChildren } from "../../storyAnim/storySupport/filterChildren";
-import { storeStoryItem } from "../../storyAnim/actions/storyItem";
-import { NOP } from "../../storyAnim/actions/nop";
 import { cityCooridnates } from "../interestPoints";
 
 // Note: Icon codes deduced from FA 4.7 website.  Sure there must be an import available somewhere.
@@ -145,8 +142,8 @@ type IPassAroundData = {state: IValueNetworkProps, storyState: IStoryRunnerYield
 
 const projectToggler = function*(stateInput: IValueNetworkProps, storyState: IStoryRunnerYieldFormat) {
 	let state: IValueNetworkProps = stateInput
-	const startTime = storyState.eventState.frameTime + 4000
-	const endTime = storyState.eventState.frameTime + 10000
+	const startTime = storyState.eventState.frameTime + 5000
+	const endTime = storyState.eventState.frameTime + 11000
 	const mjau = function*(action: (stateInput: IValueNetworkProps, storyState: IStoryRunnerYieldFormat) => IValueNetworkProps) {
 		while (true) {
 			const {state: newState, storyState: newStoryState}: IPassAroundData = yield state

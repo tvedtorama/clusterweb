@@ -1,7 +1,7 @@
 import { Observable, fromEvent, interval, timer } from "rxjs";
 import { map, filter, buffer, merge } from "rxjs/operators";
 import { Action } from "redux";
-import { SET_EVENT_DATA } from "../../storyAnim/actions/eventData";
+import { setEventData } from "saga-stories";
 import { animationFrame } from "rxjs/internal/scheduler/animationFrame";
 
 const getClientHeight = (e: Element) =>
@@ -18,10 +18,10 @@ export const createEventsEpic = (getTime: () => number) =>
 				map((e: UIEvent) => (e.target as Document).scrollingElement),
 				filter(e => e.tagName === "HTML" || e.tagName === "BODY"),
 				map(e => ({pos: e.scrollTop * 100 / (e.scrollHeight - getClientHeight(e))})),
-				map(x => ({type: SET_EVENT_DATA, eventData: <StoryAnim.IEventData>{...x, type: "SCROLL_POS"}})),
+				map(x => setEventData({...x, type: "SCROLL_POS"})),
 				merge(timer(0, TIMER_INTERVAL).
 					pipe(
-						map(t => ({type: SET_EVENT_DATA, eventData: <StoryAnim.IEventData>{frameTime: getTime() - startTime, type: "TIME"}}))
+						map(t => setEventData({frameTime: getTime() - startTime, type: "TIME"}))
 					)),
 				buffer(interval(0, animationFrame)),
 				filter(x => x.length > 0),
