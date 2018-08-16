@@ -166,7 +166,7 @@ mangler.addStory(calc.addSegment(-1, 0), vf => <IStoryRunnerProvider>{
 	id: "PROGRESS_INDICATOR",
 	getStory: progressIndicator(mangler.getSegmentMetas().
 					map(x => x.startPos).
-					reduce((x, y) => x.findIndex(z => z === y) > -1 ? x : [...x, y], []), {x: 90, y: -95, scale: 0.35}),
+					reduce((x, y) => x.findIndex(z => z === y) > -1 ? x : [...x, y], []), {x: 150, y: -95, scale: 0.35}),
 })
 
 const storySelector = mangler.getStorySelector()
