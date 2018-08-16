@@ -3,6 +3,7 @@
 	"version": "1.0.0",
 	"description": "",
 	"main": "index.js",
+	"repository": "tvedtorama/clusterweb",
 	"scripts": {
 		"test": "mocha --require source-map-support/register $(find build/tests -name '*.js') --watch --reporter landing",
 		"build": "tsc && webpack",
@@ -31,7 +32,7 @@
 		"redux-observable": "^1.0.0",
 		"redux-saga": "^0.16.0",
 		"rxjs": "^6.2.1",
-		"saga-stories": "file:../../modules/saga-stories",
+		"saga-stories": "^1.0.1",
 		"serve-favicon": "^2.5.0",
 		"topojson-client": "^3.0.0",
 		"typed.js": "^2.0.9",
