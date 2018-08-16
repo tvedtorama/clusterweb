@@ -98,6 +98,15 @@ body {
 			align-items: center;
 		}
 
+		.subtitle-row {
+			font-size: 32px;
+		}
+		@media screen and (max-width: $break-small) {
+			.subtitle-row {
+				margin-top: -3%;
+				font-size: medium;
+			}
+		}
 	}
 	.heading {
 		height: 100vh;
@@ -112,9 +121,6 @@ body {
 				background-image: url(/img/dvnLogo.png);
 				background-size: 102%;
 			}
-		}
-		.subtitle-row {
-			font-size: 32px;
 		}
 		.scroll-text {
 			animation: pulse 3s infinite;
