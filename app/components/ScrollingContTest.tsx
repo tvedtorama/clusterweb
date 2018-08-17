@@ -1,6 +1,5 @@
 import * as React from 'react'
-import { StoryItem, ItemFactoryContext, IItemFactory } from 'saga-stories';
-import { TestItemViz } from './TestItemVis';
+import { StoryItem, ItemFactoryContext, IItemFactory } from 'saga-stories/components';
 import { slideComponentMap } from './slides';
 import { imageComponentMap } from './images';
 import { Heading } from './Heading';
@@ -28,7 +27,7 @@ const factory: IItemFactory = {
 			MappedValueNetworkGraphics :
 		component in slideComponentMap ? slideComponentMap[component] :
 		component in imageComponentMap ? imageComponentMap[component] :
-			TestItemViz
+			(p) => <span>INVALID ITEM</span>
 }
 
 class ScrollingContTestRaw extends React.Component {

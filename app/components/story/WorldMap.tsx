@@ -5,9 +5,9 @@ import { spring, OpaqueConfig, StaggeredMotion } from 'react-motion';
 import { feature } from "topojson-client"
 import { GeometryCollection } from "topojson-specification";
 import { geoNaturalEarth1, geoPath } from 'd3-geo';
-import { isUndefined } from 'saga-stories/storyAnim/utils/lowLevelUtils';
-import { slowSpring } from 'saga-stories/storyAnim/utils/springs';
-import { GlowFilter } from 'saga-stories/storyAnim/components/ProgressIndicator';
+import { isUndefined } from 'saga-stories/utils';
+import { slowSpring } from 'saga-stories/utils';
+import { GlowFilter } from 'saga-stories/components';
 import { cityCooridnates } from '../../interestPoints';
 
 const worldDataJson = require('../../maps/110m.json')

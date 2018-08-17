@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { Motion, spring, presets } from 'react-motion';
-import { GlowFilter } from 'saga-stories/storyAnim/components/ProgressIndicator';
+import { GlowFilter } from 'saga-stories/components';
 import { ProjectionWrapper, IProjectionProps } from '../story/WorldMap';
-import { Maybe } from 'saga-stories/storyAnim/utils/monad';
+import { Maybe } from 'saga-stories/utils';
 
 // This terrible, mutation-loving, library has a typings, but they don't really work
 const Victor = require('victor')

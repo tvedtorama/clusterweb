@@ -1,8 +1,9 @@
 // Note: For some reason, when targeting the ts ix package, it went for the one in saga-stories.
 import Ix from "@reactivex/ix-es2015-esm/Ix";
 import { IStoryRunnerProvider, IStoryRunnerChildrenStatus,
-	NOP, storeStoryItem, CONTAINER_COMPONENT, ROOT_STORY_ID, slideStoryImpl,
+	NOP, storeStoryItem, ROOT_STORY_ID, slideStoryImpl,
 	StorySegmentCalculator, StoryComposer, filterChildren, progressIndicator } from "saga-stories";
+import { CONTAINER_COMPONENT } from "saga-stories/components";
 import { boatStory } from "./boatStory";
 import { oilRigStory } from "./oilRigStory";
 import { valueNetworkStoryImpl, valueNetworkWorldMapStoryProvider } from "./valueNetworkStory";
