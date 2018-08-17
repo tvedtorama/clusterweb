@@ -5,10 +5,9 @@ import { spring, OpaqueConfig, StaggeredMotion } from 'react-motion';
 import { feature } from "topojson-client"
 import { GeometryCollection } from "topojson-specification";
 import { geoNaturalEarth1, geoPath } from 'd3-geo';
-import { isUndefined } from 'saga-stories/utils';
-import { slowSpring } from 'saga-stories/utils';
+import { isUndefined, slowSpring } from 'saga-stories/utils';
 import { GlowFilter } from 'saga-stories/components';
-import { cityCooridnates } from '../../interestPoints';
+import { interestPoints } from '../../interestPoints';
 
 const worldDataJson = require('../../maps/110m.json')
 const lakesDataJson = require('../../maps/110m_lakes.json').features
@@ -50,16 +49,23 @@ const WorldMapContent: React.StatelessComponent<{projection, currentCity, worldD
 		}
 	</g>,
 	<g className="world-map markers" key="markers">
-		{cityCooridnates.
-			map(city => ({city, proj: projection(city)})).
+		{interestPoints.
+			map(city => ({city, proj: projection(city.coordinates)})).
 			map(({city, proj}) =>
-			<circle key={proj[0].toString()}
-				cx={proj[0]}
-				cy={proj[1]}
-				r={3 * Math.pow(scale / 100, 0.5)}
-				filter="url(#mapGlow)"
-				className="marker"
-		/>)}
+			<g className="marker-root" key={proj[0].toString()} transform={`translate(${proj[0]}, ${proj[1]})`}>
+				<circle
+					r={3 * Math.pow(scale / 100, 0.5)}
+					filter="url(#mapGlow)"
+					className="marker" style={{animationDelay: Math.round(Math.random() * 1200).toString() + "ms"}}/>
+				<g className="tooltip" transform={`translate(10, -15)`} style={{fontSize: 7}}>
+					<rect className="background" width={80} height={80} />
+					<rect className="heading-background" width={80} height={20} />
+					<text x={40} y={10} fill={"white"}>{city.title}</text>
+					{ /* <text x={40} y={30} fill={"white"}>Known for:</text> */ }
+					<text x={40} y={50} fill={"white"}>{city.thing}</text>
+				</g>
+			</g>
+			)}
 	</g>
 ] as any
 
@@ -99,7 +105,7 @@ export class WorldMapRaw extends React.Component<IWorldMapProps & IProjectionPro
 	}
 	render() {
 		const {createProjection} = this.props
-		const currentCity = isUndefined(this.props.selectedHotspot) ? null : cityCooridnates[this.props.selectedHotspot]
+		const currentCity = isUndefined(this.props.selectedHotspot) ? null : interestPoints[this.props.selectedHotspot].coordinates
 		const animStyles: IAnimProps = currentCity ? {
 			long: slowSpring(currentCity[0]),
 			lat: slowSpring(currentCity[1]),
