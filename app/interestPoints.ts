@@ -7,7 +7,9 @@ export const interestPoints: {title, thing, coordinates: [number, number]}[] = [
 }, {
 	coordinates: [-0.893753, 52.230375], title: "Northampton", thing: "Quality shoes",
 }, {
-	coordinates: [8.55, 47.366667], title: "Zürich", thing: "Banking & Watches",
+	coordinates: [8.55, 47.366667], title: "Zürich", thing: "Banking & Watches", // Switzerland?
+}, {
+	coordinates: [-121.95749522570102, 37.29693300484994], title: "Silicon Valley", thing: "Cool innovations", // FIX COORDINATES!
 },
 ]
 
