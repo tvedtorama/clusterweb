@@ -382,14 +382,19 @@ body {
 							stroke-width: 0.3px;
 						}
 					}
+					$diagram-font-size: 4px;
 					.connector-text {
-						font-size: 5px;
+						font-size: $diagram-font-size;
 						transform: translate(0px, -2px);
 						fill: rgba(0, 200, 0, 0.5);
 					}
 
 					.project-related {
 						animation: fadein 3s;
+					}
+					> g > text {
+						font-size: $diagram-font-size;
+						fill: gray;
 					}
 					.project-border {
 						path {
@@ -401,7 +406,7 @@ body {
 							opacity: 0;
 						}				
 						&:nth-child(3) text {
-							font-size: 5px;
+							font-size: $diagram-font-size;
 							fill: gray;
 							opacity: 1;
 							transform: translate(2px, -2px);

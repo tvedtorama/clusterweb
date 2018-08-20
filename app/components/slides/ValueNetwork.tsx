@@ -208,6 +208,8 @@ export class ValueNetworkGraphics extends React.Component<IValueNetworkProps> {
 						<Project id="n/a" key={p.members.join(' ')} project={p} coords={findProjectCords(p, this.props.orgs)} />
 					)
 				}
+				<text x={svgCoords[0] + svgCoords[2]} y={svgCoords[1]} dominantBaseline={"hanging"} textAnchor="end">Customers</text>
+				<text x={svgCoords[0] + svgCoords[2]} y={svgCoords[1] + svgCoords[3] - 7} dominantBaseline={"baseline"} textAnchor="end">Suppliers</text>
 			</g>
 	}
 }
