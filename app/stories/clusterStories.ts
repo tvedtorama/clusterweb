@@ -185,3 +185,5 @@ export const clusterStorySetup: IStoryRunnerProvider = {
 		}
 	},
 }
+
+export const segmentMetas = mangler.getSegmentMetas()

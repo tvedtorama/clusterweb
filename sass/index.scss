@@ -82,6 +82,8 @@ body {
 	margin: 1em;
 }
 
+$footingHeight: 80vh;
+
 .scroll-test {
 	.heading, .footing {
 		width: 100%;
@@ -155,7 +157,7 @@ body {
 		}
 	}
 	.footing {
-		height: 80vh;
+		height: $footingHeight;
 		.links {
 			flex-direction: column;
 		}
@@ -167,9 +169,43 @@ body {
 		background-size: 50%;
 		margin: 0em;
 		width: 100%; // calc(100vw - 1em); // No idea why these adjustments are needed, but they amounts to the negative margin of the paragaph we are in - and should be removed
-		display: flex;
+		display: block;
+		// position: relative;
 		height: 1200vh;
-		
+
+		.scroll-separators {
+			display: flex;
+			flex-direction: column;
+			position: absolute;
+			width: 100%;
+			height: 1200vh;
+			.scroll-separator {
+				border-bottom: 1px dashed rgba(222, 150, 17, 0.5);
+				width: 100%;
+				&.last {
+					// This seems to extend the scroll area to 100% + 100vh, which works better than 100%, but still a little off
+					height: calc(100vh); //#{$footingHeight});
+				}
+			}
+			.scroll-separator:not(:first-child) {
+				&:before {
+					display: block;
+					padding: 0.1em;
+					position: relative;
+					top: -0.7em;
+					left: 2em;
+					width: 1em;
+					height: 1em;
+					background: white;
+					content: "\f1c4";  // powerpoint icon
+					color: rgba(0, 0, 0, 0.5);
+					font-family: "FontAwesome";
+					font-size: 1.3em;
+				}
+			}
+
+		}
+
 		.sliding-container {
 			display: flex;
 			height: 98vh;

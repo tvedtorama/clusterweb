@@ -5,6 +5,7 @@ import { imageComponentMap } from './images';
 import { Heading } from './Heading';
 import { Footing } from './Footing';
 import { MappedValueNetworkGraphics } from './slides/ValueNetwork';
+import { ScrollSeparators } from './ScrollSeparators';
 
 // Why isn't this part of Typescript? Example fetched from documentation.
 type Unpacked<T> =
@@ -30,6 +31,8 @@ const factory: IItemFactory = {
 			(p) => <span>INVALID ITEM</span>
 }
 
+export const scrollContainerClassName = "scrolling-container"
+
 class ScrollingContTestRaw extends React.Component {
 	componentDidMount() {
 		if (!WorldMap) {
@@ -50,7 +53,8 @@ class ScrollingContTestRaw extends React.Component {
 					<p>Please rotate phone!</p>
 				</div>
 			</div>
-			<div className="scrolling-container">
+			<div className={scrollContainerClassName}>
+				<ScrollSeparators />
 				<div className="sliding-container">
 					<ItemFactoryContext.Provider value={factory}>
 						<div className="sliding-content">
