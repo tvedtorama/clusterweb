@@ -42,6 +42,7 @@ export interface IValueNetworkProps {
 	orgs: IOrg[]
 	connectors: IConnector[]
 	projects: IProject[]
+	labels?: true,
 }
 
 export const getConnId = (conn: IConnector) => conn.from + conn.to
@@ -200,7 +201,7 @@ export class ValueNetworkGraphics extends React.Component<IValueNetworkProps> {
 				{
 					this.props.orgs.map(org => <g key={org.id} transform={`translate(${org.point[0]}, ${org.point[1]})`} className={`vn-org ${org.className || org.id}`}>
 						<circle r={orgRad} fill={"white"} />
-						<text style={{font: "normal normal normal 8px/1 FontAwesome"}} dominantBaseline={"central"} textAnchor={"middle"} fill="none">{String.fromCharCode(org.icon)}</text>
+						<text style={{font: "normal normal normal 8px/1 FontAwesome"}} dominantBaseline={"central"} textAnchor={"middle"} fill="none" className="org-icon">{String.fromCharCode(org.icon)}</text>
 					</g>)
 				}
 				{
@@ -208,8 +209,11 @@ export class ValueNetworkGraphics extends React.Component<IValueNetworkProps> {
 						<Project id="n/a" key={p.members.join(' ')} project={p} coords={findProjectCords(p, this.props.orgs)} />
 					)
 				}
-				<text x={svgCoords[0] + svgCoords[2]} y={svgCoords[1]} dominantBaseline={"hanging"} textAnchor="end">Customers</text>
-				<text x={svgCoords[0] + svgCoords[2]} y={svgCoords[1] + svgCoords[3] - 7} dominantBaseline={"baseline"} textAnchor="end">Suppliers</text>
+				{this.props.labels && <g className="background-labels">
+					<text x={svgCoords[0] + svgCoords[2]} y={svgCoords[1]} dominantBaseline={"hanging"} textAnchor="end">Customers</text>
+					<text x={svgCoords[0] + svgCoords[2]} y={svgCoords[1] + svgCoords[3] - 7} dominantBaseline={"baseline"} textAnchor="end">Suppliers</text>
+					</g>
+				}
 			</g>
 	}
 }
@@ -223,7 +227,7 @@ export const ValueNetwork = (props: IValueNetworkProps) =>
 		[
 			<h1 key="h">Value Flow in Clusters</h1>,
 			<svg key="chart" viewBox={svgCoords.join(" ")} className={"value-network chart"}>
-				<ValueNetworkGraphics {...props} />
+				<ValueNetworkGraphics {...props} labels={true} />
 			</svg>,
 		]
 

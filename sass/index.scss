@@ -190,13 +190,14 @@ $footingHeight: 80vh;
 			.scroll-separator:not(:first-child) {
 				&:before {
 					display: block;
-					padding: 0.1em;
+					padding: 0.2em 0.1em 0.2em 0.3em;
 					position: relative;
-					top: -0.7em;
+					top: -0.75em;
 					left: 2em;
 					width: 1em;
 					height: 1em;
-					background: white;
+					background: lightblue;
+					border-radius: 0.2em;
 					content: "\f1c4";  // powerpoint icon
 					color: rgba(0, 0, 0, 0.5);
 					font-family: "FontAwesome";
@@ -419,6 +420,10 @@ $footingHeight: 80vh;
 						&.C2 {
 							stroke: lightskyblue;
 						}
+
+						.org-icon {
+							fill: whitesmoke;
+						}
 					}
 					.connector {
 						circle {
@@ -436,7 +441,7 @@ $footingHeight: 80vh;
 					.project-related {
 						animation: fadein 3s;
 					}
-					> g > text {
+					.background-labels text {
 						font-size: $diagram-font-size;
 						fill: gray;
 					}
