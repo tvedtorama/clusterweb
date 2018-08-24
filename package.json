@@ -32,7 +32,7 @@
 		"redux-observable": "^1.0.0",
 		"redux-saga": "^0.16.0",
 		"rxjs": "^6.2.1",
-		"saga-stories": "^1.0.2",
+		"saga-stories": "^1.0.3",
 		"serve-favicon": "^2.5.0",
 		"topojson-client": "^3.0.0",
 		"typed.js": "^2.0.9",
