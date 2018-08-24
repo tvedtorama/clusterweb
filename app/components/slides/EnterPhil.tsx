@@ -3,7 +3,7 @@ import * as React from 'react'
 export class EnterPhil extends React.Component {
 	render() {
 		return [
-			<h1 key="h">Enter: The Phil Network</h1>,
+			<h1 key="h"><em>The Future, Now</em>Enter: The Phil Network</h1>,
 			<p key="p">The Phil Network is a cloud based <code>cluster management system</code>.  It can help accellerate your organization's network building, reduce dependencies on key contacts and monitor relations with customers and suppliers.</p>,
 			<ul key="ul">
 				<li>Digitalize your cluster to enable innovation and automation.</li>

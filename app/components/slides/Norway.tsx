@@ -3,7 +3,7 @@ import * as React from 'react'
 export class NorwayIntro extends React.Component {
 	render() {
 		return [
-			<h1 key="h">Norway, Northern West Coast</h1>,
+			<h1 key="h"><em>Cluster Example</em>Norway, Northern West Coast</h1>,
 			<p key="p">The oceans surrounding Norway is packed with swimming proteins. The locals have utilized this stroke of luck since before the vikings. Not only for local consumption, but also exports - in the form of dried fish.  Today, traditional fishing has been accompanied and surpassed by fish farming.</p>,
 			<ul key="ul">
 				<li>In the early 50ies, after the war, fishing vessels were in strong demand</li>
