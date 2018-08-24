@@ -1,13 +1,13 @@
 
 import * as React from 'react'
-import {Subtract} from 'utility-types'
 import { spring, OpaqueConfig, StaggeredMotion } from 'react-motion';
 import { feature } from "topojson-client"
 import { GeometryCollection } from "topojson-specification";
-import { geoNaturalEarth1, geoPath } from 'd3-geo';
+import { geoPath } from 'd3-geo';
 import { isUndefined, slowSpring } from 'saga-stories/utils';
 import { GlowFilter } from 'saga-stories/components';
 import { interestPoints } from '../../interestPoints';
+import { IProjectionProps, ProjectionWrapper } from './worldMapProjections';
 
 const worldDataJson = require('../../maps/110m.json')
 const lakesDataJson = require('../../maps/110m_lakes.json').features
@@ -72,24 +72,6 @@ const WorldMapContent: React.StatelessComponent<{projection, currentCity, worldD
 const animDefaults = {long: 0, lat: 0, scale: 100}
 type IAnimProps = {[index in keyof typeof animDefaults]: OpaqueConfig}
 
-export interface IProjectionProps {
-	createProjection(center?: [number, number], scale?: number)
-}
-
-export const ProjectionWrapper = <P extends IProjectionProps>(Component: React.ComponentType<P>) =>
-	class ProjectionWrapperClass extends React.Component<Subtract<P, IProjectionProps>> {
-		createProjection(center?: [number, number], scale: number = 100) {
-			const base = geoNaturalEarth1()
-				.translate([0, 0])
-			if (!center)
-				return base
-			return base.center(center).scale(scale) // translate([translate[0], translate[1]])
-		}
-
-		render() {
-			return <Component {...this.props} createProjection={(a, b) => this.createProjection(a, b)} />
-		}
-	}
 
 
 /** Renders a map of the world.

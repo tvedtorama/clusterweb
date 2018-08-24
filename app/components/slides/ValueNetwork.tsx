@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Motion, spring, presets } from 'react-motion';
 import { GlowFilter } from 'saga-stories/components';
-import { ProjectionWrapper, IProjectionProps } from '../story/WorldMap';
+import { ProjectionWrapper, IProjectionProps } from '../story/worldMapProjections';
 import { Maybe } from 'saga-stories/utils';
 
 // This terrible, mutation-loving, library has a typings, but they don't really work

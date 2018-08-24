@@ -4,7 +4,7 @@ var webpack = require('webpack');
 // Note: webpack has its own common / merge system.  This is not used here.
 
 module.exports = {
-	vendorLibList: ['react', 'react-dom', 'react-redux', 'redux', 'redux-saga', 'redux-observable', 'lodash', 'react-router'],
+	vendorLibList: ['react', 'react-dom', 'react-redux', 'redux', 'redux-saga', 'redux-observable', 'react-router'],
 	output: {
 		library: "app",
 		path: path.join(__dirname, 'dist'),
